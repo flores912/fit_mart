@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>251475920871-1pddr99rn3rga0utgf0fhirqjge4h69e.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.251475920871-1pddr99rn3rga0utgf0fhirqjge4h69e</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCYOzUE5LDEBKvVLRD2k-cvo4Bt-bgFDGs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>251475920871</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>jose.andres.flores.fitMart</string>
+	<key>PROJECT_ID</key>
+	<string>fitmart-b6b51</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fitmart-b6b51.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:251475920871:ios:d684a94e04478f6d65df42</string>
+	<key>DATABASE_URL</key>
+	<string>https://fitmart-b6b51.firebaseio.com</string>
+</dict>
+</plist>
