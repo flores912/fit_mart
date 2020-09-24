@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  int _selectedScreen = 0;
   final tabs = [
     ExploreScreen(),
     MyWorkoutPlansScreen(),
@@ -22,26 +22,24 @@ class _HomeScreenState extends State<HomeScreen> {
     AccountScreen(),
   ];
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return (Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          )
-        ],
+      body: IndexedStack(
+        index: _selectedScreen,
+        children: tabs,
       ),
-      body: tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
+        currentIndex: _selectedScreen,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text('Explore')),
+              icon: Icon(Icons.search), title: Text('Discover')),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
             title: Text('Workouts'),
@@ -57,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            _selectedScreen = index;
           });
         },
       ),
