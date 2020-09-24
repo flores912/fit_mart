@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/custom_material_button.dart';
+import 'package:fit_mart/models/authentication.dart';
+import 'package:fit_mart/screens/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +15,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String email;
+  String password;
+  Authentication authentication = Authentication();
+
+  @override
+  void initState() {
+    authentication.checkIfUserIsLoggedIn(context);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
@@ -27,12 +46,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 textInputType: TextInputType.emailAddress,
                 prefixIcon: Icon(Icons.email),
                 isObscure: false,
+                onChanged: (value) {
+                  email = value;
+                },
               ),
               CustomTextField(
                 labelText: 'Password',
                 textInputType: TextInputType.text,
                 prefixIcon: Icon(Icons.lock),
                 isObscure: true,
+                onChanged: (value) {
+                  password = value;
+                },
               ),
               SizedBox(
                 height: 16.0,
@@ -41,7 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.red,
                 textColor: Colors.white,
                 title: 'Login',
-                onPressed: () {},
+                onPressed: () {
+                  authentication.signInWithEmail(
+                      email: email,
+                      password: password,
+                      context: context,
+                      routeName: HomeScreen.id);
+                },
               ),
               SizedBox(
                 height: 16.0,

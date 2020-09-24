@@ -6,21 +6,33 @@ class BuyWorkoutPlanCard extends StatelessWidget {
   String imageUrl;
   String title;
   String trainer;
-  double rating;
+  double price;
+  int numOfReviews;
+
+  var rating;
 
   BuyWorkoutPlanCard(
       {@required this.imageUrl,
       @required this.title,
       @required this.trainer,
-      @required this.rating});
+      @required this.rating,
+      @required this.price,
+      @required this.numOfReviews});
+  //firebase converts doubles with 0 into integers so we gotta do this check first
+  double getRating() {
+    if (rating is int) {
+      rating = rating.toDouble();
+    }
+    return rating;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 250.0,
-      child: Wrap(
-        children: [
-          Card(
+    return Wrap(
+      children: [
+        Card(
+          child: SizedBox(
+            width: 200.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -28,8 +40,8 @@ class BuyWorkoutPlanCard extends StatelessWidget {
                 Image.network(
                   imageUrl,
                   width: Size.infinite.width,
-                  alignment: Alignment.topCenter,
                   height: 150.0,
+                  alignment: Alignment.topCenter,
                   fit: BoxFit.cover,
                 ),
                 Padding(
@@ -40,6 +52,8 @@ class BuyWorkoutPlanCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
@@ -61,7 +75,7 @@ class BuyWorkoutPlanCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '4.5',
+                              rating.toDouble().toString(),
                               style: TextStyle(
                                 color: Colors.orange,
                               ),
@@ -72,7 +86,7 @@ class BuyWorkoutPlanCard extends StatelessWidget {
                                   allowHalfRating: true,
                                   onRated: (v) {},
                                   starCount: 5,
-                                  rating: rating,
+                                  rating: getRating(),
                                   size: 18.0,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -84,7 +98,7 @@ class BuyWorkoutPlanCard extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(4.0, 0, 0, 0),
                               child: Text(
-                                '(5,756)',
+                                '(${numOfReviews.toString()})',
                                 style: TextStyle(
                                   color: Colors.grey.shade700,
                                 ),
@@ -96,7 +110,7 @@ class BuyWorkoutPlanCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 4.0, 0, 0),
                         child: Text(
-                          '\$59.99',
+                          price.toString(),
                           style: TextStyle(
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold,
@@ -110,8 +124,8 @@ class BuyWorkoutPlanCard extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

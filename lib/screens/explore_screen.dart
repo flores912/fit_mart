@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-import 'buy_workout_plan_card.dart';
+import '../buy_workout_plan_card.dart';
+import '../workout_plans_list.dart';
 
 class ExploreScreen extends StatefulWidget {
   @override
@@ -13,8 +14,10 @@ class ExploreScreenState extends State<ExploreScreen> {
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-      backgroundColor: Colors.red,
-      body: Container(),
+      body: ListView(children: [
+        WorkoutPlansList('Weightlifting'),
+        WorkoutPlansList('Bodyweight')
+      ]),
     ));
   }
 }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/screens/account_screen.dart';
 import 'package:fit_mart/screens/explore_screen.dart';
 import 'package:fit_mart/screens/my_workout_plans_screen.dart';
@@ -19,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
     WishlistScreen(),
     AccountScreen(),
   ];
-
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
