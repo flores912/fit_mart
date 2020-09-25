@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MyWorkoutPlansScreen extends StatefulWidget {
+class MyPlansScreen extends StatefulWidget {
+  static const String title = 'My Plans';
+
   @override
-  MyWorkoutPlansScreenState createState() => MyWorkoutPlansScreenState();
+  MyPlansScreenState createState() => MyPlansScreenState();
 }
 
-class MyWorkoutPlansScreenState extends State<MyWorkoutPlansScreen> {
+class MyPlansScreenState extends State<MyPlansScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WishlistScreen extends StatefulWidget {
+  static const String title = 'Wishlist';
+
   @override
   WishlistScreenState createState() => WishlistScreenState();
 }

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatefulWidget {
+  static const String title = 'Account';
+
   @override
   AccountScreenState createState() => AccountScreenState();
 }

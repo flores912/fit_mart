@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'buy_workout_plan_card.dart';
 
 class WorkoutPlansList extends StatelessWidget {
-  String category;
+  final String category;
 
   WorkoutPlansList(this.category);
 
@@ -69,7 +69,7 @@ class WorkoutPlansList extends StatelessWidget {
               workoutPlanCards.add(workoutPlanCard);
             }
             return Container(
-              height: 300,
+              height: 300.0,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: workoutPlanCards,

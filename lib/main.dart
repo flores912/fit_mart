@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
+import 'package:fit_mart/screens/workout_session_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -22,10 +23,11 @@ class FitMart extends StatelessWidget {
         accentColor: Colors.orange,
         cursorColor: Colors.red,
       ),
-      initialRoute: LoginScreen.id,
+      initialRoute: WorkoutSessionScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
         LoginScreen.id: (context) => LoginScreen(),
+        WorkoutSessionScreen.id: (context) => WorkoutSessionScreen(),
       },
     );
   }

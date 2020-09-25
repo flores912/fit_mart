@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/screens/account_screen.dart';
-import 'package:fit_mart/screens/explore_screen.dart';
-import 'package:fit_mart/screens/my_workout_plans_screen.dart';
+import 'package:fit_mart/screens/discover_screen.dart';
+import 'package:fit_mart/screens/my_plans_screen.dart';
 import 'package:fit_mart/screens/wishlist_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,48 +12,92 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _title;
   int _selectedScreen = 0;
   final tabs = [
-    ExploreScreen(),
-    MyWorkoutPlansScreen(),
+    DiscoverScreen(),
+    MyPlansScreen(),
     WishlistScreen(),
     AccountScreen(),
   ];
+
   @override
   void initState() {
-    // TODO: implement initState
+    //default value fro title
+    _title = DiscoverScreen.title;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-      body: IndexedStack(
-        index: _selectedScreen,
-        children: tabs,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          _title,
+          style: TextStyle(color: Colors.black),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.black,
+            ),
+            onPressed: () {},
+          )
+        ],
+      ),
+      body: SafeArea(
+        child: IndexedStack(
+          index: _selectedScreen,
+          children: tabs,
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedScreen,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text('Discover')),
+              icon: Icon(Icons.search), title: Text(DiscoverScreen.title)),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
-            title: Text('Workouts'),
+            title: Text(MyPlansScreen.title),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            title: Text('Wishlist'),
+            title: Text(WishlistScreen.title),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text('Account'),
+            title: Text(AccountScreen.title),
           ),
         ],
         onTap: (index) {
           setState(() {
             _selectedScreen = index;
+
+            switch (index) {
+              case 0:
+                {
+                  _title = DiscoverScreen.title;
+                }
+                break;
+              case 1:
+                {
+                  _title = MyPlansScreen.title;
+                }
+                break;
+              case 2:
+                {
+                  _title = WishlistScreen.title;
+                }
+                break;
+              case 3:
+                {
+                  _title = AccountScreen.title;
+                }
+                break;
+            }
           });
         },
       ),
