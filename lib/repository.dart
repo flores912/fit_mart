@@ -9,4 +9,9 @@ class Repository {
 
   Future<UserCredential> loginUser(String email, String password) =>
       _firestoreProvider.loginUser(email, password);
+
+  User getUser() => _firestoreProvider.getUser();
+
+  Future<void> myWorkoutPlansList(String email) =>
+      _firestoreProvider.myWorkoutPlansList(email);
 }

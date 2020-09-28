@@ -10,7 +10,7 @@ class LoginBloc {
   final _password = BehaviorSubject<String>();
   final _isSignedIn = BehaviorSubject<bool>();
 
-  Stream<String> get email => _password.stream.transform(_validateEmail);
+  Stream<String> get email => _email.stream.transform(_validateEmail);
 
   Stream<String> get password => _password.stream.transform(_validatePassword);
 
@@ -43,12 +43,16 @@ class LoginBloc {
     }
   });
 
-  Future<UserCredential> submit() {
+  Future<UserCredential> loginUser() {
     return _repository.loginUser(_email.value, _password.value);
   }
 
   Future<void> registerUser() {
     return _repository.registerUser(_email.value, _password.value);
+  }
+
+  User getUser() {
+    return _repository.getUser();
   }
 
   void dispose() async {

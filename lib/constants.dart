@@ -5,5 +5,5 @@ const String kWeightlifting = 'Weightlifting';
 const String kBodyweight = 'Bodyweight';
 
 //appColors
-const Color kPrimaryColor = Colors.black;
-const Color kAccentColor = Colors.yellowAccent;
+const Color kPrimaryColor = Colors.red;
+const Color kAccentColor = Colors.redAccent;

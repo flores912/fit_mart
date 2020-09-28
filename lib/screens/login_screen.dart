@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/blocs/login_bloc.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _bloc = LoginBlocProvider.of(context);
+    checkIfUserIsLoggedIn();
   }
 
   @override
@@ -104,12 +106,14 @@ class _LoginScreenState extends State<LoginScreen> {
   void authenticateUser() {
     _bloc.showProgressBar(true);
 
-    _bloc.submit().then((userCredential) {
-      if (userCredential.user == null) {
-        //unregistered user\
-        showErrorMessage(context, 'User doesn not exist');
-      } else {
+    _bloc.loginUser().then((userCredential) {
+      if (userCredential != null) {
+        //user exists - nav to home screen
         Navigator.pushReplacementNamed(context, HomeScreen.id);
+      } else {
+        //user doesn't exist
+        showErrorMessage(
+            context, 'user does not exist,check for errors or sign up!');
       }
     });
   }
@@ -118,5 +122,16 @@ class _LoginScreenState extends State<LoginScreen> {
     final snackbar = SnackBar(
         content: Text(errorMessage), duration: new Duration(seconds: 2));
     Scaffold.of(context).showSnackBar(snackbar);
+  }
+
+  checkIfUserIsLoggedIn() async {
+    _bloc.showProgressBar(true);
+
+    if (await _bloc.getUser() != null) {
+      // signed in
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
+    } else {
+      //stay in login screen
+    }
   }
 }
