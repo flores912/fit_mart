@@ -25,6 +25,7 @@ dependencies:
   smooth_star_rating: ^1.1.1
   chewie: ^0.9.10
   video_player: ^0.10.12+4
+  rxdart: ^0.24.1
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,8 @@
-import 'dart:ui';
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fit_mart/blocs/login_bloc_provider.dart';
+import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
-import 'package:fit_mart/screens/workout_session_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -16,19 +15,20 @@ class FitMart extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FitMart',
-      theme: ThemeData.light().copyWith(
-        primaryColor: Colors.red,
-        accentColor: Colors.orange,
-        cursorColor: Colors.red,
+    return LoginBlocProvider(
+      child: MaterialApp(
+        title: 'FitMart',
+        theme: ThemeData.light().copyWith(
+          primaryColor: kPrimaryColor,
+          accentColor: kAccentColor,
+          cursorColor: kPrimaryColor,
+        ),
+        initialRoute: LoginScreen.id,
+        routes: {
+          HomeScreen.id: (context) => HomeScreen(),
+          LoginScreen.id: (context) => LoginScreen(),
+        },
       ),
-      initialRoute: WorkoutSessionScreen.id,
-      routes: {
-        HomeScreen.id: (context) => HomeScreen(),
-        LoginScreen.id: (context) => LoginScreen(),
-        WorkoutSessionScreen.id: (context) => WorkoutSessionScreen(),
-      },
     );
   }
 }

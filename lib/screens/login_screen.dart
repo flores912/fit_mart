@@ -1,11 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fit_mart/custom_material_button.dart';
-import 'package:fit_mart/models/authentication.dart';
+import 'package:fit_mart/blocs/login_bloc.dart';
+import 'package:fit_mart/blocs/login_bloc_provider.dart';
+import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/screens/home_screen.dart';
+import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:fit_mart/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -15,105 +14,109 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String email;
-  String password;
-  Authentication authentication = Authentication();
+  LoginBloc _bloc;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bloc = LoginBlocProvider.of(context);
+  }
 
   @override
   void initState() {
-    authentication.checkIfUserIsLoggedIn(context);
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
+    _bloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return (Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CustomTextField(
-                labelText: 'Email',
-                textInputType: TextInputType.emailAddress,
-                prefixIcon: Icon(Icons.email),
-                isObscure: false,
-                onChanged: (value) {
-                  email = value;
-                },
-              ),
-              CustomTextField(
-                labelText: 'Password',
-                textInputType: TextInputType.text,
-                prefixIcon: Icon(Icons.lock),
-                isObscure: true,
-                onChanged: (value) {
-                  password = value;
-                },
-              ),
+              StreamBuilder(
+                  stream: _bloc.email,
+                  builder: (context, snapshot) {
+                    return CustomTextForm(
+                      errorText: snapshot.error,
+                      obscureText: false,
+                      onChanged: _bloc.changeEmail,
+                      textInputType: TextInputType.emailAddress,
+                      labelText: 'Email',
+                    );
+                  }),
               SizedBox(
-                height: 16.0,
+                height: 16,
               ),
-              CustomMaterialButton(
-                color: Colors.red,
-                textColor: Colors.white,
-                title: 'Login',
-                onPressed: () {
-                  authentication.signInWithEmail(
-                      email: email,
-                      password: password,
-                      context: context,
-                      routeName: HomeScreen.id);
-                },
-              ),
+              StreamBuilder(
+                  stream: _bloc.password,
+                  builder: (context, snapshot) {
+                    return CustomTextForm(
+                      errorText: snapshot.error,
+                      onChanged: _bloc.changePassword,
+                      obscureText: true,
+                      textInputType: TextInputType.visiblePassword,
+                      labelText: 'Password',
+                    );
+                  }),
               SizedBox(
-                height: 16.0,
+                height: 16,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      height: 1.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'OR',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 18.0),
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      height: 1.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              CustomMaterialButton(
-                color: Colors.white,
-                textColor: Colors.red,
-                title: 'Sign Up',
-                onPressed: () {},
-              ),
+              StreamBuilder(
+                  stream: _bloc.signInStatus,
+                  builder: (context, snapshot) {
+                    return RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      color: kPrimaryColor,
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_bloc.validateFields()) {
+                          authenticateUser();
+                        } else {
+                          showErrorMessage(
+                              context, 'Please fix all the errors');
+                        }
+                      },
+                    );
+                  }),
             ],
           ),
         ),
       ),
     ));
+  }
+
+  void authenticateUser() {
+    _bloc.showProgressBar(true);
+
+    _bloc.submit().then((userCredential) {
+      if (userCredential.user == null) {
+        //unregistered user\
+        showErrorMessage(context, 'User doesn not exist');
+      } else {
+        Navigator.pushReplacementNamed(context, HomeScreen.id);
+      }
+    });
+  }
+
+  void showErrorMessage(BuildContext context, String errorMessage) {
+    final snackbar = SnackBar(
+        content: Text(errorMessage), duration: new Duration(seconds: 2));
+    Scaffold.of(context).showSnackBar(snackbar);
   }
 }
