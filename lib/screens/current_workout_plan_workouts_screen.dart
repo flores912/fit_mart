@@ -30,26 +30,25 @@ class CurrentWorkoutPlanWorkoutsScreenState
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: SafeArea(
-        child: FutureBuilder(
-            future: _bloc.currentPlanWorkoutsQuerySnapshot(_bloc.getEmail()),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasData) {
-                List<DocumentSnapshot> docs = snapshot.data.docs;
-                List<Workout> currentPlanWorkoutsList =
-                    _bloc.convertToCurrentPlanWorkoutsList(docList: docs);
+      body: StreamBuilder(
+          stream: _bloc.currentPlanWorkoutsQuerySnapshot(
+              'flores@gmail.com', 'JIEfxcJSwn1FA3yeb6Jl'),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
+              List<DocumentSnapshot> docs = snapshot.data.docs;
+              List<Workout> currentPlanWorkoutsList =
+                  _bloc.convertToCurrentPlanWorkoutsList(docList: docs);
 
-                if (currentPlanWorkoutsList.isNotEmpty) {
-                  return buildList(currentPlanWorkoutsList);
-                } else {
-                  return Center(child: Text('No workouts'));
-                }
+              if (currentPlanWorkoutsList.isNotEmpty) {
+                return buildList(currentPlanWorkoutsList);
               } else {
-                return Center(child: Text('No workouts'));
+                return Center(child: Text('No workout plans'));
               }
-            }),
-      ),
+            } else {
+              return Center(child: Text('No workout plans'));
+            }
+          }),
     );
   }
 

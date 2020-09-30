@@ -1,5 +1,5 @@
 import 'package:fit_mart/blocs/current_plan_workouts_bloc.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class CurrentPlanWorkoutsBlocProvider extends InheritedWidget {
   final bloc = CurrentPlanWorkoutsBloc();

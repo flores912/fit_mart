@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -22,49 +24,21 @@ class FirestoreProvider {
     return _firebaseAuth.currentUser;
   }
 
-  Future<QuerySnapshot> myWorkoutPlansQuerySnapshot(String email) async {
-    Future<QuerySnapshot> qs;
-    await _firestore
-        .collection("users")
-        .where('email', isEqualTo: email)
-        .get()
-        .then((snapshot) {
-      snapshot.docs.forEach((result) {
-        qs = _firestore
-            .collection('users')
-            .doc(result.id)
-            .collection('myPlans')
-            .get();
-      });
-    });
-    return qs;
+  Stream<QuerySnapshot> myWorkoutPlansQuerySnapshot(String userUid) {
+    CollectionReference collectionReference =
+        _firestore.collection('users').doc(userUid).collection('myPlans');
+    return collectionReference.snapshots();
   }
 
-//TODO: fix query
-  Future<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(String email) async {
-    Future<QuerySnapshot> qs;
-    await _firestore
-        .collection("users")
-        .where('email', isEqualTo: email)
-        .get()
-        .then((snapshot) {
-      snapshot.docs.forEach((result) {
-        _firestore
-            .collection('users')
-            .doc(result.id)
-            .collection('myPlans')
-            .get()
-            .then((value) {
-          value.docs.forEach((element) {
-            qs = _firestore
-                .collection('myPlans')
-                .doc(element.id)
-                .collection('workouts')
-                .get();
-          });
-        });
-      });
-    });
-    return qs;
+  Stream<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(
+      String userUid, String workoutPlanUid) {
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('myPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts');
+
+    return collectionReference.snapshots();
   }
 }

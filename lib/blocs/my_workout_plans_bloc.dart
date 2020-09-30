@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/models/my_workout_plan.dart';
 import 'package:fit_mart/repository.dart';
+import 'package:flutter/cupertino.dart';
 
-//TODO: FINISH BLOC
 class MyWorkoutPlansBloc {
   final _repository = Repository();
 
-  Future<QuerySnapshot> myWorkoutPlansQuerySnapshot(String email) =>
-      _repository.myWorkoutPlansQuerySnapshot(email);
+  Stream<QuerySnapshot> myWorkoutPlansQuerySnapshot(String userUid) =>
+      _repository.myWorkoutPlansQuerySnapshot(userUid);
 
   List<MyWorkoutPlan> convertToMyWorkoutPlanList(
-      {List<DocumentSnapshot> docList}) {
+      {@required List<DocumentSnapshot> docList}) {
     List<MyWorkoutPlan> myWorkoutPlansList = [];
     docList.forEach((document) {
       MyWorkoutPlan myWorkoutPlan = MyWorkoutPlan(
@@ -23,7 +23,7 @@ class MyWorkoutPlansBloc {
     return myWorkoutPlansList;
   }
 
-  String getEmail() {
-    return _repository.getUser().email;
+  String getUserUid() {
+    return _repository.getUser().uid;
   }
 }

@@ -130,8 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (await _bloc.getUser() != null) {
       // signed in
-      Navigator.pushReplacementNamed(
-          context, CurrentWorkoutPlanWorkoutsScreen.id);
+      Navigator.pushReplacementNamed(context, HomeScreen.id);
     } else {
       //stay in login screen
     }

@@ -13,9 +13,11 @@ class Repository {
 
   User getUser() => _firestoreProvider.getUser();
 
-  Future<QuerySnapshot> myWorkoutPlansQuerySnapshot(String email) =>
-      _firestoreProvider.myWorkoutPlansQuerySnapshot(email);
+  Stream<QuerySnapshot> myWorkoutPlansQuerySnapshot(String userUid) =>
+      _firestoreProvider.myWorkoutPlansQuerySnapshot(userUid);
 
-  Future<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(String email)=>
-      _firestoreProvider.currentPlanWorkoutsQuerySnapshot(email);
+  Stream<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(
+          String userUid, String workoutPlanUid) =>
+      _firestoreProvider.currentPlanWorkoutsQuerySnapshot(
+          userUid, workoutPlanUid);
 }

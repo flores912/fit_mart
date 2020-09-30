@@ -19,7 +19,6 @@ class MyPlansScreenState extends State<MyPlansScreen> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _bloc = MyWorkoutPlansBlocProvider.of(context);
   }
@@ -32,8 +31,8 @@ class MyPlansScreenState extends State<MyPlansScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _bloc.myWorkoutPlansQuerySnapshot(_bloc.getEmail()),
+    return StreamBuilder(
+        stream: _bloc.myWorkoutPlansQuerySnapshot('flores@gmail.com'),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             List<DocumentSnapshot> docs = snapshot.data.docs;
