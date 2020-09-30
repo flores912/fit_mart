@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
 
@@ -12,6 +13,9 @@ class Repository {
 
   User getUser() => _firestoreProvider.getUser();
 
-  Future<void> myWorkoutPlansList(String email) =>
-      _firestoreProvider.myWorkoutPlansList(email);
+  Future<QuerySnapshot> myWorkoutPlansQuerySnapshot(String email) =>
+      _firestoreProvider.myWorkoutPlansQuerySnapshot(email);
+
+  Future<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(String email)=>
+      _firestoreProvider.currentPlanWorkoutsQuerySnapshot(email);
 }

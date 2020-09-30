@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/blocs/login_bloc.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
+import 'package:fit_mart/screens/current_workout_plan_workouts_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
@@ -129,7 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (await _bloc.getUser() != null) {
       // signed in
-      Navigator.pushReplacementNamed(context, HomeScreen.id);
+      Navigator.pushReplacementNamed(
+          context, CurrentWorkoutPlanWorkoutsScreen.id);
     } else {
       //stay in login screen
     }

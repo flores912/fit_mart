@@ -1,4 +1,3 @@
-import 'package:fit_mart/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +8,7 @@ class MyWorkoutPlanWidget extends StatelessWidget {
   final String imageUrl;
 
   MyWorkoutPlanWidget(
-      this.title, this.progressValue, this.trainer, this.imageUrl);
+      {this.title, this.progressValue, this.trainer, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {

@@ -22,19 +22,49 @@ class FirestoreProvider {
     return _firebaseAuth.currentUser;
   }
 
-  Future<void> myWorkoutPlansList(String email) async {
-    return await _firestore
+  Future<QuerySnapshot> myWorkoutPlansQuerySnapshot(String email) async {
+    Future<QuerySnapshot> qs;
+    await _firestore
         .collection("users")
         .where('email', isEqualTo: email)
         .get()
-        .then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
+        .then((snapshot) {
+      snapshot.docs.forEach((result) {
+        qs = _firestore
+            .collection('users')
+            .doc(result.id)
+            .collection('myPlans')
+            .get();
+      });
+    });
+    return qs;
+  }
+
+//TODO: fix query
+  Future<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(String email) async {
+    Future<QuerySnapshot> qs;
+    await _firestore
+        .collection("users")
+        .where('email', isEqualTo: email)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((result) {
         _firestore
             .collection('users')
             .doc(result.id)
             .collection('myPlans')
-            .snapshots();
+            .get()
+            .then((value) {
+          value.docs.forEach((element) {
+            qs = _firestore
+                .collection('myPlans')
+                .doc(element.id)
+                .collection('workouts')
+                .get();
+          });
+        });
       });
     });
+    return qs;
   }
 }

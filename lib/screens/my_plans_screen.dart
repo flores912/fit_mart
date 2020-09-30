@@ -1,3 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_mart/blocs/my_workout_plans_bloc.dart';
+import 'package:fit_mart/blocs/my_workout_plans_bloc_provider.dart';
+import 'package:fit_mart/models/my_workout_plan.dart';
 import 'package:fit_mart/widgets/my_workout_plan_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +15,54 @@ class MyPlansScreen extends StatefulWidget {
 }
 
 class MyPlansScreenState extends State<MyPlansScreen> {
+  MyWorkoutPlansBloc _bloc;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _bloc = MyWorkoutPlansBlocProvider.of(context);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
+    return FutureBuilder(
+        future: _bloc.myWorkoutPlansQuerySnapshot(_bloc.getEmail()),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            List<DocumentSnapshot> docs = snapshot.data.docs;
+            List<MyWorkoutPlan> myWorkoutPlansList =
+                _bloc.convertToMyWorkoutPlanList(docList: docs);
+
+            if (myWorkoutPlansList.isNotEmpty) {
+              return buildList(myWorkoutPlansList);
+            } else {
+              return Center(child: Text('No workout plans'));
+            }
+          } else {
+            return Center(child: Text('No workout plans'));
+          }
+        });
+  }
+
+  ListView buildList(List<MyWorkoutPlan> myWorkoutPlansList) {
+    return ListView.separated(
+      separatorBuilder: (BuildContext context, int index) => Divider(),
+      itemCount: myWorkoutPlansList.length,
+      itemBuilder: (context, index) {
+        return MyWorkoutPlanWidget(
+          title: myWorkoutPlansList[index].title,
+          trainer: myWorkoutPlansList[index].trainer,
+          imageUrl: myWorkoutPlansList[index].imageUrl,
+          progressValue: myWorkoutPlansList[index].progress,
+        );
+      },
     );
   }
 }

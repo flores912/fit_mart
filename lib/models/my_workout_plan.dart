@@ -1,8 +1,14 @@
-class MyWorkoutPlan {
-  final String _title;
-  final String _trainer;
-  final String _imageUrl;
-  final double _progress;
+import 'package:flutter/cupertino.dart';
 
-  MyWorkoutPlan(this._imageUrl, this._title, this._trainer, this._progress);
+class MyWorkoutPlan {
+  final String title;
+  final String trainer;
+  final String imageUrl;
+  final double progress;
+
+  MyWorkoutPlan(
+      {@required this.imageUrl,
+      @required this.title,
+      @required this.trainer,
+      @required this.progress});
 }
