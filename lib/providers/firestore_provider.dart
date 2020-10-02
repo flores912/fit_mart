@@ -39,6 +39,6 @@ class FirestoreProvider {
         .doc(workoutPlanUid)
         .collection('workouts');
 
-    return collectionReference.snapshots();
+    return collectionReference.orderBy('day', descending: false).snapshots();
   }
 }

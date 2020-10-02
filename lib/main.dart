@@ -29,7 +29,7 @@ class FitMart extends StatelessWidget {
               accentColor: kAccentColor,
               cursorColor: kPrimaryColor,
             ),
-            initialRoute: CurrentWorkoutPlanWorkoutsScreen.id,
+            initialRoute: WorkoutSessionScreen.id,
             routes: {
               HomeScreen.id: (context) => HomeScreen(),
               LoginScreen.id: (context) => LoginScreen(),

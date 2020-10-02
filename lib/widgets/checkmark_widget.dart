@@ -6,8 +6,11 @@ import '../constants.dart';
 class CheckmarkWidget extends StatelessWidget {
   final Color color;
   final Function onTap;
+  final Widget roundButtonWidget;
   const CheckmarkWidget({
-    @required this.color, @ required this.onTap,
+    @required this.color,
+    @required this.onTap,
+    this.roundButtonWidget,
   });
 
   @override
@@ -17,14 +20,7 @@ class CheckmarkWidget extends StatelessWidget {
         color: color, // button color
         child: InkWell(
           splashColor: kAccentColor, // inkwell color
-          child: SizedBox(
-              width: 56,
-              height: 56,
-              child: Icon(
-                Icons.check,
-                color: Colors.white,
-                size: 36,
-              )),
+          child: SizedBox(width: 56, height: 56, child: roundButtonWidget),
           onTap: onTap,
         ),
       ),

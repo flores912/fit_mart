@@ -10,13 +10,15 @@ class CurrentPlanWorkoutWidget extends StatelessWidget {
   final String title;
   final int day;
   final Function onTapCheckmark;
+  final Widget roundButtonWidget;
 
   const CurrentPlanWorkoutWidget(
       {@required this.checkMarkButtonColor,
       @required this.isDone,
       @required this.title,
       @required this.day,
-      @required this.onTapCheckmark});
+      @required this.onTapCheckmark,
+      this.roundButtonWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,13 @@ class CurrentPlanWorkoutWidget extends StatelessWidget {
                   CheckmarkWidget(
                     color: checkMarkButtonColor,
                     onTap: onTapCheckmark,
+                    roundButtonWidget: roundButtonWidget,
                   ),
                   SizedBox(
                     width: 8,
                   ),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,

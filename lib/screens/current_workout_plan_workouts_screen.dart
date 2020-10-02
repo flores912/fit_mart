@@ -54,10 +54,17 @@ class CurrentWorkoutPlanWorkoutsScreenState
 
   ListView buildList(List<Workout> currentPlanWorkoutsList) {
     return ListView.separated(
-      separatorBuilder: (BuildContext context, int index) => Divider(),
+      separatorBuilder: (BuildContext context, int index) => Divider(
+        height: 1,
+        color: Colors.black,
+      ),
       itemCount: currentPlanWorkoutsList.length,
       itemBuilder: (context, index) {
         Color isDoneColor;
+        bool isDone = currentPlanWorkoutsList[index].isDone;
+        String title = currentPlanWorkoutsList[index].title;
+        int day = currentPlanWorkoutsList[index].day;
+
         if (currentPlanWorkoutsList[index].isDone == true) {
           isDoneColor = kPrimaryColor;
         } else {
@@ -65,10 +72,22 @@ class CurrentWorkoutPlanWorkoutsScreenState
         }
 
         return CurrentPlanWorkoutWidget(
-          title: currentPlanWorkoutsList[index].title,
+          onTapCheckmark: () {
+            //TODO: UPDATE isDone status on firebase here
+            // setState(() {
+            //   if (isDone == true) {
+            //     isDone = false;
+            //     isDoneColor = Colors.grey.shade500;
+            //   } else {
+            //     isDone = true;
+            //     isDoneColor = Colors.red;
+            //   }
+            // });
+          },
+          title: title,
           checkMarkButtonColor: isDoneColor,
-          isDone: currentPlanWorkoutsList[index].isDone,
-          day: currentPlanWorkoutsList[index].day,
+          isDone: isDone,
+          day: day,
         );
       },
     );
