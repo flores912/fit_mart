@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 
-class CheckmarkWidget extends StatelessWidget {
+class RoundButtonWidget extends StatelessWidget {
   final Color color;
   final Function onTap;
-  final Widget roundButtonWidget;
-  const CheckmarkWidget({
+  final Widget nestedWidget;
+  const RoundButtonWidget({
     @required this.color,
     @required this.onTap,
-    this.roundButtonWidget,
+    this.nestedWidget,
   });
 
   @override
@@ -20,7 +20,7 @@ class CheckmarkWidget extends StatelessWidget {
         color: color, // button color
         child: InkWell(
           splashColor: kAccentColor, // inkwell color
-          child: SizedBox(width: 56, height: 56, child: roundButtonWidget),
+          child: SizedBox(width: 56, height: 56, child: nestedWidget),
           onTap: onTap,
         ),
       ),

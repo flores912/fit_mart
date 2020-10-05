@@ -20,4 +20,13 @@ class Repository {
           String userUid, String workoutPlanUid) =>
       _firestoreProvider.currentPlanWorkoutsQuerySnapshot(
           userUid, workoutPlanUid);
+  Stream<QuerySnapshot> exercisesQuerySnapshot(
+          String userUid, String workoutPlanUid, String workoutUid) =>
+      _firestoreProvider.exercisesQuerySnapshot(
+          userUid, workoutPlanUid, workoutUid);
+
+  Stream<QuerySnapshot> setsQuerySnapshot(
+      String userUid, String workoutPlanUid, String workoutUid,String exerciseUid) =>
+      _firestoreProvider.setsQuerySnapshot(
+          userUid, workoutPlanUid, workoutUid,exerciseUid);
 }

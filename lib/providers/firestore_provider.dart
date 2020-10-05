@@ -41,4 +41,34 @@ class FirestoreProvider {
 
     return collectionReference.orderBy('day', descending: false).snapshots();
   }
+
+  Stream<QuerySnapshot> exercisesQuerySnapshot(
+      String userUid, String workoutPlanUid, String workoutUid) {
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('myPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises');
+
+    return collectionReference.snapshots();
+  }
+
+  Stream<QuerySnapshot> setsQuerySnapshot(String userUid, String workoutPlanUid,
+      String workoutUid, String exerciseUid) {
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('myPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets');
+
+    return collectionReference.snapshots();
+  }
 }

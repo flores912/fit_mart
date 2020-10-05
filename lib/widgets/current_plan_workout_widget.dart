@@ -2,7 +2,7 @@ import 'package:fit_mart/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'checkmark_widget.dart';
+import 'round_button_widget.dart';
 
 class CurrentPlanWorkoutWidget extends StatelessWidget {
   final Color checkMarkButtonColor;
@@ -38,10 +38,10 @@ class CurrentPlanWorkoutWidget extends StatelessWidget {
                   SizedBox(
                     width: 8,
                   ),
-                  CheckmarkWidget(
+                  RoundButtonWidget(
                     color: checkMarkButtonColor,
                     onTap: onTapCheckmark,
-                    roundButtonWidget: roundButtonWidget,
+                    nestedWidget: roundButtonWidget,
                   ),
                   SizedBox(
                     width: 8,
