@@ -1,9 +1,15 @@
+import 'package:fit_mart/models/set.dart';
+import 'package:flutter/cupertino.dart';
+
 class Exercise {
   final int sets;
   final String title;
   final int weight;
-  final List<Set>setsList;
+  final String uid;
 
-  Exercise({this.setsList, this.sets, this.title, this.weight});
-
+  Exercise(
+      {@required this.sets,
+      @required this.uid,
+      @required this.title,
+      @required this.weight});
 }

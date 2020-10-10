@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/blocs/login_bloc.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/current_workout_plan_workouts_screen.dart';
+import 'package:fit_mart/screens/my_plan_workouts_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';

@@ -11,10 +11,20 @@ class ExercisesBloc {
           String userUid, String workoutPlanUid, String workoutUid) =>
       _repository.exercisesQuerySnapshot(userUid, workoutPlanUid, workoutUid);
 
+  Stream<QuerySnapshot> setsQuerySnapshot(String userUid, String workoutPlanUid,
+          String workoutUid, String exerciseUid) =>
+      _repository.setsQuerySnapshot(
+          userUid, workoutPlanUid, workoutUid, exerciseUid);
+
+  String getUserUid() {
+    return _repository.getUser().uid;
+  }
+
   List<Exercise> exercisesList({@required List<DocumentSnapshot> docList}) {
     List<Exercise> exercisesList = [];
     docList.forEach((doc) {
       Exercise exercise = Exercise(
+          uid: doc.id,
           title: doc.get('title'),
           sets: doc.get('sets'),
           weight: doc.get('weight'));
@@ -27,13 +37,12 @@ class ExercisesBloc {
     List<Set> setList = [];
     docList.forEach((doc) {
       Set set = Set(
+          isSetDone: doc.get('isSetDone'),
           reps: doc.get('reps'),
           rest: doc.get('rest'),
           numOfSet: doc.get('numOfSet'));
+      setList.add(set);
     });
-  }
-
-  String getUserUid() {
-    return _repository.getUser().uid;
+    return setList;
   }
 }

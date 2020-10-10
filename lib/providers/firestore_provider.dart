@@ -69,6 +69,8 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets');
 
-    return collectionReference.snapshots();
+    return collectionReference
+        .orderBy('numOfSet', descending: false)
+        .snapshots();
   }
 }

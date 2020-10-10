@@ -14,6 +14,7 @@ class MyWorkoutPlansBloc {
     List<MyWorkoutPlan> myWorkoutPlansList = [];
     docList.forEach((document) {
       MyWorkoutPlan myWorkoutPlan = MyWorkoutPlan(
+          uid: document.id,
           imageUrl: document.get('imageUrl'),
           trainer: document.get('trainer'),
           title: document.get('title'),

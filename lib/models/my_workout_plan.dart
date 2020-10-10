@@ -5,10 +5,13 @@ class MyWorkoutPlan {
   final String trainer;
   final String imageUrl;
   final double progress;
+  final String uid;
 
-  MyWorkoutPlan(
-      {@required this.imageUrl,
-      @required this.title,
-      @required this.trainer,
-      @required this.progress});
+  MyWorkoutPlan({
+    @required this.imageUrl,
+    @required this.title,
+    @required this.trainer,
+    @required this.progress,
+    @required this.uid,
+  });
 }

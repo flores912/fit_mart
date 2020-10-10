@@ -3,7 +3,7 @@ import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/repository.dart';
 import 'package:flutter/cupertino.dart';
 
-class CurrentPlanWorkoutsBloc {
+class MyPlanWorkoutsBloc {
   final _repository = Repository();
 
   Stream<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(
@@ -12,11 +12,11 @@ class CurrentPlanWorkoutsBloc {
         userUid, workoutPlanUid);
   }
 
-  List<Workout> convertToCurrentPlanWorkoutsList(
-      {@required List<DocumentSnapshot> docList}) {
+  List<Workout> myPlanWorkoutsList({@required List<DocumentSnapshot> docList}) {
     List<Workout> currentPlansWorkoutsList = [];
     docList.forEach((document) {
       Workout workout = Workout(
+          uid: document.id,
           title: document.get('title'),
           day: document.get('day'),
           isDone: document.get('isDone'));
