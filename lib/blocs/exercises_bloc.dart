@@ -3,6 +3,7 @@ import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/repository.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ExercisesBloc {
   final _repository = Repository();
@@ -24,10 +25,13 @@ class ExercisesBloc {
     List<Exercise> exercisesList = [];
     docList.forEach((doc) {
       Exercise exercise = Exercise(
-          uid: doc.id,
-          title: doc.get('title'),
-          sets: doc.get('sets'),
-          weight: doc.get('weight'));
+        uid: doc.id,
+        videoUrl: doc.get('videoUrl'),
+        title: doc.get('title'),
+        sets: doc.get('sets'),
+        weight: doc.get('weight'),
+        isSelected: doc.get('isSelected'),
+      );
       exercisesList.add(exercise);
     });
     return exercisesList;
@@ -37,6 +41,7 @@ class ExercisesBloc {
     List<Set> setList = [];
     docList.forEach((doc) {
       Set set = Set(
+          uid: doc.id,
           isSetDone: doc.get('isSetDone'),
           reps: doc.get('reps'),
           rest: doc.get('rest'),
@@ -45,4 +50,19 @@ class ExercisesBloc {
     });
     return setList;
   }
+
+  Future<void> updateExerciseSelection(String userUid, String workoutPlanUid,
+          String workoutUid, String exerciseUid, bool isSelected) =>
+      _repository.updateExerciseSelection(
+          userUid, workoutPlanUid, workoutUid, exerciseUid, isSelected);
+
+  Future<void> updateSet(
+          String userUid,
+          String workoutPlanUid,
+          String workoutUid,
+          String exerciseUid,
+          String setUid,
+          bool isSetDone) =>
+      _repository.updateSet(
+          userUid, workoutPlanUid, workoutUid, exerciseUid, setUid, isSetDone);
 }

@@ -73,4 +73,39 @@ class FirestoreProvider {
         .orderBy('numOfSet', descending: false)
         .snapshots();
   }
+
+  Future<void> updateExerciseSelection(String userUid, String workoutPlanUid,
+      String workoutUid, String exerciseUid, bool isSelected) async {
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('myPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises');
+    await collectionReference
+        .doc(exerciseUid)
+        .update({'isSelected': isSelected});
+  }
+
+  Future<void> updateSet(
+      String userUid,
+      String workoutPlanUid,
+      String workoutUid,
+      String exerciseUid,
+      String setUid,
+      bool isSetDone) async {
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('myPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets');
+    await collectionReference.doc(setUid).update({'isSetDone': isSetDone});
+  }
 }

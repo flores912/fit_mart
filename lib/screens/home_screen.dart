@@ -32,16 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return (Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(
           _title,
-          style: TextStyle(color: Colors.black),
         ),
         actions: [
           IconButton(
             icon: Icon(
               Icons.shopping_cart,
-              color: Colors.black,
+              color: Colors.white,
             ),
             onPressed: () {},
           )

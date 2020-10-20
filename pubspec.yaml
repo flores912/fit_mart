@@ -26,6 +26,8 @@ dependencies:
   chewie: ^0.9.10
   video_player: ^0.10.12+4
   rxdart: ^0.24.1
+  video_thumbnail: ^0.2.2
+  item_selector: ^0.1.1
 
 dev_dependencies:
   flutter_test:

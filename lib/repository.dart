@@ -25,8 +25,23 @@ class Repository {
       _firestoreProvider.exercisesQuerySnapshot(
           userUid, workoutPlanUid, workoutUid);
 
-  Stream<QuerySnapshot> setsQuerySnapshot(
-      String userUid, String workoutPlanUid, String workoutUid,String exerciseUid) =>
+  Stream<QuerySnapshot> setsQuerySnapshot(String userUid, String workoutPlanUid,
+          String workoutUid, String exerciseUid) =>
       _firestoreProvider.setsQuerySnapshot(
-          userUid, workoutPlanUid, workoutUid,exerciseUid);
+          userUid, workoutPlanUid, workoutUid, exerciseUid);
+
+  Future<void> updateExerciseSelection(String userUid, String workoutPlanUid,
+          String workoutUid, String exerciseUid, bool isSelected) =>
+      _firestoreProvider.updateExerciseSelection(
+          userUid, workoutPlanUid, workoutUid, exerciseUid, isSelected);
+
+  Future<void> updateSet(
+          String userUid,
+          String workoutPlanUid,
+          String workoutUid,
+          String exerciseUid,
+          String setUid,
+          bool isSetDone) =>
+      _firestoreProvider.updateSet(
+          userUid, workoutPlanUid, workoutUid, exerciseUid, setUid, isSetDone);
 }

@@ -1,5 +1,3 @@
-import 'package:fit_mart/models/set.dart';
-import 'package:fit_mart/widgets/round_button_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,18 +5,25 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
   final String title;
   final int weight;
   final ListView setsList;
+  final Color colorContainer;
 
-  const ExerciseWorkoutSessionWidget(
-      {Key key, this.title, this.weight, this.setsList})
-      : super(key: key);
+  final Function onSelected;
+
+  const ExerciseWorkoutSessionWidget({
+    Key key,
+    this.title,
+    this.weight,
+    this.setsList,
+    this.colorContainer,
+    this.onSelected,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Wrap(
       children: [
         Container(
+          color: colorContainer,
           width: MediaQuery.of(context).size.width,
-          color: Colors.white,
           child: Row(
             children: [
               SizedBox(

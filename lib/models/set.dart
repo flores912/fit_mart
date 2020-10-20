@@ -3,6 +3,7 @@ class Set {
   final int rest;
   final int numOfSet;
   final bool isSetDone;
+  final String uid;
 
-  Set({this.isSetDone, this.reps, this.rest, this.numOfSet});
+  Set({this.uid, this.isSetDone, this.reps, this.rest, this.numOfSet});
 }

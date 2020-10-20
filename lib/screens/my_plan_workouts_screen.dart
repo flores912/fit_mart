@@ -34,6 +34,7 @@ class MyPlanWorkoutsScreenState extends State<MyPlanWorkoutsScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      appBar: AppBar(),
       body: StreamBuilder(
           stream: _bloc.currentPlanWorkoutsQuerySnapshot(
               'flores@gmail.com', widget.myWorkoutPlan.uid),
@@ -64,16 +65,9 @@ class MyPlanWorkoutsScreenState extends State<MyPlanWorkoutsScreen> {
       ),
       itemCount: myPlanWorkoutsList.length,
       itemBuilder: (context, index) {
-        Color isDoneColor;
         bool isDone = myPlanWorkoutsList[index].isDone;
         String title = myPlanWorkoutsList[index].title;
         int day = myPlanWorkoutsList[index].day;
-
-        if (myPlanWorkoutsList[index].isDone == true) {
-          isDoneColor = kPrimaryColor;
-        } else {
-          isDoneColor = Colors.grey.shade500;
-        }
 
         return GestureDetector(
           onTap: () {
@@ -88,18 +82,15 @@ class MyPlanWorkoutsScreenState extends State<MyPlanWorkoutsScreen> {
           child: CurrentPlanWorkoutWidget(
             onTapCheckmark: () {
               //TODO: UPDATE isDone status on firebase here
-              // setState(() {
-              //   if (isDone == true) {
-              //     isDone = false;
-              //     isDoneColor = Colors.grey.shade500;
-              //   } else {
-              //     isDone = true;
-              //     isDoneColor = Colors.red;
-              //   }
-              // });
             },
+            nestWidget: Center(
+                child: Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 36,
+            )),
             title: title,
-            checkMarkButtonColor: isDoneColor,
+            checkMarkButtonColor: isDone ? kPrimaryColor : Colors.grey,
             isDone: isDone,
             day: day,
           ),
