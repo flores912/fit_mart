@@ -1,4 +1,3 @@
-import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/blocs/exercises_bloc.dart';
 import 'package:fit_mart/blocs/exercises_bloc_provider.dart';
@@ -36,19 +35,10 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
           elevation: 0,
           title: Text(widget.workout.title),
@@ -94,9 +84,8 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
               color: statusColor,
               onTap: () async {
                 print(exerciseUid);
-                //TODO: implement on tap method
                 if (setsList[index].isSetDone == false) {
-                  await _bloc.updateSet(
+                  await _bloc.updateSetProgress(
                       'flores@gmail.com',
                       widget.myWorkoutPlan.uid,
                       widget.workout.uid,
@@ -104,7 +93,7 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
                       setsList[index].uid,
                       true);
                 } else {
-                  await _bloc.updateSet(
+                  await _bloc.updateSetProgress(
                       'flores@gmail.com',
                       widget.myWorkoutPlan.uid,
                       widget.workout.uid,
@@ -148,9 +137,8 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
   ListView buildExercisesList(List<Exercise> exercisesList) {
     return ListView.separated(
       separatorBuilder: (BuildContext context, int index) => Divider(
-        thickness: 2,
         height: 1,
-        color: Colors.grey,
+        color: Colors.black,
       ),
       itemCount: exercisesList.length,
       itemBuilder: (context, index) {

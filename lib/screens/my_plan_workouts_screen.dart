@@ -4,6 +4,7 @@ import 'package:fit_mart/blocs/my_plan_workouts_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/models/my_workout_plan.dart';
 import 'package:fit_mart/models/workout.dart';
+import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/workout_session_screen.dart';
 import 'package:fit_mart/widgets/current_plan_workout_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,16 +26,18 @@ class MyPlanWorkoutsScreenState extends State<MyPlanWorkoutsScreen> {
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     _bloc = MyPlanWorkoutsBlocProvider.of(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        title: Text(widget.myWorkoutPlan.title),
+        centerTitle: true,
+      ),
       body: StreamBuilder(
           stream: _bloc.currentPlanWorkoutsQuerySnapshot(
               'flores@gmail.com', widget.myWorkoutPlan.uid),
@@ -72,16 +75,31 @@ class MyPlanWorkoutsScreenState extends State<MyPlanWorkoutsScreen> {
         return GestureDetector(
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WorkoutSessionScreen(
-                          myWorkoutPlan: widget.myWorkoutPlan,
-                          workout: myPlanWorkoutsList[index],
-                        )));
+              context,
+              MaterialPageRoute(
+                builder: (context) => WorkoutSessionScreen(
+                  myWorkoutPlan: widget.myWorkoutPlan,
+                  workout: myPlanWorkoutsList[index],
+                ),
+              ),
+            );
           },
           child: CurrentPlanWorkoutWidget(
-            onTapCheckmark: () {
+            onTapCheckmark: () async {
               //TODO: UPDATE isDone status on firebase here
+              if (myPlanWorkoutsList[index].isDone == false) {
+                await _bloc.updateWorkoutProgress(
+                    'flores@gmail.com',
+                    widget.myWorkoutPlan.uid,
+                    myPlanWorkoutsList[index].uid,
+                    true);
+              } else {
+                await _bloc.updateWorkoutProgress(
+                    'flores@gmail.com',
+                    widget.myWorkoutPlan.uid,
+                    myPlanWorkoutsList[index].uid,
+                    false);
+              }
             },
             nestWidget: Center(
                 child: Icon(

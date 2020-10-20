@@ -28,4 +28,9 @@ class MyPlanWorkoutsBloc {
   String getUserUid() {
     return _repository.getUser().uid;
   }
+
+  Future<void> updateWorkoutProgress(String userUid, String workoutPlanUid,
+          String workoutUid, bool isDone) =>
+      _repository.updateWorkoutProgress(
+          userUid, workoutPlanUid, workoutUid, isDone);
 }

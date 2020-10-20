@@ -74,7 +74,7 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
                     ),
                     SizedBox(
                       height: 8,
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -35,13 +35,18 @@ class Repository {
       _firestoreProvider.updateExerciseSelection(
           userUid, workoutPlanUid, workoutUid, exerciseUid, isSelected);
 
-  Future<void> updateSet(
+  Future<void> updateSetProgress(
           String userUid,
           String workoutPlanUid,
           String workoutUid,
           String exerciseUid,
           String setUid,
           bool isSetDone) =>
-      _firestoreProvider.updateSet(
+      _firestoreProvider.updateSetProgress(
           userUid, workoutPlanUid, workoutUid, exerciseUid, setUid, isSetDone);
+
+  Future<void> updateWorkoutProgress(String userUid, String workoutPlanUid,
+          String workoutUid, bool isDone) =>
+      _firestoreProvider.updateWorkoutProgress(
+          userUid, workoutPlanUid, workoutUid, isDone);
 }

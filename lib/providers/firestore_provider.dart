@@ -89,7 +89,7 @@ class FirestoreProvider {
         .update({'isSelected': isSelected});
   }
 
-  Future<void> updateSet(
+  Future<void> updateSetProgress(
       String userUid,
       String workoutPlanUid,
       String workoutUid,
@@ -107,5 +107,16 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets');
     await collectionReference.doc(setUid).update({'isSetDone': isSetDone});
+  }
+
+  Future<void> updateWorkoutProgress(String userUid, String workoutPlanUid,
+      String workoutUid, bool isDone) async {
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('myPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts');
+    await collectionReference.doc(workoutUid).update({'isDone': isDone});
   }
 }

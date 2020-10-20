@@ -12,7 +12,6 @@ class MyWorkoutPlanWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Wrap(
       children: [
         Container(

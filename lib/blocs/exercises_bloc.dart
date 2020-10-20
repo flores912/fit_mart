@@ -56,13 +56,13 @@ class ExercisesBloc {
       _repository.updateExerciseSelection(
           userUid, workoutPlanUid, workoutUid, exerciseUid, isSelected);
 
-  Future<void> updateSet(
+  Future<void> updateSetProgress(
           String userUid,
           String workoutPlanUid,
           String workoutUid,
           String exerciseUid,
           String setUid,
           bool isSetDone) =>
-      _repository.updateSet(
+      _repository.updateSetProgress(
           userUid, workoutPlanUid, workoutUid, exerciseUid, setUid, isSetDone);
 }
