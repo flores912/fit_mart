@@ -136,10 +136,7 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
 
   ListView buildExercisesList(List<Exercise> exercisesList) {
     return ListView.separated(
-      separatorBuilder: (BuildContext context, int index) => Divider(
-        height: 1,
-        color: Colors.black,
-      ),
+      separatorBuilder: (BuildContext context, int index) => Divider(),
       itemCount: exercisesList.length,
       itemBuilder: (context, index) {
         return StreamBuilder(
@@ -159,6 +156,7 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
                   buildSetsList(setsList, exercisesList[index].uid);
               return ExerciseWorkoutSessionWidget(
                 title: exercisesList[index].title,
+                videoUrl: exercisesList[index].videoUrl,
                 weight: exercisesList[index].weight,
                 colorContainer: Colors.white,
                 setsList: setsListView,

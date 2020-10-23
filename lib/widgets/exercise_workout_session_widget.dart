@@ -1,3 +1,4 @@
+import 'package:fit_mart/widgets/video_player_workout_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
 
   final Function onSelected;
 
+  final String videoUrl;
+
   const ExerciseWorkoutSessionWidget({
     Key key,
     this.title,
@@ -16,6 +19,7 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
     this.setsList,
     this.colorContainer,
     this.onSelected,
+    this.videoUrl,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -26,9 +30,6 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           child: Row(
             children: [
-              SizedBox(
-                width: 8,
-              ),
               Expanded(
                 child: Column(
                   children: [
@@ -36,41 +37,40 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
                       height: 8,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              title,
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
+                        Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '${weight.toString()} lbs',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.normal,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '${weight.toString()} lbs',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.normal,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8,
-                        )
                       ],
                     ),
                     SizedBox(
                       height: 8,
                     ),
-                    Container(
-                      child: setsList,
-                      height: 56,
+                    SizedBox(
+                      width: 8,
+                    ),
+                    VideoPlayerWorkoutWidget(
+                      videoUrl: videoUrl,
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Center(
+                      child: Container(
+                        child: setsList,
+                        height: 56,
+                      ),
                     ),
                     SizedBox(
                       height: 8,
