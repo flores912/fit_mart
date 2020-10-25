@@ -38,9 +38,7 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
-          elevation: 0,
           title: Text(widget.workout.title),
           centerTitle: true,
         ),
@@ -72,18 +70,23 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
 
   ListView buildSetsList(List<Set> setsList, String exerciseUid) {
     return ListView.separated(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
       separatorBuilder: (BuildContext context, int index) => Divider(),
       itemCount: setsList.length,
       itemBuilder: (context, index) {
         return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            Text(
+              'Set ${setsList[index].numOfSet.toString()}',
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+            ),
             RoundButtonWidget(
               nestedWidget: setStatusWidget(
                   setsList[index].isSetDone, setsList[index].reps),
               color: statusColor,
               onTap: () async {
-                print(exerciseUid);
                 if (setsList[index].isSetDone == false) {
                   await _bloc.updateSetProgress(
                       'flores@gmail.com',
@@ -103,9 +106,10 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
                 }
               },
             ),
-            SizedBox(
-              width: 8,
-            )
+            Text(
+              '${setsList[index].weight.toString()} lbs',
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+            ),
           ],
         );
       },
@@ -135,8 +139,8 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
   }
 
   ListView buildExercisesList(List<Exercise> exercisesList) {
-    return ListView.separated(
-      separatorBuilder: (BuildContext context, int index) => Divider(),
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
       itemCount: exercisesList.length,
       itemBuilder: (context, index) {
         return StreamBuilder(
@@ -155,9 +159,8 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
               ListView setsListView =
                   buildSetsList(setsList, exercisesList[index].uid);
               return ExerciseWorkoutSessionWidget(
-                title: exercisesList[index].title,
+                exerciseTitle: exercisesList[index].title,
                 videoUrl: exercisesList[index].videoUrl,
-                weight: exercisesList[index].weight,
                 colorContainer: Colors.white,
                 setsList: setsListView,
               );

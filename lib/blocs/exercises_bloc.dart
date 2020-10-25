@@ -29,7 +29,6 @@ class ExercisesBloc {
         videoUrl: doc.get('videoUrl'),
         title: doc.get('title'),
         sets: doc.get('sets'),
-        weight: doc.get('weight'),
         isSelected: doc.get('isSelected'),
       );
       exercisesList.add(exercise);
@@ -42,6 +41,7 @@ class ExercisesBloc {
     docList.forEach((doc) {
       Set set = Set(
           uid: doc.id,
+          weight: doc.get('weight'),
           isSetDone: doc.get('isSetDone'),
           reps: doc.get('reps'),
           rest: doc.get('rest'),
