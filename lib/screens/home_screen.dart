@@ -1,4 +1,6 @@
+import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/screens/account_screen.dart';
+import 'package:fit_mart/screens/create_new_plan_screen.dart';
 import 'package:fit_mart/screens/discover_screen.dart';
 import 'package:fit_mart/screens/my_plans_screen.dart';
 import 'package:fit_mart/screens/wishlist_screen.dart';
@@ -57,18 +59,18 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _selectedScreen,
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.search), title: Text(DiscoverScreen.title)),
+            icon: Icon(Icons.search),
+            label: DiscoverScreen.title,
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
-            title: Text(MyPlansScreen.title),
+            label: MyPlansScreen.title,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            title: Text(WishlistScreen.title),
-          ),
+              icon: Icon(Icons.favorite), label: WishlistScreen.title),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            title: Text(AccountScreen.title),
+            label: AccountScreen.title,
           ),
         ],
         onTap: (index) {
@@ -99,6 +101,15 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           });
         },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: kPrimaryColor,
+        onPressed: () {
+          Navigator.pushNamed(context, CreateNewPlanScreen.id);
+        },
+        child: Icon(Icons.add),
+        elevation: 2.0,
       ),
     ));
   }

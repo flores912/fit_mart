@@ -76,39 +76,54 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
       itemCount: setsList.length,
       itemBuilder: (context, index) {
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Text(
-              'Set ${setsList[index].numOfSet.toString()}',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+            SizedBox(
+              width: 8,
             ),
-            RoundButtonWidget(
-              nestedWidget: setStatusWidget(
-                  setsList[index].isSetDone, setsList[index].reps),
-              color: statusColor,
-              onTap: () async {
-                if (setsList[index].isSetDone == false) {
-                  await _bloc.updateSetProgress(
-                      'flores@gmail.com',
-                      widget.myWorkoutPlan.uid,
-                      widget.workout.uid,
-                      exerciseUid,
-                      setsList[index].uid,
-                      true);
-                } else {
-                  await _bloc.updateSetProgress(
-                      'flores@gmail.com',
-                      widget.myWorkoutPlan.uid,
-                      widget.workout.uid,
-                      exerciseUid,
-                      setsList[index].uid,
-                      false);
-                }
-              },
+            Expanded(
+              child: Text(
+                'Set ${setsList[index].numOfSet.toString()}',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+              ),
             ),
-            Text(
-              '${setsList[index].weight.toString()} lbs',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+            Expanded(
+              flex: 0,
+              child: RoundButtonWidget(
+                nestedWidget: setStatusWidget(
+                    setsList[index].isSetDone, setsList[index].reps),
+                color: statusColor,
+                onTap: () async {
+                  if (setsList[index].isSetDone == false) {
+                    await _bloc.updateSetProgress(
+                        'flores@gmail.com',
+                        widget.myWorkoutPlan.uid,
+                        widget.workout.uid,
+                        exerciseUid,
+                        setsList[index].uid,
+                        true);
+                  } else {
+                    await _bloc.updateSetProgress(
+                        'flores@gmail.com',
+                        widget.myWorkoutPlan.uid,
+                        widget.workout.uid,
+                        exerciseUid,
+                        setsList[index].uid,
+                        false);
+                  }
+                },
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  '${setsList[index].weight.toString()} lbs',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.normal),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 8,
             ),
           ],
         );
