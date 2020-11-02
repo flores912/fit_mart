@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CreateNewPlanScreen extends StatefulWidget {
+  static const String title = 'Create New PLan';
   static const String id = 'create_new_plan_screen';
 
   @override

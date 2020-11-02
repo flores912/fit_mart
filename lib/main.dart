@@ -5,10 +5,8 @@ import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/blocs/my_workout_plans_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/screens/create_new_plan_screen.dart';
-import 'package:fit_mart/screens/my_plan_workouts_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
-import 'package:fit_mart/screens/workout_session_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -36,8 +34,6 @@ class FitMart extends StatelessWidget {
               routes: {
                 HomeScreen.id: (context) => HomeScreen(),
                 LoginScreen.id: (context) => LoginScreen(),
-                WorkoutSessionScreen.id: (context) => WorkoutSessionScreen(),
-                MyPlanWorkoutsScreen.id: (context) => MyPlanWorkoutsScreen(),
                 CreateNewPlanScreen.id: (context) => CreateNewPlanScreen(),
               },
             ),

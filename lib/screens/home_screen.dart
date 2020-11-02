@@ -15,13 +15,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _title;
-  int _selectedScreen = 0;
+
   final tabs = [
     DiscoverScreen(),
     MyPlansScreen(),
     WishlistScreen(),
     AccountScreen(),
   ];
+
+  int _selectedScreen = 0;
 
   @override
   void initState() {
@@ -32,21 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return (Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          _title,
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          )
-        ],
+        title: Text(_title),
       ),
       body: SafeArea(
         child: IndexedStack(
@@ -54,63 +44,171 @@ class _HomeScreenState extends State<HomeScreen> {
           children: tabs,
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedScreen,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: DiscoverScreen.title,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
-            label: MyPlansScreen.title,
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: WishlistScreen.title),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: AccountScreen.title,
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            _selectedScreen = index;
-
-            switch (index) {
-              case 0:
-                {
-                  _title = DiscoverScreen.title;
-                }
-                break;
-              case 1:
-                {
-                  _title = MyPlansScreen.title;
-                }
-                break;
-              case 2:
-                {
-                  _title = WishlistScreen.title;
-                }
-                break;
-              case 3:
-                {
-                  _title = AccountScreen.title;
-                }
-                break;
-            }
-          });
-        },
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: kPrimaryColor,
-        onPressed: () {
-          Navigator.pushNamed(context, CreateNewPlanScreen.id);
-        },
+        onPressed: () {},
         child: Icon(Icons.add),
+        backgroundColor: kPrimaryColor,
         elevation: 2.0,
       ),
-    ));
+      bottomNavigationBar: FABBottomAppBar(
+        color: Colors.grey,
+        onTabSelected: _selectedTab,
+        selectedColor: Colors.red,
+        notchedShape: CircularNotchedRectangle(),
+        items: [
+          FABBottomAppBarItem(iconData: Icons.search, text: 'Explore'),
+          FABBottomAppBarItem(iconData: Icons.fitness_center, text: 'My Plans'),
+          FABBottomAppBarItem(iconData: Icons.favorite, text: 'Wishlist'),
+          FABBottomAppBarItem(iconData: Icons.account_circle, text: 'Account'),
+        ],
+      ),
+    );
+  }
+
+  void _selectedTab(int index) {
+    setState(() {
+      _selectedScreen = index;
+      switch (index) {
+        case 0:
+          {
+            _title = DiscoverScreen.title;
+          }
+          break;
+        case 1:
+          {
+            _title = MyPlansScreen.title;
+          }
+          break;
+        case 2:
+          {
+            _title = WishlistScreen.title;
+          }
+          break;
+        case 3:
+          {
+            _title = AccountScreen.title;
+          }
+          break;
+      }
+    });
+  }
+}
+
+/// FAB BOTTOM APP BAR LOGIC */
+
+class FABBottomAppBarItem {
+  FABBottomAppBarItem({this.iconData, this.text});
+  IconData iconData;
+  String text;
+}
+
+class FABBottomAppBar extends StatefulWidget {
+  FABBottomAppBar({
+    this.items,
+    this.centerItemText,
+    this.height: 84.0,
+    this.iconSize: 24.0,
+    this.backgroundColor,
+    this.color,
+    this.selectedColor,
+    this.notchedShape,
+    this.onTabSelected,
+  }) {
+    assert(this.items.length == 2 || this.items.length == 4);
+  }
+  final List<FABBottomAppBarItem> items;
+  final String centerItemText;
+  final double height;
+  final double iconSize;
+  final Color backgroundColor;
+  final Color color;
+  final Color selectedColor;
+  final NotchedShape notchedShape;
+  final ValueChanged<int> onTabSelected;
+
+  @override
+  State<StatefulWidget> createState() => FABBottomAppBarState();
+}
+
+class FABBottomAppBarState extends State<FABBottomAppBar> {
+  int _selectedIndex = 0;
+
+  _updateIndex(int index) {
+    widget.onTabSelected(index);
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> items = List.generate(widget.items.length, (int index) {
+      return _buildTabItem(
+        item: widget.items[index],
+        index: index,
+        onPressed: _updateIndex,
+      );
+    });
+    items.insert(items.length >> 1, _buildMiddleTabItem());
+
+    return BottomAppBar(
+      shape: widget.notchedShape,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: items,
+      ),
+      color: widget.backgroundColor,
+    );
+  }
+
+  Widget _buildMiddleTabItem() {
+    return Expanded(
+      child: SizedBox(
+        height: widget.height,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: widget.iconSize),
+            Text(
+              widget.centerItemText ?? '',
+              style: TextStyle(color: widget.color),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabItem({
+    FABBottomAppBarItem item,
+    int index,
+    ValueChanged<int> onPressed,
+  }) {
+    Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
+    return Expanded(
+      child: SizedBox(
+        height: widget.height,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () => onPressed(index),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(item.iconData, color: color, size: widget.iconSize),
+                Text(
+                  item.text,
+                  style: TextStyle(color: color),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

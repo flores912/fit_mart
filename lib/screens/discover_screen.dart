@@ -16,6 +16,8 @@ class DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return (Scaffold());
+    return (Scaffold(
+      backgroundColor: Colors.blue,
+    ));
   }
 }
