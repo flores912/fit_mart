@@ -4,7 +4,6 @@ import 'package:fit_mart/blocs/my_plan_workouts_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/models/my_workout_plan.dart';
 import 'package:fit_mart/models/workout.dart';
-import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/workout_session_screen.dart';
 import 'package:fit_mart/widgets/current_plan_workout_widget.dart';
 import 'package:flutter/cupertino.dart';

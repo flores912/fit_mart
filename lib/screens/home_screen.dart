@@ -1,6 +1,6 @@
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/screens/account_screen.dart';
-import 'package:fit_mart/screens/create_new_plan_screen.dart';
+import 'package:fit_mart/screens/create_new_plan_step1_screen.dart';
 import 'package:fit_mart/screens/discover_screen.dart';
 import 'package:fit_mart/screens/my_plans_screen.dart';
 import 'package:fit_mart/screens/wishlist_screen.dart';
@@ -46,12 +46,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        tooltip: 'Create New Plan',
+        onPressed: () {
+          Navigator.pushNamed(context, CreateNewPlanStep1Screen.id);
+        },
         child: Icon(Icons.add),
         backgroundColor: kPrimaryColor,
         elevation: 2.0,
       ),
       bottomNavigationBar: FABBottomAppBar(
+        centerItemText: 'Create New Plan',
         color: Colors.grey,
         onTabSelected: _selectedTab,
         selectedColor: Colors.red,
@@ -174,7 +178,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
             SizedBox(height: widget.iconSize),
             Text(
               widget.centerItemText ?? '',
-              style: TextStyle(color: widget.color),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: widget.color,
+              ),
             ),
           ],
         ),

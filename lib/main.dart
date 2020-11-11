@@ -4,9 +4,15 @@ import 'package:fit_mart/blocs/exercises_bloc_provider.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/blocs/my_workout_plans_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/create_new_plan_screen.dart';
+import 'package:fit_mart/screens/add_exercises_list_screen.dart';
+import 'package:fit_mart/screens/add_exercises_screen.dart';
+import 'package:fit_mart/screens/add_workouts_list_screen.dart';
+import 'package:fit_mart/screens/create_new_exercise_title_screen.dart';
+import 'package:fit_mart/screens/create_new_plan_step1_screen.dart';
+import 'package:fit_mart/screens/create_new_workout_title_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/add_workouts_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -26,15 +32,25 @@ class FitMart extends StatelessWidget {
             child: MaterialApp(
               title: 'FitMart',
               theme: ThemeData.light().copyWith(
-                primaryColor: kPrimaryColor,
-                accentColor: kAccentColor,
-                cursorColor: kPrimaryColor,
-              ),
+                  primaryColor: kPrimaryColor,
+                  accentColor: kAccentColor,
+                  cursorColor: kPrimaryColor,
+                  highlightColor: kPrimaryColor),
               initialRoute: LoginScreen.id,
               routes: {
                 HomeScreen.id: (context) => HomeScreen(),
                 LoginScreen.id: (context) => LoginScreen(),
-                CreateNewPlanScreen.id: (context) => CreateNewPlanScreen(),
+                CreateNewPlanStep1Screen.id: (context) =>
+                    CreateNewPlanStep1Screen(),
+                AddWorkoutsScreen.id: (context) => AddWorkoutsScreen(),
+                AddWorkoutsListScreen.id: (context) => AddWorkoutsListScreen(),
+                CreateNewWorkoutStep1Screen.id: (context) =>
+                    CreateNewWorkoutStep1Screen(),
+                AddExercisesListScreen.id: (context) =>
+                    AddExercisesListScreen(),
+                CreateNewExerciseTitleScreen.id: (context) =>
+                    CreateNewExerciseTitleScreen(),
+                AddExercisesScreen.id: (context) => AddExercisesScreen(),
               },
             ),
           ),

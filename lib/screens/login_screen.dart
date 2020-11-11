@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/blocs/login_bloc.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/my_plan_workouts_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,8 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   stream: _bloc.email,
                   builder: (context, snapshot) {
                     return CustomTextForm(
+                      isNumberOnly: false,
                       errorText: snapshot.error,
                       obscureText: false,
+                      maxLines: 1,
                       onChanged: _bloc.changeEmail,
                       textInputType: TextInputType.emailAddress,
                       labelText: 'Email',
@@ -63,9 +63,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   stream: _bloc.password,
                   builder: (context, snapshot) {
                     return CustomTextForm(
+                      isNumberOnly: false,
                       errorText: snapshot.error,
                       onChanged: _bloc.changePassword,
                       obscureText: true,
+                      maxLines: 1,
                       textInputType: TextInputType.visiblePassword,
                       labelText: 'Password',
                     );

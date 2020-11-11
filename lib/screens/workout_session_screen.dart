@@ -28,6 +28,8 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
   ExercisesBloc _bloc;
   Color statusColor;
 
+  final ScrollController _scrollController = ScrollController();
+
   @override
   didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,7 +57,11 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
                         snapshotExercise.data.docs;
                     List<Exercise> exercisesList =
                         _bloc.exercisesList(docList: docsExercise);
-                    return buildExercisesList(exercisesList);
+                    return Scrollbar(
+                      child: buildExercisesList(exercisesList),
+                      isAlwaysShown: true,
+                      controller: _scrollController,
+                    );
                   } else {
                     return Text('No Exercises');
                   }
@@ -157,6 +163,7 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: exercisesList.length,
+      controller: _scrollController,
       itemBuilder: (context, index) {
         return StreamBuilder(
             stream: _bloc.setsQuerySnapshot(

@@ -14,7 +14,8 @@ class MyWorkoutPlanWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        Container(
+        Card(
+          elevation: 0,
           color: Colors.white,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,7 +79,10 @@ class MyWorkoutPlanWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ),
+              SizedBox(
+                width: 8,
+              ),
             ],
           ),
         ),

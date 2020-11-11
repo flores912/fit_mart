@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/blocs/my_workout_plans_bloc.dart';
 import 'package:fit_mart/blocs/my_workout_plans_bloc_provider.dart';
-import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/models/my_workout_plan.dart';
 import 'package:fit_mart/screens/my_plan_workouts_screen.dart';
 import 'package:fit_mart/widgets/my_workout_plan_widget.dart';

@@ -23,42 +23,45 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Container(
-        color: colorContainer,
-        width: MediaQuery.of(context).size.width - 24,
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    exerciseTitle,
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  VideoPlayerWorkoutWidget(
-                    videoPlayerController:
-                        VideoPlayerController.network(videoUrl),
-                    looping: true,
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Expanded(
-                    child: setsList,
-                  ),
-                ],
-              ),
+    return Container(
+      color: colorContainer,
+      width: MediaQuery.of(context).size.width - 16,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 4,
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  exerciseTitle,
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                VideoPlayerWorkoutWidget(
+                  videoPlayerController:
+                      VideoPlayerController.network(videoUrl),
+                  looping: true,
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Expanded(
+                  child: setsList,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          SizedBox(
+            width: 4,
+          ),
+        ],
       ),
     );
   }

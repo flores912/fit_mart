@@ -1,6 +1,7 @@
 import 'package:fit_mart/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextForm extends StatelessWidget {
   final TextInputType textInputType;
@@ -8,6 +9,11 @@ class CustomTextForm extends StatelessWidget {
   final Function onChanged;
   final bool obscureText;
   final String errorText;
+  final bool isNumberOnly;
+
+  final int maxLength;
+
+  final int maxLines;
 
   const CustomTextForm({
     Key key,
@@ -16,16 +22,28 @@ class CustomTextForm extends StatelessWidget {
     this.onChanged,
     this.obscureText,
     this.errorText,
+    this.isNumberOnly,
+    this.maxLength,
+    this.maxLines,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      inputFormatters: isNumberOnly
+          ? <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            ]
+          : null,
       obscureText: obscureText,
       onChanged: onChanged,
       keyboardType: textInputType,
+      maxLength: maxLength,
+      maxLines: maxLines,
+      maxLengthEnforced: true,
       decoration: InputDecoration(
         labelText: labelText,
+        alignLabelWithHint: true,
         errorText: errorText,
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
