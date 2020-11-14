@@ -8,11 +8,13 @@ import 'package:fit_mart/screens/add_exercises_list_screen.dart';
 import 'package:fit_mart/screens/add_exercises_screen.dart';
 import 'package:fit_mart/screens/add_workouts_list_screen.dart';
 import 'package:fit_mart/screens/create_new_exercise_title_screen.dart';
-import 'package:fit_mart/screens/create_new_plan_step1_screen.dart';
+import 'package:fit_mart/screens/create_new_plan_cover.dart';
+import 'package:fit_mart/screens/create_new_plan_pricing.dart';
+import 'package:fit_mart/screens/create_new_plan_step_description_screen.dart';
 import 'package:fit_mart/screens/create_new_workout_title_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
-import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/add_workouts_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_new_plan_add_workouts_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -40,9 +42,10 @@ class FitMart extends StatelessWidget {
               routes: {
                 HomeScreen.id: (context) => HomeScreen(),
                 LoginScreen.id: (context) => LoginScreen(),
-                CreateNewPlanStep1Screen.id: (context) =>
-                    CreateNewPlanStep1Screen(),
-                AddWorkoutsScreen.id: (context) => AddWorkoutsScreen(),
+                CreateNewPlanStepDescriptionScreen.id: (context) =>
+                    CreateNewPlanStepDescriptionScreen(),
+                CreateNewPlanAddWorkoutsScreen.id: (context) =>
+                    CreateNewPlanAddWorkoutsScreen(),
                 AddWorkoutsListScreen.id: (context) => AddWorkoutsListScreen(),
                 CreateNewWorkoutStep1Screen.id: (context) =>
                     CreateNewWorkoutStep1Screen(),
@@ -51,6 +54,10 @@ class FitMart extends StatelessWidget {
                 CreateNewExerciseTitleScreen.id: (context) =>
                     CreateNewExerciseTitleScreen(),
                 AddExercisesScreen.id: (context) => AddExercisesScreen(),
+                CreateNewPlanCoverScreen.id: (context) =>
+                    CreateNewPlanCoverScreen(),
+                CreateNewPlanPricingScreen.id: (context) =>
+                    CreateNewPlanPricingScreen(),
               },
             ),
           ),

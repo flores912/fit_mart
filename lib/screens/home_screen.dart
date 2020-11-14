@@ -1,6 +1,6 @@
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/screens/account_screen.dart';
-import 'package:fit_mart/screens/create_new_plan_step1_screen.dart';
+import 'package:fit_mart/screens/create_new_plan_step_description_screen.dart';
 import 'package:fit_mart/screens/discover_screen.dart';
 import 'package:fit_mart/screens/my_plans_screen.dart';
 import 'package:fit_mart/screens/wishlist_screen.dart';
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         tooltip: 'Create New Plan',
         onPressed: () {
-          Navigator.pushNamed(context, CreateNewPlanStep1Screen.id);
+          Navigator.pushNamed(context, CreateNewPlanStepDescriptionScreen.id);
         },
         child: Icon(Icons.add),
         backgroundColor: kPrimaryColor,

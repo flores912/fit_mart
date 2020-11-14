@@ -5,19 +5,19 @@ import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'add_workouts_screen.dart';
+import 'create_new_plan_add_workouts_screen.dart';
 
-class CreateNewPlanStep1Screen extends StatefulWidget {
-  static const String title = 'Plan Description';
-  static const String id = 'create_new_plan_step1_screen';
+class CreateNewPlanStepDescriptionScreen extends StatefulWidget {
+  static const String title = 'Step 1 of 4: Description';
+  static const String id = 'create_new_plan_step_description_screen';
 
   @override
-  CreateNewPlanStep1ScreenState createState() =>
-      CreateNewPlanStep1ScreenState();
+  CreateNewPlanStepDescriptionScreenState createState() =>
+      CreateNewPlanStepDescriptionScreenState();
 }
 
-class CreateNewPlanStep1ScreenState extends State<CreateNewPlanStep1Screen>
-    with SingleTickerProviderStateMixin {
+class CreateNewPlanStepDescriptionScreenState
+    extends State<CreateNewPlanStepDescriptionScreen> {
   int _categoryValue;
 
   int _skillLevelValue;
@@ -31,15 +31,17 @@ class CreateNewPlanStep1ScreenState extends State<CreateNewPlanStep1Screen>
         actions: [
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, AddWorkoutsScreen.id);
+              Navigator.pushNamed(context, CreateNewPlanAddWorkoutsScreen.id);
             },
             textColor: Colors.white,
             child: Text(
               'Next',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )
         ],
-        title: Text(CreateNewPlanStep1Screen.title),
+        title: Text(CreateNewPlanStepDescriptionScreen.title),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Column(

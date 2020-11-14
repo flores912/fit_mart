@@ -35,6 +35,7 @@ class CustomTextForm extends StatelessWidget {
               FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
             ]
           : null,
+      autofocus: false,
       obscureText: obscureText,
       onChanged: onChanged,
       keyboardType: textInputType,

@@ -5,15 +5,12 @@ class WorkoutCardWidget extends StatelessWidget {
   final String title;
   final int day;
 
-  final String workoutButtonText;
-
   final int numberOfExercises;
 
   const WorkoutCardWidget({
     Key key,
     this.title,
     this.day,
-    this.workoutButtonText,
     this.numberOfExercises,
   }) : super(key: key);
 
@@ -24,7 +21,6 @@ class WorkoutCardWidget extends StatelessWidget {
         Container(
           width: MediaQuery.of(context).size.width,
           child: Card(
-            elevation: 12,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
