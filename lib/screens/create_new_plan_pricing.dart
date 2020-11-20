@@ -1,8 +1,13 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'create_new_plan_cover.dart';
 
 class CreateNewPlanPricingScreen extends StatefulWidget {
-  static const String title = ' Step 4 of 4: Pricing';
+  static const String title = ' Step 2 of 5: Pricing';
   static const String id = 'create_new_plan_pricing_screen';
 
   @override
@@ -20,14 +25,49 @@ class CreateNewPlanPricingScreenState
         centerTitle: true,
         actions: [
           FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, CreateNewPlanCoverScreen.id);
+            },
             textColor: Colors.white,
             child: Text(
-              'Publish',
+              'Next',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                '\$',
+                style: TextStyle(fontSize: 22),
+              ),
+            ),
+            Expanded(
+              child: CustomTextForm(
+                textInputType: TextInputType.number,
+                textInputFormatter: [
+                  CurrencyTextInputFormatter(),
+                  LengthLimitingTextInputFormatter(6),
+                  FilteringTextInputFormatter.allow(RegExp('[0-9 .]')),
+                ],
+                labelText: 'Price',
+                obscureText: false,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                'USD',
+                style: TextStyle(fontSize: 22),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

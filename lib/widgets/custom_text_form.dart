@@ -9,9 +9,8 @@ class CustomTextForm extends StatelessWidget {
   final Function onChanged;
   final bool obscureText;
   final String errorText;
-  final bool isNumberOnly;
-
   final int maxLength;
+  final List<TextInputFormatter> textInputFormatter;
 
   final int maxLines;
 
@@ -22,19 +21,15 @@ class CustomTextForm extends StatelessWidget {
     this.onChanged,
     this.obscureText,
     this.errorText,
-    this.isNumberOnly,
     this.maxLength,
     this.maxLines,
+    this.textInputFormatter,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      inputFormatters: isNumberOnly
-          ? <TextInputFormatter>[
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-            ]
-          : null,
+      inputFormatters: textInputFormatter,
       autofocus: false,
       obscureText: obscureText,
       onChanged: onChanged,

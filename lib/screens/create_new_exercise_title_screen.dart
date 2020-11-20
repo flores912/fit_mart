@@ -28,7 +28,6 @@ class CreateNewExerciseTitleScreenState
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CustomTextForm(
-                isNumberOnly: false,
                 textInputType: TextInputType.text,
                 labelText: 'Title',
                 obscureText: false,

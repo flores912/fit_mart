@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:fit_mart/constants.dart';
+import 'package:fit_mart/screens/create_new_plan_video_overview.dart';
+import 'package:fit_mart/widgets/workout_card_widget.dart';
+import 'package:fit_mart/widgets/workout_plan_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +12,7 @@ import 'create_new_plan_pricing.dart';
 
 //TODO : EDIT INFO.PLIST FOR ON XCODE FOR CAMERA PERMISSIONS AND ALSO ANDROID
 class CreateNewPlanCoverScreen extends StatefulWidget {
-  static const String title = ' Step 3 of 4: Cover Photo';
+  static const String title = ' Step 3 of 5: Cover Photo';
   static const String id = 'create_new_plan_cover_screen';
 
   @override
@@ -38,7 +41,7 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
         actions: [
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, CreateNewPlanPricingScreen.id);
+              Navigator.pushNamed(context, CreateNewPlanVideoOverview.id);
             },
             textColor: Colors.white,
             child: Text(
@@ -53,21 +56,9 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            imageUri == null
-                ? Icon(
-                    Icons.image,
-                    size: 200,
-                  )
-                : Container(
-                    height: 200,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(imageUri.path),
-                      ),
-                    ),
-                  ),
+            WorkoutPlanCardWidget(
+              imageUri: imageUri,
+            ),
             SizedBox(
               height: 16,
             ),

@@ -11,6 +11,7 @@ import 'package:fit_mart/screens/create_new_exercise_title_screen.dart';
 import 'package:fit_mart/screens/create_new_plan_cover.dart';
 import 'package:fit_mart/screens/create_new_plan_pricing.dart';
 import 'package:fit_mart/screens/create_new_plan_step_description_screen.dart';
+import 'package:fit_mart/screens/create_new_plan_video_overview.dart';
 import 'package:fit_mart/screens/create_new_workout_title_screen.dart';
 import 'package:fit_mart/screens/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
@@ -58,6 +59,8 @@ class FitMart extends StatelessWidget {
                     CreateNewPlanCoverScreen(),
                 CreateNewPlanPricingScreen.id: (context) =>
                     CreateNewPlanPricingScreen(),
+                CreateNewPlanVideoOverview.id: (context) =>
+                    CreateNewPlanVideoOverview(),
               },
             ),
           ),

@@ -47,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   stream: _bloc.email,
                   builder: (context, snapshot) {
                     return CustomTextForm(
-                      isNumberOnly: false,
                       errorText: snapshot.error,
                       obscureText: false,
                       maxLines: 1,
@@ -63,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   stream: _bloc.password,
                   builder: (context, snapshot) {
                     return CustomTextForm(
-                      isNumberOnly: false,
                       errorText: snapshot.error,
                       onChanged: _bloc.changePassword,
                       obscureText: true,

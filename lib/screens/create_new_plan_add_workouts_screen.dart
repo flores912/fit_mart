@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../constants.dart';
 import 'add_workouts_list_screen.dart';
-import 'create_new_plan_cover.dart';
 
 class CreateNewPlanAddWorkoutsScreen extends StatefulWidget {
-  static const String title = ' Step 2 of 4: Workouts';
+  static const String title = 'Step 5 of 5: Workouts';
   static const String id = 'create_new_plan_add_workouts_screen';
 
   @override
@@ -22,7 +21,7 @@ class CreateNewPlanAddWorkoutsScreenState
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         child: FloatingActionButton.extended(
           backgroundColor: kPrimaryColor,
           onPressed: () {
@@ -38,11 +37,11 @@ class CreateNewPlanAddWorkoutsScreenState
         actions: [
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, CreateNewPlanCoverScreen.id);
+              //PUBLISH
             },
             textColor: Colors.white,
             child: Text(
-              'Next',
+              'Publish',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )
