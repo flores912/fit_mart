@@ -1,3 +1,4 @@
+import 'package:fit_mart/screens/create_new_plan_pricing.dart';
 import 'package:fit_mart/widgets/workout_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import '../constants.dart';
 import 'add_workouts_list_screen.dart';
 
 class CreateNewPlanAddWorkoutsScreen extends StatefulWidget {
-  static const String title = 'Step 5 of 5: Workouts';
+  static const String title = 'Step 2 of 5: Workouts';
   static const String id = 'create_new_plan_add_workouts_screen';
 
   @override
@@ -37,7 +38,7 @@ class CreateNewPlanAddWorkoutsScreenState
         actions: [
           FlatButton(
             onPressed: () {
-              //PUBLISH
+              Navigator.pushNamed(context, CreateNewPlanPricingScreen.id);
             },
             textColor: Colors.white,
             child: Text(

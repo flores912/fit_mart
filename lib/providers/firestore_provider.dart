@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_mart/models/my_workout_plan.dart';
 
 class FirestoreProvider {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -118,5 +119,39 @@ class FirestoreProvider {
         .doc(workoutPlanUid)
         .collection('workouts');
     await collectionReference.doc(workoutUid).update({'isDone': isDone});
+  }
+
+  Future<void> createNewWorkoutPlan(
+    String userUid,
+    String trainer,
+    String title,
+    String description,
+    String category,
+    String location,
+    String skillLevel,
+  ) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.add({
+      //this will create a new plan on step 1 and update the remaining steps as you go
+      'userUid': userUid,
+      'trainer': trainer,
+      'title': title,
+      'description': description,
+      'category': category,
+      'location': location,
+      'skillLevel': skillLevel,
+      'isPublished':
+          false, // if not published it will be saved as draft //TODO: remember to update this field at the last step!
+
+      //TODO: remember to update all fields as you go to each step
+      //if null it will be updated later on next steps
+      'isFree': null,
+      'pricing': null,
+      'numberOfDays': null,
+      'coverPhotoUrl': null,
+      'rating': null,
+      'videoOverviewUrl': null,
+    });
   }
 }

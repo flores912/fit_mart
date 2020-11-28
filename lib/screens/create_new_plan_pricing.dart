@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'create_new_plan_cover.dart';
 
 class CreateNewPlanPricingScreen extends StatefulWidget {
-  static const String title = ' Step 2 of 5: Pricing';
+  static const String title = ' Step 3 of 5: Pricing';
   static const String id = 'create_new_plan_pricing_screen';
 
   @override

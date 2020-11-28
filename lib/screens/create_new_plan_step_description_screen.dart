@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/create_new_plan_pricing.dart';
+import 'package:fit_mart/providers/firestore_provider.dart';
+import 'package:fit_mart/screens/create_new_plan_add_workouts_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +19,34 @@ class CreateNewPlanStepDescriptionScreen extends StatefulWidget {
 
 class CreateNewPlanStepDescriptionScreenState
     extends State<CreateNewPlanStepDescriptionScreen> {
-  int _categoryValue;
-  int _locationValue;
-  int _skillLevelValue;
+  String _categoryValue;
+  String _locationValue;
+  String _skillLevelValue;
+
+  String title;
+
+  String description;
+
+  List<String> _categoryItems = [
+    'Weightlifting',
+    'Bodyweight',
+    'Military',
+    'Sports',
+    'Bodybuilding',
+    'Strength',
+  ];
+  List<String> _locationItems = [
+    'Gym',
+    'Home',
+    'Outdoors',
+  ];
+
+  List<String> _skillLevelItems = [
+    'Beginner',
+    'Intermediate',
+    'Advanced',
+    'Any',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +57,31 @@ class CreateNewPlanStepDescriptionScreenState
         actions: [
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, CreateNewPlanPricingScreen.id);
+              if ( //TODO : add a minimum string length
+                  title.isNotEmpty &&
+                      title.contains(
+                          new RegExp(r'[A-Z]', caseSensitive: false)) &&
+                      description.isNotEmpty &&
+                      description.contains(
+                          new RegExp(r'[A-Z]', caseSensitive: false)) &&
+                      _categoryValue.toString().isNotEmpty &&
+                      _locationValue.toString().isNotEmpty &&
+                      _skillLevelValue.toString().isNotEmpty) {
+                FirestoreProvider _firestoreProvider = FirestoreProvider();
+                _firestoreProvider
+                    .createNewWorkoutPlan(
+                        FirebaseAuth.instance.currentUser.uid,
+                        FirebaseAuth.instance.currentUser.displayName,
+                        title,
+                        description,
+                        _categoryValue.toString(),
+                        _locationValue.toString(),
+                        _skillLevelValue.toString())
+                    .whenComplete(() => Navigator.pushNamed(
+                        context, CreateNewPlanAddWorkoutsScreen.id));
+              } else {
+                //complete required fields
+              }
             },
             textColor: Colors.white,
             child: Text(
@@ -54,17 +105,26 @@ class CreateNewPlanStepDescriptionScreenState
                 obscureText: false,
                 maxLength: 60,
                 maxLines: 2,
+                onChanged: (value) {
+                  setState(() {
+                    title = value;
+                  });
+                },
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CustomTextForm(
-                textInputType: TextInputType.multiline,
-                maxLength: 300,
-                maxLines: 7,
-                labelText: 'Description',
-                obscureText: false,
-              ),
+                  textInputType: TextInputType.text,
+                  maxLength: 300,
+                  maxLines: 7,
+                  labelText: 'Description',
+                  obscureText: false,
+                  onChanged: (value) {
+                    setState(() {
+                      description = value;
+                    });
+                  }),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -80,57 +140,22 @@ class CreateNewPlanStepDescriptionScreenState
                 child: DropdownButtonHideUnderline(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton(
-                        isExpanded: true,
-                        value: _categoryValue,
-                        hint: Text('Select Category'),
-                        items: [
-                          DropdownMenuItem(
-                            child: Text('Weightlifting',
-                                textAlign: TextAlign.center),
-                            value: 1,
-                          ),
-                          DropdownMenuItem(
-                            child:
-                                Text('Bodyweight', textAlign: TextAlign.center),
-                            value: 2,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('HIIT Training',
-                                textAlign: TextAlign.center),
-                            value: 3,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Strength Training',
-                                textAlign: TextAlign.center),
-                            value: 4,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Sports Training',
-                                textAlign: TextAlign.center),
-                            value: 5,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Mobility Training',
-                                textAlign: TextAlign.center),
-                            value: 6,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Military Training',
-                                textAlign: TextAlign.center),
-                            value: 7,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Bodybuilding',
-                                textAlign: TextAlign.center),
-                            value: 8,
-                          )
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _categoryValue = value;
-                          });
-                        }),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: _categoryValue,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _categoryValue = newValue;
+                        });
+                      },
+                      hint: Text('Select Category'),
+                      items: _categoryItems.map((String value) {
+                        return new DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
@@ -149,29 +174,22 @@ class CreateNewPlanStepDescriptionScreenState
                 child: DropdownButtonHideUnderline(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton(
-                        isExpanded: true,
-                        value: _locationValue,
-                        hint: Text('Select Location'),
-                        items: [
-                          DropdownMenuItem(
-                            child: Text('Home', textAlign: TextAlign.center),
-                            value: 1,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Gym', textAlign: TextAlign.center),
-                            value: 2,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Outdoor', textAlign: TextAlign.center),
-                            value: 3,
-                          )
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _locationValue = value;
-                          });
-                        }),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: _locationValue,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _locationValue = newValue;
+                        });
+                      },
+                      hint: Text('Select Location'),
+                      items: _locationItems.map((String value) {
+                        return new DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
@@ -190,36 +208,22 @@ class CreateNewPlanStepDescriptionScreenState
                 child: DropdownButtonHideUnderline(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton(
-                        isExpanded: true,
-                        value: _skillLevelValue,
-                        hint: Text('Select Skill Level'),
-                        items: [
-                          DropdownMenuItem(
-                            child:
-                                Text('Beginner', textAlign: TextAlign.center),
-                            value: 1,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Intermediate',
-                                textAlign: TextAlign.center),
-                            value: 2,
-                          ),
-                          DropdownMenuItem(
-                            child:
-                                Text('Advanced', textAlign: TextAlign.center),
-                            value: 3,
-                          ),
-                          DropdownMenuItem(
-                            child: Text('Any', textAlign: TextAlign.center),
-                            value: 4,
-                          )
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            _skillLevelValue = value;
-                          });
-                        }),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: _skillLevelValue,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _skillLevelValue = newValue;
+                        });
+                      },
+                      hint: Text('Select Skill Level'),
+                      items: _skillLevelItems.map((String value) {
+                        return new DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),

@@ -3,7 +3,6 @@ import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/repository.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ExercisesBloc {
   final _repository = Repository();

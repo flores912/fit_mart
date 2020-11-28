@@ -183,7 +183,6 @@ class WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
               return ExerciseWorkoutSessionWidget(
                 exerciseTitle: exercisesList[index].title,
                 videoUrl: exercisesList[index].videoUrl,
-                colorContainer: Colors.white,
                 setsList: setsListView,
               );
             });
