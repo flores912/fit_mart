@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fit_mart/models/my_workout_plan.dart';
 
 class FirestoreProvider {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -121,31 +120,28 @@ class FirestoreProvider {
     await collectionReference.doc(workoutUid).update({'isDone': isDone});
   }
 
-  Future<void> createNewWorkoutPlan(
+  Future<DocumentReference> createNewWorkoutPlan(
     String userUid,
     String trainer,
     String title,
     String description,
-    String category,
-    String location,
-    String skillLevel,
   ) async {
     CollectionReference collectionReference =
         _firestore.collection('workoutPlans');
-    await collectionReference.add({
+    return await collectionReference.add({
       //this will create a new plan on step 1 and update the remaining steps as you go
       'userUid': userUid,
       'trainer': trainer,
       'title': title,
       'description': description,
-      'category': category,
-      'location': location,
-      'skillLevel': skillLevel,
       'isPublished':
           false, // if not published it will be saved as draft //TODO: remember to update this field at the last step!
 
       //TODO: remember to update all fields as you go to each step
       //if null it will be updated later on next steps
+      'category': null,
+      'location': null,
+      'skillLevel': null,
       'isFree': null,
       'pricing': null,
       'numberOfDays': null,
@@ -153,5 +149,23 @@ class FirestoreProvider {
       'rating': null,
       'videoOverviewUrl': null,
     });
+  }
+
+  Future<void> updateWorkoutPlanCategoriesStep(String workoutPlanUid,
+      String category, String location, String skillLevel) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.doc(workoutPlanUid).update(
+        {'category': category, 'location': location, 'skillLevel': skillLevel});
+  }
+
+  Future<void> addDaysToPlan(int days, String workoutPlanUid) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts');
+    for (int i = 1; i <= days; i++) {
+      await collectionReference.add({'day': i});
+    }
   }
 }

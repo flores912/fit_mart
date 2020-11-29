@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CreateNewPlanVideoOverview extends StatefulWidget {
-  static const String title = ' Step 4 of 5: Video Overview';
+  static const String title = ' Step 7 of 7: Video Overview';
   static const String id = 'create_new_plan_video_overview_screen';
 
   @override

@@ -7,8 +7,13 @@ import '../constants.dart';
 import 'add_workouts_list_screen.dart';
 
 class CreateNewPlanAddWorkoutsScreen extends StatefulWidget {
-  static const String title = 'Step 2 of 5: Workouts';
+  static const String title = 'Step 4 of 7: Workouts';
   static const String id = 'create_new_plan_add_workouts_screen';
+
+  final String workoutPlanUid;
+
+  const CreateNewPlanAddWorkoutsScreen({Key key, this.workoutPlanUid})
+      : super(key: key);
 
   @override
   CreateNewPlanAddWorkoutsScreenState createState() =>
@@ -42,7 +47,7 @@ class CreateNewPlanAddWorkoutsScreenState
             },
             textColor: Colors.white,
             child: Text(
-              'Publish',
+              'Next',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           )

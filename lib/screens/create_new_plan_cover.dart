@@ -9,7 +9,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CreateNewPlanCoverScreen extends StatefulWidget {
-  static const String title = ' Step 4 of 5: Cover Photo';
+  static const String title = ' Step 6 of 7: Cover Photo';
   static const String id = 'create_new_plan_cover_screen';
 
   @override
