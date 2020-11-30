@@ -165,7 +165,21 @@ class FirestoreProvider {
         .doc(workoutPlanUid)
         .collection('workouts');
     for (int i = 1; i <= days; i++) {
-      await collectionReference.add({'day': i});
+      await collectionReference.doc('day ' + i.toString()).set({
+        'day': i,
+        'numberOfExercises': null,
+        'title': null,
+      });
     }
+  }
+
+  Stream<QuerySnapshot> myWorkoutsCreatePlanQuerySnapshot(
+      String workoutPlanUid) {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts');
+
+    return collectionReference.orderBy('day', descending: false).snapshots();
   }
 }

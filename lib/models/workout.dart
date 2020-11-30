@@ -5,11 +5,13 @@ class Workout {
   final int day;
   final bool isDone;
   final String uid;
+  final int numberOfExercises;
 
   Workout({
-    @required this.title,
-    @required this.day,
-    @required this.isDone,
-    @required this.uid,
+    this.numberOfExercises,
+    this.title,
+    this.day,
+    this.isDone,
+    this.uid,
   });
 }

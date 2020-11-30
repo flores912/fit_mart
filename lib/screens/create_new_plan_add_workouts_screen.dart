@@ -1,3 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/blocs/create_plan_workouts_bloc.dart';
+import 'package:fit_mart/blocs/create_plan_workouts_provider.dart';
+import 'package:fit_mart/models/workout.dart';
+import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/create_new_plan_pricing.dart';
 import 'package:fit_mart/widgets/workout_card_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,21 +27,19 @@ class CreateNewPlanAddWorkoutsScreen extends StatefulWidget {
 
 class CreateNewPlanAddWorkoutsScreenState
     extends State<CreateNewPlanAddWorkoutsScreen> {
+  FirestoreProvider firestoreProvider = FirestoreProvider();
+
+  CreatePlanWorkoutsBloc _bloc;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bloc = CreatePlanWorkoutsBlocProvider.of(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: FloatingActionButton.extended(
-          backgroundColor: kPrimaryColor,
-          onPressed: () {
-            Navigator.pushNamed(context, AddWorkoutsListScreen.id);
-          },
-          label: Text('ADD NEW WORKOUT'),
-          icon: Icon(Icons.add),
-        ),
-      ),
       appBar: AppBar(
         title: Text(CreateNewPlanAddWorkoutsScreen.title),
         centerTitle: true,
@@ -53,22 +56,60 @@ class CreateNewPlanAddWorkoutsScreenState
           )
         ],
       ),
-      body: SafeArea(
-          child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                WorkoutCardWidget(
-                  title: 'Title',
-                  day: 1,
-                  numberOfExercises: 6,
-                ),
-              ],
-            ),
+      body: StreamBuilder(
+          stream: firestoreProvider
+              .myWorkoutsCreatePlanQuerySnapshot(widget.workoutPlanUid),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasData) {
+              List<DocumentSnapshot> docs = snapshot.data.docs;
+              List<Workout> myWorkoutPlansList =
+                  _bloc.convertToMyWorkoutPlanList(docList: docs);
+
+              if (myWorkoutPlansList.isNotEmpty) {
+                return buildList(myWorkoutPlansList);
+              } else {
+                return Center(child: Text('No workout plans'));
+              }
+            } else {
+              return Center(child: Text('No workout plans'));
+            }
+          }),
+    );
+  }
+
+  // ListView buildList(List<Workout> myWorkoutsList) {
+  //   return ListView.builder(
+  //     itemCount: myWorkoutsList.length,
+  //     itemBuilder: (context, index) {
+  //       return GestureDetector(
+  //         onTap: () {},
+  //         child: WorkoutCardWidget(
+  //           title: myWorkoutsList[index].title,
+  //           day: myWorkoutsList[index].day,
+  //           numberOfExercises: myWorkoutsList[index].numberOfExercises,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+  GridView buildList(List<Workout> myWorkoutsList) {
+    return GridView.count(
+      childAspectRatio: 3 / 2,
+      crossAxisCount: 2,
+      children: List.generate(myWorkoutsList.length, (index) {
+        return GestureDetector(
+          onTap: () {},
+          child: WorkoutCardWidget(
+            title: myWorkoutsList[index].title,
+            day: myWorkoutsList[index].day,
+            addNewWorkoutFAB: () {
+              Navigator.pushNamed(context, AddWorkoutsListScreen.id);
+            },
+            numberOfExercises: myWorkoutsList[index].numberOfExercises,
           ),
-        ],
-      )),
+        );
+      }),
     );
   }
 }

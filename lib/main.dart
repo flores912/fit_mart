@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fit_mart/blocs/create_plan_workouts_provider.dart';
 import 'package:fit_mart/blocs/my_plan_workouts_bloc_provider.dart';
 import 'package:fit_mart/blocs/exercises_bloc_provider.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
@@ -31,43 +32,46 @@ class FitMart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoginBlocProvider(
-      child: ExercisesBlocProvider(
-        child: MyPlanWorkoutsBlocProvider(
-          child: MyWorkoutPlansBlocProvider(
-            child: MaterialApp(
-              title: 'FitMart',
-              theme: ThemeData.light().copyWith(
-                  primaryColor: kPrimaryColor,
-                  accentColor: kAccentColor,
-                  cursorColor: kPrimaryColor,
-                  highlightColor: kPrimaryColor),
-              initialRoute: LoginScreen.id,
-              routes: {
-                HomeScreen.id: (context) => HomeScreen(),
-                LoginScreen.id: (context) => LoginScreen(),
-                CreateNewPlanStepDescriptionScreen.id: (context) =>
-                    CreateNewPlanStepDescriptionScreen(),
-                CreateNewPlanAddWorkoutsScreen.id: (context) =>
-                    CreateNewPlanAddWorkoutsScreen(),
-                AddWorkoutsListScreen.id: (context) => AddWorkoutsListScreen(),
-                CreateNewWorkoutStep1Screen.id: (context) =>
-                    CreateNewWorkoutStep1Screen(),
-                AddExercisesListScreen.id: (context) =>
-                    AddExercisesListScreen(),
-                CreateNewExerciseTitleScreen.id: (context) =>
-                    CreateNewExerciseTitleScreen(),
-                AddExercisesScreen.id: (context) => AddExercisesScreen(),
-                CreateNewPlanCoverScreen.id: (context) =>
-                    CreateNewPlanCoverScreen(),
-                CreateNewPlanPricingScreen.id: (context) =>
-                    CreateNewPlanPricingScreen(),
-                CreateNewPlanVideoOverview.id: (context) =>
-                    CreateNewPlanVideoOverview(),
-                CreateNewPlanCategoriesScreen.id: (context) =>
-                    CreateNewPlanCategoriesScreen(),
-                CreateNewPlanLengthScreen.id: (context) =>
-                    CreateNewPlanLengthScreen(),
-              },
+      child: CreatePlanWorkoutsBlocProvider(
+        child: ExercisesBlocProvider(
+          child: MyPlanWorkoutsBlocProvider(
+            child: MyWorkoutPlansBlocProvider(
+              child: MaterialApp(
+                title: 'FitMart',
+                theme: ThemeData.light().copyWith(
+                    primaryColor: kPrimaryColor,
+                    accentColor: kAccentColor,
+                    cursorColor: kPrimaryColor,
+                    highlightColor: kPrimaryColor),
+                initialRoute: LoginScreen.id,
+                routes: {
+                  HomeScreen.id: (context) => HomeScreen(),
+                  LoginScreen.id: (context) => LoginScreen(),
+                  CreateNewPlanStepDescriptionScreen.id: (context) =>
+                      CreateNewPlanStepDescriptionScreen(),
+                  CreateNewPlanAddWorkoutsScreen.id: (context) =>
+                      CreateNewPlanAddWorkoutsScreen(),
+                  AddWorkoutsListScreen.id: (context) =>
+                      AddWorkoutsListScreen(),
+                  CreateNewWorkoutStep1Screen.id: (context) =>
+                      CreateNewWorkoutStep1Screen(),
+                  AddExercisesListScreen.id: (context) =>
+                      AddExercisesListScreen(),
+                  CreateNewExerciseTitleScreen.id: (context) =>
+                      CreateNewExerciseTitleScreen(),
+                  AddExercisesScreen.id: (context) => AddExercisesScreen(),
+                  CreateNewPlanCoverScreen.id: (context) =>
+                      CreateNewPlanCoverScreen(),
+                  CreateNewPlanPricingScreen.id: (context) =>
+                      CreateNewPlanPricingScreen(),
+                  CreateNewPlanVideoOverview.id: (context) =>
+                      CreateNewPlanVideoOverview(),
+                  CreateNewPlanCategoriesScreen.id: (context) =>
+                      CreateNewPlanCategoriesScreen(),
+                  CreateNewPlanLengthScreen.id: (context) =>
+                      CreateNewPlanLengthScreen(),
+                },
+              ),
             ),
           ),
         ),
