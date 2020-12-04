@@ -30,7 +30,7 @@ class ExerciseCardWidget extends StatelessWidget {
         Container(
           width: MediaQuery.of(context).size.width,
           child: Card(
-            elevation: 12,
+            elevation: 1,
             child: Row(
               children: [
                 //TODO: Here place video preview

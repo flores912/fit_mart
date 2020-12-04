@@ -4,6 +4,7 @@ import 'package:fit_mart/blocs/create_plan_workouts_provider.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/create_new_plan_pricing.dart';
+import 'package:fit_mart/screens/create_new_workout_title_screen.dart';
 import 'package:fit_mart/widgets/workout_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +105,34 @@ class CreateNewPlanAddWorkoutsScreenState
             title: myWorkoutsList[index].title,
             day: myWorkoutsList[index].day,
             addNewWorkoutFAB: () {
-              Navigator.pushNamed(context, AddWorkoutsListScreen.id);
+              showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) {
+                    return SimpleDialog(
+                      title: Text(
+                        'Add Workout',
+                      ),
+                      children: [
+                        SimpleDialogOption(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, AddWorkoutsListScreen.id);
+                          },
+                          child: const Text(
+                            'Add workout from library',
+                          ),
+                        ),
+                        SimpleDialogOption(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, CreateNewWorkoutStep1Screen.id);
+                          },
+                          child: const Text('Create new workout'),
+                        ),
+                      ],
+                    );
+                  });
             },
             numberOfExercises: myWorkoutsList[index].numberOfExercises,
           ),

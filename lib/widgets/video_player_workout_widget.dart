@@ -21,13 +21,11 @@ class _VideoPlayerWorkoutWidgetState extends State<VideoPlayerWorkoutWidget> {
   ChewieController _chewieController;
   @override
   void initState() {
-    super.initState();
     _chewieController = ChewieController(
         videoPlayerController: widget.videoPlayerController,
-        aspectRatio: 16 / 9,
-        autoInitialize: true,
-        showControlsOnInitialize: false,
+        aspectRatio: widget.videoPlayerController.value.aspectRatio,
         looping: widget.looping,
+        autoInitialize: true,
         errorBuilder: (context, errorMessage) {
           return Center(
             child: Text(
@@ -38,13 +36,14 @@ class _VideoPlayerWorkoutWidgetState extends State<VideoPlayerWorkoutWidget> {
             ),
           );
         });
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     widget.videoPlayerController.dispose();
     _chewieController.dispose();
+    super.dispose();
   }
 
   @override

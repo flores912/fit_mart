@@ -1,11 +1,17 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreProvider {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseStorage storage = FirebaseStorage.instance;
 
   Future<void> registerUser(String email, String password) async {
     return await _firebaseAuth.createUserWithEmailAndPassword(
@@ -181,5 +187,57 @@ class FirestoreProvider {
         .collection('workouts');
 
     return collectionReference.orderBy('day', descending: false).snapshots();
+  }
+
+  Future<void> createNewWorkout(String title) async {
+    String userUid = _firebaseAuth.currentUser.uid;
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('workoutLibrary');
+    await collectionReference.add({'title': title});
+  }
+
+  Future<void> createNewExercise(
+      String title, String videoUrl, int sets, int reps, int rest) async {
+    String userUid = _firebaseAuth.currentUser.uid;
+    CollectionReference collectionReference = _firestore
+        .collection('users')
+        .doc(userUid)
+        .collection('exerciseLibrary');
+    await collectionReference.add({
+      'title': title,
+      'videoUrl': videoUrl,
+      'sets': sets,
+      'reps': reps,
+      'rest': rest,
+    });
+  }
+
+  //FIREBASE STORAGE
+  Future<void> uploadVideoFile(File file) async {
+    await storage
+        .ref()
+        .child(file.path)
+        .putFile(file, StorageMetadata(contentType: 'video/mp4'));
+    // try {
+    //   await _firebaseStorage.FirebaseStorage.instance
+    //       .ref('uploads/file-to-upload.png')
+    //       .putFile(file);
+    // } on firebase_core.FirebaseException catch (e) {
+    //   // e.g, e.code == 'canceled'
+    // }
+  }
+
+  //FIREBASE STORAGE
+  Future<void> uploadImageFile(File file) async {
+    await storage.ref().child(file.path).putFile(file);
+    // try {
+    //   await _firebaseStorage.FirebaseStorage.instance
+    //       .ref('uploads/file-to-upload.png')
+    //       .putFile(file);
+    // } on firebase_core.FirebaseException catch (e) {
+    //   // e.g, e.code == 'canceled'
+    // }
   }
 }

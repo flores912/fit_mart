@@ -63,12 +63,16 @@ class CreateNewPlanCategoriesScreenState
                 firestoreProvider
                     .updateWorkoutPlanCategoriesStep(widget.workoutPlanUid,
                         _categoryValue, _locationValue, _skillLevelValue)
-                    .whenComplete(() => Navigator.push(
+                    .whenComplete(
+                      () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CreateNewPlanLengthScreen(
-                                  workoutPlanUid: widget.workoutPlanUid,
-                                ))));
+                          builder: (context) => CreateNewPlanLengthScreen(
+                            workoutPlanUid: widget.workoutPlanUid,
+                          ),
+                        ),
+                      ),
+                    );
               } else {
                 //complete required fields
               }

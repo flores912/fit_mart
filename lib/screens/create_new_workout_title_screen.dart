@@ -1,5 +1,7 @@
+import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/add_exercises_list_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
+import 'package:fit_mart/widgets/exercise_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,10 +19,36 @@ class CreateNewWorkoutStep1Screen extends StatefulWidget {
 
 class CreateNewWorkoutStep1ScreenState
     extends State<CreateNewWorkoutStep1Screen> {
+  String title;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          FlatButton(
+            onPressed: () {
+              //next step
+              FirestoreProvider firestoreProvider = FirestoreProvider();
+              firestoreProvider.createNewWorkout(title).whenComplete(
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddExercisesScreen(
+                          workoutTitle: title,
+                        ),
+                      ),
+                    ),
+                  );
+            },
+            child: Text(
+              'Next',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          )
+        ],
         title: Text(CreateNewWorkoutStep1Screen.title),
       ),
       body: SafeArea(
@@ -33,24 +61,8 @@ class CreateNewWorkoutStep1ScreenState
                 textInputType: TextInputType.text,
                 labelText: 'Title',
                 obscureText: false,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                color: kPrimaryColor,
-                child: Text(
-                  'Next',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: () {
-                  //next step
-                  Navigator.pushNamed(context, AddExercisesScreen.id);
+                onChanged: (value) {
+                  title = value;
                 },
               ),
             ),
