@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
+import 'package:fit_mart/screens/exercise_sets_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:fit_mart/widgets/video_player_workout_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +16,13 @@ class CreateNewExerciseTitleScreen extends StatefulWidget {
   static const String title = 'New Exercise';
   static const String id = 'create_new_exercise_title_screen';
 
+  final String workoutPlanUid;
+  final String workoutUid;
+
+  const CreateNewExerciseTitleScreen(
+      {Key key, this.workoutPlanUid, this.workoutUid})
+      : super(key: key);
+
   @override
   CreateNewExerciseTitleScreenState createState() =>
       CreateNewExerciseTitleScreenState();
@@ -24,7 +32,7 @@ class CreateNewExerciseTitleScreenState
     extends State<CreateNewExerciseTitleScreen> {
   int rest;
 
-  String videoUrl;
+  var videoUrl;
 
   int reps;
 
@@ -39,6 +47,10 @@ class CreateNewExerciseTitleScreenState
   VideoPlayerController _controller;
 
   File newVideoFile;
+
+  FirestoreProvider firestoreProvider = FirestoreProvider();
+
+  String exerciseUid;
 
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
@@ -91,14 +103,35 @@ class CreateNewExerciseTitleScreenState
         actions: [
           FlatButton(
             onPressed: () {
+              print(widget.workoutUid);
+              firestoreProvider.uploadVideoFile(videoFile).whenComplete(() {
+                firestoreProvider.downloadURL(videoFile.path).then((value) {
+                  videoUrl = value;
+                  firestoreProvider
+                      .addNewExerciseToWorkout(
+                        widget.workoutPlanUid,
+                        widget.workoutUid,
+                        title,
+                        videoUrl,
+                      )
+                      .then((value) => exerciseUid = value.id)
+                      .whenComplete(() => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ExerciseSetsScreen(
+                                workoutPlanUid: widget.workoutPlanUid,
+                                workoutUid: widget.workoutUid,
+                                exerciseUid: exerciseUid,
+                                exerciseTitle: title,
+                              ),
+                            ),
+                          ));
+                });
+              });
               //next step
-              FirestoreProvider firestoreProvider = FirestoreProvider();
-              firestoreProvider
-                  .createNewExercise(title, videoUrl, sets, reps, rest)
-                  .whenComplete(() {});
             },
             child: Text(
-              'Done',
+              'Next',
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -194,41 +227,9 @@ class CreateNewExerciseTitleScreenState
                     textInputType: TextInputType.text,
                     labelText: 'Title',
                     obscureText: false,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextForm(
-                          textInputType: TextInputType.number,
-                          labelText: 'Sets',
-                          obscureText: false,
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CustomTextForm(
-                            textInputType: TextInputType.number,
-                            labelText: 'Reps',
-                            obscureText: false,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: CustomTextForm(
-                          textInputType: TextInputType.number,
-                          labelText: 'Rest(secs)',
-                          obscureText: false,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                        child: Text('secs'),
-                      )
-                    ],
+                    onChanged: (value) {
+                      title = value;
+                    },
                   ),
                 ),
               ],

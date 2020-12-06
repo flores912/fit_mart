@@ -24,7 +24,7 @@ class AddWorkoutsListScreenState extends State<AddWorkoutsListScreen> {
           child: FloatingActionButton.extended(
               backgroundColor: kPrimaryColor,
               onPressed: () {
-                Navigator.pushNamed(context, CreateNewWorkoutStep1Screen.id);
+                Navigator.pushNamed(context, CreateNewWorkoutTitleScreen.id);
               },
               icon: Icon(Icons.create),
               label: Text('CREATE NEW WORKOUT')),

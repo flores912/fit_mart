@@ -14,6 +14,8 @@ class CustomTextForm extends StatelessWidget {
 
   final int maxLines;
 
+  final String initialValue;
+
   const CustomTextForm({
     Key key,
     this.textInputType,
@@ -24,11 +26,13 @@ class CustomTextForm extends StatelessWidget {
     this.maxLength,
     this.maxLines,
     this.textInputFormatter,
+    this.initialValue,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: initialValue,
       inputFormatters: textInputFormatter,
       autofocus: false,
       obscureText: obscureText,

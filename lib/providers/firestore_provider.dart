@@ -198,6 +198,15 @@ class FirestoreProvider {
     await collectionReference.add({'title': title});
   }
 
+  Future<void> updateNewWorkoutToWorkoutPlan(
+      String workoutPlanUid, String workoutUid, String title) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts');
+    await collectionReference.doc(workoutUid).update({'title': title});
+  }
+
   Future<void> createNewExercise(
       String title, String videoUrl, int sets, int reps, int rest) async {
     String userUid = _firebaseAuth.currentUser.uid;
@@ -214,11 +223,66 @@ class FirestoreProvider {
     });
   }
 
+  Future<DocumentReference> addNewExerciseToWorkout(
+    String workoutPlanUid,
+    String workoutUid,
+    String title,
+    String videoUrl,
+  ) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises');
+    return await collectionReference.add({
+      'title': title,
+      'videoUrl': videoUrl,
+    });
+  }
+
+  Future<DocumentReference> addNewSetToExercise(
+    String workoutPlanUid,
+    String workoutUid,
+    String exerciseUid,
+    int set,
+    int reps,
+    int rest,
+  ) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets');
+    return await collectionReference.add({
+      'set': set,
+      'reps': reps,
+      'rest': rest,
+    });
+  }
+
+  Stream<QuerySnapshot> exerciseSetsQuerySnapshot(
+      String workoutPlanUid, String workoutUid, String exerciseUid) {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets');
+
+    return collectionReference.orderBy('set', descending: false).snapshots();
+  }
+
   //FIREBASE STORAGE
   Future<void> uploadVideoFile(File file) async {
     await storage
         .ref()
-        .child(file.path)
+        .child(_firebaseAuth.currentUser.uid + file.path)
         .putFile(file, StorageMetadata(contentType: 'video/mp4'));
     // try {
     //   await _firebaseStorage.FirebaseStorage.instance
@@ -229,7 +293,6 @@ class FirestoreProvider {
     // }
   }
 
-  //FIREBASE STORAGE
   Future<void> uploadImageFile(File file) async {
     await storage.ref().child(file.path).putFile(file);
     // try {
@@ -239,5 +302,13 @@ class FirestoreProvider {
     // } on firebase_core.FirebaseException catch (e) {
     //   // e.g, e.code == 'canceled'
     // }
+  }
+
+  Future<String> downloadURL(String filePath) async {
+    String urlPath = _firebaseAuth.currentUser.uid + filePath;
+    return await storage.ref().child(urlPath).getDownloadURL();
+
+    // Within your widgets:
+    // Image.network(downloadURL);
   }
 }

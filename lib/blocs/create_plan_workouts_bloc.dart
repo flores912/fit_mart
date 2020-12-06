@@ -3,9 +3,9 @@ import 'package:fit_mart/models/workout.dart';
 import 'package:flutter/cupertino.dart';
 
 class CreatePlanWorkoutsBloc {
-  List<Workout> convertToMyWorkoutPlanList(
+  List<Workout> convertToMyWorkoutsList(
       {@required List<DocumentSnapshot> docList}) {
-    List<Workout> myWorkoutPlansList = [];
+    List<Workout> myWorkoutsList = [];
     docList.forEach((document) {
       Workout workout = Workout(
         uid: document.id,
@@ -14,8 +14,8 @@ class CreatePlanWorkoutsBloc {
         day: document.get('day'),
         // isDone: document.get('isDone:'),
       );
-      myWorkoutPlansList.add(workout);
+      myWorkoutsList.add(workout);
     });
-    return myWorkoutPlansList;
+    return myWorkoutsList;
   }
 }

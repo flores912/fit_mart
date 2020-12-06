@@ -8,17 +8,24 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import 'add_exercises_screen.dart';
 
-class CreateNewWorkoutStep1Screen extends StatefulWidget {
+class CreateNewWorkoutTitleScreen extends StatefulWidget {
   static const String title = 'Workout Title';
-  static const String id = 'create_new_workout_step1_screen';
+  static const String id = 'create_new_workout_title_screen';
+
+  final String workoutPlanUid;
+  final String workoutUid;
+
+  const CreateNewWorkoutTitleScreen(
+      {Key key, this.workoutPlanUid, this.workoutUid})
+      : super(key: key);
 
   @override
-  CreateNewWorkoutStep1ScreenState createState() =>
-      CreateNewWorkoutStep1ScreenState();
+  CreateNewWorkoutTitleScreenState createState() =>
+      CreateNewWorkoutTitleScreenState();
 }
 
-class CreateNewWorkoutStep1ScreenState
-    extends State<CreateNewWorkoutStep1Screen> {
+class CreateNewWorkoutTitleScreenState
+    extends State<CreateNewWorkoutTitleScreen> {
   String title;
 
   @override
@@ -30,12 +37,17 @@ class CreateNewWorkoutStep1ScreenState
             onPressed: () {
               //next step
               FirestoreProvider firestoreProvider = FirestoreProvider();
-              firestoreProvider.createNewWorkout(title).whenComplete(
+              firestoreProvider
+                  .updateNewWorkoutToWorkoutPlan(
+                      widget.workoutPlanUid, widget.workoutUid, title)
+                  .whenComplete(
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => AddExercisesScreen(
                           workoutTitle: title,
+                          workoutUid: widget.workoutUid,
+                          workoutPlanUid: widget.workoutPlanUid,
                         ),
                       ),
                     ),
@@ -49,7 +61,7 @@ class CreateNewWorkoutStep1ScreenState
             ),
           )
         ],
-        title: Text(CreateNewWorkoutStep1Screen.title),
+        title: Text(CreateNewWorkoutTitleScreen.title),
       ),
       body: SafeArea(
         child: Column(

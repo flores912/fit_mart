@@ -10,8 +10,12 @@ class AddExercisesScreen extends StatefulWidget {
   static const String id = 'add_exercises_screen';
 
   final String workoutTitle;
+  final String workoutPlanUid;
+  final String workoutUid;
 
-  const AddExercisesScreen({Key key, this.workoutTitle}) : super(key: key);
+  const AddExercisesScreen(
+      {Key key, this.workoutTitle, this.workoutPlanUid, this.workoutUid})
+      : super(key: key);
 
   @override
   AddExercisesScreenState createState() => AddExercisesScreenState();
@@ -30,7 +34,7 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
             showDialog(
                 context: context,
                 barrierDismissible: true,
-                builder: (BuildContext context) {
+                builder: (BuildContext dialogContext) {
                   return SimpleDialog(
                     title: Text(
                       'Add Exercises',
@@ -39,7 +43,10 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
                       SimpleDialogOption(
                         onPressed: () {
                           Navigator.pushNamed(
-                              context, AddExercisesListScreen.id);
+                                  context, AddExercisesListScreen.id)
+                              .whenComplete(
+                            () => Navigator.pop(dialogContext),
+                          );
                         },
                         child: const Text(
                           'Add exercises from library',
@@ -47,8 +54,18 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
                       ),
                       SimpleDialogOption(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, CreateNewExerciseTitleScreen.id);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateNewExerciseTitleScreen(
+                                workoutPlanUid: widget.workoutPlanUid,
+                                workoutUid: widget.workoutUid,
+                              ),
+                            ),
+                          ).whenComplete(
+                            () => Navigator.pop(dialogContext),
+                          );
                         },
                         child: const Text('Create new exercise'),
                       ),

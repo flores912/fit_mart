@@ -9,7 +9,6 @@ import 'package:fit_mart/widgets/workout_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
 import 'add_workouts_list_screen.dart';
 
 class CreateNewPlanAddWorkoutsScreen extends StatefulWidget {
@@ -65,7 +64,7 @@ class CreateNewPlanAddWorkoutsScreenState
             if (snapshot.hasData) {
               List<DocumentSnapshot> docs = snapshot.data.docs;
               List<Workout> myWorkoutPlansList =
-                  _bloc.convertToMyWorkoutPlanList(docList: docs);
+                  _bloc.convertToMyWorkoutsList(docList: docs);
 
               if (myWorkoutPlansList.isNotEmpty) {
                 return buildList(myWorkoutPlansList);
@@ -96,7 +95,7 @@ class CreateNewPlanAddWorkoutsScreenState
   // }
   GridView buildList(List<Workout> myWorkoutsList) {
     return GridView.count(
-      childAspectRatio: 3 / 2,
+      childAspectRatio: 1,
       crossAxisCount: 2,
       children: List.generate(myWorkoutsList.length, (index) {
         return GestureDetector(
@@ -108,7 +107,7 @@ class CreateNewPlanAddWorkoutsScreenState
               showDialog(
                   context: context,
                   barrierDismissible: true,
-                  builder: (BuildContext context) {
+                  builder: (BuildContext dialogContext) {
                     return SimpleDialog(
                       title: Text(
                         'Add Workout',
@@ -117,7 +116,10 @@ class CreateNewPlanAddWorkoutsScreenState
                         SimpleDialogOption(
                           onPressed: () {
                             Navigator.pushNamed(
-                                context, AddWorkoutsListScreen.id);
+                                    context, AddWorkoutsListScreen.id)
+                                .whenComplete(
+                              () => Navigator.pop(dialogContext),
+                            );
                           },
                           child: const Text(
                             'Add workout from library',
@@ -125,8 +127,18 @@ class CreateNewPlanAddWorkoutsScreenState
                         ),
                         SimpleDialogOption(
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, CreateNewWorkoutStep1Screen.id);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CreateNewWorkoutTitleScreen(
+                                  workoutPlanUid: widget.workoutPlanUid,
+                                  workoutUid: myWorkoutsList[index].uid,
+                                ),
+                              ),
+                            ).whenComplete(
+                              () => Navigator.pop(dialogContext),
+                            );
                           },
                           child: const Text('Create new workout'),
                         ),
