@@ -6,11 +6,15 @@ import 'package:video_player/video_player.dart';
 class VideoPlayerWorkoutWidget extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
   final bool looping;
+  final bool showControls;
+  final bool autoPlay;
 
   const VideoPlayerWorkoutWidget({
     Key key,
     this.videoPlayerController,
     this.looping,
+    this.showControls,
+    this.autoPlay,
   }) : super(key: key);
   @override
   _VideoPlayerWorkoutWidgetState createState() =>
@@ -19,9 +23,12 @@ class VideoPlayerWorkoutWidget extends StatefulWidget {
 
 class _VideoPlayerWorkoutWidgetState extends State<VideoPlayerWorkoutWidget> {
   ChewieController _chewieController;
+
   @override
   void initState() {
     _chewieController = ChewieController(
+        showControls: widget.showControls,
+        autoPlay: widget.autoPlay,
         videoPlayerController: widget.videoPlayerController,
         aspectRatio: widget.videoPlayerController.value.aspectRatio,
         looping: widget.looping,

@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/blocs/add_exercises_screen_bloc_provider.dart';
 import 'package:fit_mart/blocs/create_plan_workouts_provider.dart';
-import 'package:fit_mart/blocs/exercise_sets_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc_provider.dart';
 import 'package:fit_mart/blocs/my_plan_workouts_bloc_provider.dart';
 import 'package:fit_mart/blocs/exercises_bloc_provider.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
@@ -35,7 +35,7 @@ class FitMart extends StatelessWidget {
   Widget build(BuildContext context) {
     return LoginBlocProvider(
       child: AddExercisesScreenBlocProvider(
-        child: ExerciseSetsScreenBlocProvider(
+        child: CreateNewExerciseTitleScreenBlocProvider(
           child: CreatePlanWorkoutsBlocProvider(
             child: ExercisesBlocProvider(
               child: MyPlanWorkoutsBlocProvider(

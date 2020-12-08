@@ -1,4 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/blocs/add_exercises_screen_bloc.dart';
+import 'package:fit_mart/blocs/add_exercises_screen_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
+import 'package:fit_mart/models/exercise.dart';
+import 'package:fit_mart/models/set.dart';
+import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/create_new_exercise_title_screen.dart';
 import 'package:fit_mart/widgets/exercise_card_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +28,18 @@ class AddExercisesScreen extends StatefulWidget {
 }
 
 class AddExercisesScreenState extends State<AddExercisesScreen> {
+  FirestoreProvider firestoreProvider = FirestoreProvider();
+
+  String exerciseUid;
+
+  AddExercisesScreenBloc _bloc;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bloc = AddExercisesScreenBlocProvider.of(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,18 +72,26 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
                       ),
                       SimpleDialogOption(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CreateNewExerciseTitleScreen(
-                                workoutPlanUid: widget.workoutPlanUid,
-                                workoutUid: widget.workoutUid,
+                          firestoreProvider
+                              .addNewExerciseToWorkout(widget.workoutPlanUid,
+                                  widget.workoutUid, null, null)
+                              .then((value) {
+                            exerciseUid = value.id;
+                          }).whenComplete(() {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CreateNewExerciseTitleScreen(
+                                  workoutPlanUid: widget.workoutPlanUid,
+                                  workoutUid: widget.workoutUid,
+                                  exerciseUid: exerciseUid,
+                                ),
                               ),
-                            ),
-                          ).whenComplete(
-                            () => Navigator.pop(dialogContext),
-                          );
+                            ).whenComplete(
+                              () => Navigator.pop(dialogContext),
+                            );
+                          });
                         },
                         child: const Text('Create new exercise'),
                       ),
@@ -81,17 +107,55 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
         title: Text(widget.workoutTitle),
       ),
       body: SafeArea(
-          child: ListView(
-        children: [
-          ExerciseCardWidget(
-            title: 'TITLE',
-            sets: 4,
-            reps: 12,
-            rest: 30,
-            workoutButtonText: 'ADD EXERCISE',
+        child: StreamBuilder(
+            stream: firestoreProvider.exercisesQuerySnapshot(
+                widget.workoutPlanUid, widget.workoutUid),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                List<DocumentSnapshot> docs = snapshot.data.docs;
+                List<Exercise> exercisesList =
+                    _bloc.convertToExercisesList(docList: docs);
+
+                if (exercisesList.isNotEmpty) {
+                  return buildList(exercisesList);
+                } else {
+                  return Center(child: Text('Start adding exercises'));
+                }
+              } else {
+                return Center(child: Text('Start adding exercises'));
+              }
+            }),
+      ),
+    );
+  }
+
+  ListView buildList(List<Exercise> myExercisesList) {
+    return ListView.builder(
+      padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
+      itemCount: myExercisesList.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreateNewExerciseTitleScreen(
+                  workoutPlanUid: widget.workoutPlanUid,
+                  workoutUid: widget.workoutUid,
+                  exerciseUid: myExercisesList[index].uid,
+                  exerciseTitle: myExercisesList[index].title,
+                  exerciseVideoUrl: myExercisesList[index].videoUrl,
+                ),
+              ),
+            );
+          },
+          child: ExerciseCardWidget(
+            title: myExercisesList[index].title,
+            videoUrl: myExercisesList[index].videoUrl,
           ),
-        ],
-      )),
+        );
+      },
     );
   }
 }

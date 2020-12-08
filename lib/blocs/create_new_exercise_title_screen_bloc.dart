@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:flutter/cupertino.dart';
 
-class ExerciseSetsScreenBloc {
+class CreateNewExerciseTitleScreenBloc {
   List<Set> convertToSetsList({@required List<DocumentSnapshot> docList}) {
     List<Set> mySetsList = [];
     docList.forEach((document) {

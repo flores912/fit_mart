@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc.dart';
+import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc_provider.dart';
+import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'package:fit_mart/screens/exercise_sets_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
+import 'package:fit_mart/widgets/edit_set_widget.dart';
 import 'package:fit_mart/widgets/video_player_workout_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +17,22 @@ import 'package:video_player/video_player.dart';
 import '../constants.dart';
 
 class CreateNewExerciseTitleScreen extends StatefulWidget {
-  static const String title = 'New Exercise';
+  static const String title = 'Edit Exercise';
   static const String id = 'create_new_exercise_title_screen';
 
   final String workoutPlanUid;
   final String workoutUid;
+  final String exerciseUid;
+  final String exerciseTitle;
+  final String exerciseVideoUrl;
 
   const CreateNewExerciseTitleScreen(
-      {Key key, this.workoutPlanUid, this.workoutUid})
+      {Key key,
+      this.workoutPlanUid,
+      this.workoutUid,
+      this.exerciseUid,
+      this.exerciseTitle,
+      this.exerciseVideoUrl})
       : super(key: key);
 
   @override
@@ -50,7 +62,15 @@ class CreateNewExerciseTitleScreenState
 
   FirestoreProvider firestoreProvider = FirestoreProvider();
 
-  String exerciseUid;
+  CreateNewExerciseTitleScreenBloc _bloc;
+
+  List<Set> mySetsList;
+  List<int> updatedSetsReps = [];
+  List<int> updatedSetsRest = [];
+
+  bool isKeyboardVisible = false;
+
+  bool autoFocus = false;
 
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
@@ -94,44 +114,102 @@ class CreateNewExerciseTitleScreenState
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bloc = CreateNewExerciseTitleScreenBlocProvider.of(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    title = widget.exerciseTitle;
+    videoUrl = widget.exerciseVideoUrl;
+    if (widget.exerciseVideoUrl != null) {
+      _controller = VideoPlayerController.network(videoUrl);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FloatingActionButton.extended(
+          backgroundColor: kPrimaryColor,
+          onPressed: () {
+            firestoreProvider.addNewSetToExercise(
+                widget.workoutPlanUid,
+                widget.workoutUid,
+                widget.exerciseUid,
+                mySetsList.length + 1,
+                null,
+                null);
+          },
+          label: Text('Add new set'),
+          icon: Icon(Icons.add),
+        ),
+      ),
       appBar: AppBar(
         title: Text(CreateNewExerciseTitleScreen.title),
         actions: [
           FlatButton(
             onPressed: () {
-              print(widget.workoutUid);
-              firestoreProvider.uploadVideoFile(videoFile).whenComplete(() {
-                firestoreProvider.downloadURL(videoFile.path).then((value) {
-                  videoUrl = value;
-                  firestoreProvider
-                      .addNewExerciseToWorkout(
+              if (videoFile != null) {
+                firestoreProvider.uploadVideoFile(videoFile).whenComplete(() {
+                  firestoreProvider.downloadURL(videoFile.path).then((value) {
+                    videoUrl = value;
+                    firestoreProvider
+                        .updateNewExerciseForWorkout(
+                      widget.workoutPlanUid,
+                      widget.workoutUid,
+                      widget.exerciseUid,
+                      title,
+                      videoUrl,
+                    )
+                        .whenComplete(() {
+                      //save
+                      for (var i = 0; i < mySetsList.length; i++) {
+                        firestoreProvider.updateSetForExercise(
+                            widget.workoutPlanUid,
+                            widget.workoutUid,
+                            widget.exerciseUid,
+                            mySetsList[i].uid,
+                            updatedSetsReps[i],
+                            updatedSetsRest[i]);
+                      }
+                    }).whenComplete(() => Navigator.pop(context));
+                  });
+                });
+              } else {
+                firestoreProvider
+                    .updateNewExerciseForWorkout(
+                  widget.workoutPlanUid,
+                  widget.workoutUid,
+                  widget.exerciseUid,
+                  title,
+                  videoUrl,
+                )
+                    .whenComplete(() {
+                  //save
+                  for (var i = 0; i < mySetsList.length; i++) {
+                    firestoreProvider.updateSetForExercise(
                         widget.workoutPlanUid,
                         widget.workoutUid,
-                        title,
-                        videoUrl,
-                      )
-                      .then((value) => exerciseUid = value.id)
-                      .whenComplete(() => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ExerciseSetsScreen(
-                                workoutPlanUid: widget.workoutPlanUid,
-                                workoutUid: widget.workoutUid,
-                                exerciseUid: exerciseUid,
-                                exerciseTitle: title,
-                              ),
-                            ),
-                          ));
-                });
-              });
+                        widget.exerciseUid,
+                        mySetsList[i].uid,
+                        updatedSetsReps[i],
+                        updatedSetsRest[i]);
+                  }
+                }).whenComplete(() => Navigator.pop(context));
+              }
+
               //next step
             },
             child: Text(
-              'Next',
+              'Save',
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -154,9 +232,9 @@ class CreateNewExerciseTitleScreenState
                         ? Container(
                             height: MediaQuery.of(context).size.width / 1.78,
                             child: VideoPlayerWorkoutWidget(
-                              looping: false,
-                              videoPlayerController: _controller,
-                            ),
+                                looping: false,
+                                showControls: true,
+                                videoPlayerController: _controller),
                           )
                         : Container(
                             color: Colors.grey.shade300,
@@ -164,7 +242,8 @@ class CreateNewExerciseTitleScreenState
                             child: Icon(
                               Icons.play_circle_outline_rounded,
                               color: Colors.white,
-                              size: 100,
+                              size:
+                                  MediaQuery.of(context).size.width / 1.78 / 2,
                             ))),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -172,12 +251,10 @@ class CreateNewExerciseTitleScreenState
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      color: kPrimaryColor,
+                      color: Colors.white,
+                      textColor: kPrimaryColor,
                       child: Text(
                         'Add video demo',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
                       ),
                       onPressed: () {
                         // getVideo(false).whenComplete(() {
@@ -199,8 +276,11 @@ class CreateNewExerciseTitleScreenState
                               children: [
                                 SimpleDialogOption(
                                   onPressed: () {
-                                    getVideo(false).whenComplete(
-                                        () => _onControllerChange(videoFile));
+                                    getVideo(false).whenComplete(() {
+                                      if (videoFile != null) {
+                                        _onControllerChange(videoFile);
+                                      }
+                                    });
                                     Navigator.pop(dialogContext);
                                   },
                                   child: const Text(
@@ -209,8 +289,11 @@ class CreateNewExerciseTitleScreenState
                                 ),
                                 SimpleDialogOption(
                                   onPressed: () {
-                                    getVideo(true).whenComplete(
-                                        () => _onControllerChange(videoFile));
+                                    getVideo(true).whenComplete(() {
+                                      if (videoFile != null) {
+                                        _onControllerChange(videoFile);
+                                      }
+                                    });
                                     Navigator.pop(dialogContext);
                                   },
                                   child: const Text('Record from camera'),
@@ -227,9 +310,46 @@ class CreateNewExerciseTitleScreenState
                     textInputType: TextInputType.text,
                     labelText: 'Title',
                     obscureText: false,
+                    initialValue: widget.exerciseTitle,
                     onChanged: (value) {
                       title = value;
                     },
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Sets',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                    child: StreamBuilder(
+                        stream: firestoreProvider.exerciseSetsQuerySnapshot(
+                            widget.workoutPlanUid,
+                            widget.workoutUid,
+                            widget.exerciseUid),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (snapshot.hasData) {
+                            List<DocumentSnapshot> docs = snapshot.data.docs;
+                            mySetsList = _bloc.convertToSetsList(docList: docs);
+
+                            if (mySetsList.isNotEmpty) {
+                              return Scrollbar(child: buildList(mySetsList));
+                            } else {
+                              return Center(child: Text('Start adding sets!'));
+                            }
+                          } else {
+                            return Center(child: Text('Start adding sets!'));
+                          }
+                        }),
                   ),
                 ),
               ],
@@ -237,6 +357,57 @@ class CreateNewExerciseTitleScreenState
           ),
         ),
       ),
+    );
+  }
+
+  ReorderableListView buildList(List<Set> mySetsList) {
+    return ReorderableListView(
+      children: List.generate(mySetsList.length, (index) {
+        reps = mySetsList[index].reps;
+        updatedSetsReps.add(reps);
+        reps = mySetsList[index].rest;
+        updatedSetsRest.add(rest);
+        return EditSetWidget(
+          key: ValueKey(mySetsList[index].uid),
+          set: index + 1,
+          reps: mySetsList[index].reps,
+          rest: mySetsList[index].rest,
+          onChangedReps: (reps) {
+            setState(() {
+              updatedSetsReps[index] = int.parse(reps);
+            });
+          },
+          onChangedRest: (rest) {
+            setState(() {
+              updatedSetsRest[index] = int.parse(rest);
+            });
+          },
+        );
+      }),
+      onReorder: (int oldIndex, int newIndex) {
+        if (newIndex > oldIndex) {
+          newIndex -= 1;
+        }
+        setState(() {
+          firestoreProvider
+              .updateSetOrderForExercise(
+            widget.workoutPlanUid,
+            widget.workoutUid,
+            widget.exerciseUid,
+            mySetsList[oldIndex].uid,
+            newIndex + 1,
+          )
+              .whenComplete(() {
+            firestoreProvider.updateSetOrderForExercise(
+              widget.workoutPlanUid,
+              widget.workoutUid,
+              widget.exerciseUid,
+              mySetsList[newIndex].uid,
+              oldIndex + 1,
+            );
+          });
+        });
+      },
     );
   }
 }

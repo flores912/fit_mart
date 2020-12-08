@@ -49,11 +49,9 @@ class FirestoreProvider {
   }
 
   Stream<QuerySnapshot> exercisesQuerySnapshot(
-      String userUid, String workoutPlanUid, String workoutUid) {
+      String workoutPlanUid, String workoutUid) {
     CollectionReference collectionReference = _firestore
-        .collection('users')
-        .doc(userUid)
-        .collection('myPlans')
+        .collection('workoutPlans')
         .doc(workoutPlanUid)
         .collection('workouts')
         .doc(workoutUid)
@@ -241,6 +239,25 @@ class FirestoreProvider {
     });
   }
 
+  Future<void> updateNewExerciseForWorkout(
+    String workoutPlanUid,
+    String workoutUid,
+    String exerciseUid,
+    String title,
+    String videoUrl,
+  ) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises');
+    await collectionReference.doc(exerciseUid).update({
+      'title': title,
+      'videoUrl': videoUrl,
+    });
+  }
+
   Future<DocumentReference> addNewSetToExercise(
     String workoutPlanUid,
     String workoutUid,
@@ -276,6 +293,48 @@ class FirestoreProvider {
         .collection('sets');
 
     return collectionReference.orderBy('set', descending: false).snapshots();
+  }
+
+  Future<void> updateSetOrderForExercise(
+    String workoutPlanUid,
+    String workoutUid,
+    String exerciseUid,
+    String setUid,
+    int setNumber,
+  ) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets');
+    await collectionReference.doc(setUid).update({
+      'set': setNumber,
+    });
+  }
+
+  Future<void> updateSetForExercise(
+    String workoutPlanUid,
+    String workoutUid,
+    String exerciseUid,
+    String setUid,
+    int reps,
+    int rest,
+  ) async {
+    CollectionReference collectionReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets');
+    await collectionReference.doc(setUid).update({
+      'reps': reps,
+      'rest': rest,
+    });
   }
 
   //FIREBASE STORAGE

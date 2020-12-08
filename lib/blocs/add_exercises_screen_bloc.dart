@@ -11,7 +11,6 @@ class AddExercisesScreenBloc {
         uid: document.id,
         title: document.get('title'),
         videoUrl: document.get('videoUrl'),
-        sets: document.get('sets'),
 
         // isDone: document.get('isDone:'),
       );

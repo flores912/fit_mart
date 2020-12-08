@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutSessionScreen extends StatefulWidget {
+  //TODO:EXERCISES QUERY SNAPSHOT CHANGED AND THAT'S WHY QUERY LIST IS EMPTY
   static const String id = 'workout_session_screen';
   final Workout workout;
   final MyWorkoutPlan myWorkoutPlan;

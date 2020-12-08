@@ -34,7 +34,6 @@ class CustomTextForm extends StatelessWidget {
     return TextFormField(
       initialValue: initialValue,
       inputFormatters: textInputFormatter,
-      autofocus: false,
       obscureText: obscureText,
       onChanged: onChanged,
       keyboardType: textInputType,
