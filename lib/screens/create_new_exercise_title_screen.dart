@@ -130,6 +130,12 @@ class CreateNewExerciseTitleScreenState
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -158,30 +164,31 @@ class CreateNewExerciseTitleScreenState
           FlatButton(
             onPressed: () {
               if (videoFile != null) {
-                firestoreProvider.uploadVideoFile(videoFile).whenComplete(() {
-                  firestoreProvider.downloadURL(videoFile.path).then((value) {
-                    videoUrl = value;
-                    firestoreProvider
-                        .updateNewExerciseForWorkout(
-                      widget.workoutPlanUid,
-                      widget.workoutUid,
-                      widget.exerciseUid,
-                      title,
-                      videoUrl,
-                    )
-                        .whenComplete(() {
-                      //save
-                      for (var i = 0; i < mySetsList.length; i++) {
-                        firestoreProvider.updateSetForExercise(
-                            widget.workoutPlanUid,
-                            widget.workoutUid,
-                            widget.exerciseUid,
-                            mySetsList[i].uid,
-                            updatedSetsReps[i],
-                            updatedSetsRest[i]);
-                      }
-                    }).whenComplete(() => Navigator.pop(context));
-                  });
+                print(videoFile);
+                firestoreProvider
+                    .downloadURL(videoFile, widget.exerciseUid)
+                    .then((value) {
+                  videoUrl = value;
+                  firestoreProvider
+                      .updateNewExerciseForWorkout(
+                    widget.workoutPlanUid,
+                    widget.workoutUid,
+                    widget.exerciseUid,
+                    title,
+                    videoUrl,
+                  )
+                      .whenComplete(() {
+                    //save
+                    for (var i = 0; i < mySetsList.length; i++) {
+                      firestoreProvider.updateSetForExercise(
+                          widget.workoutPlanUid,
+                          widget.workoutUid,
+                          widget.exerciseUid,
+                          mySetsList[i].uid,
+                          updatedSetsReps[i],
+                          updatedSetsRest[i]);
+                    }
+                  }).whenComplete(() => Navigator.pop(context));
                 });
               } else {
                 firestoreProvider
@@ -233,6 +240,7 @@ class CreateNewExerciseTitleScreenState
                             height: MediaQuery.of(context).size.width / 1.78,
                             child: VideoPlayerWorkoutWidget(
                                 looping: false,
+                                autoPlay: false,
                                 showControls: true,
                                 videoPlayerController: _controller),
                           )
@@ -365,7 +373,7 @@ class CreateNewExerciseTitleScreenState
       children: List.generate(mySetsList.length, (index) {
         reps = mySetsList[index].reps;
         updatedSetsReps.add(reps);
-        reps = mySetsList[index].rest;
+        rest = mySetsList[index].rest;
         updatedSetsRest.add(rest);
         return EditSetWidget(
           key: ValueKey(mySetsList[index].uid),

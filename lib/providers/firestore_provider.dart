@@ -337,35 +337,10 @@ class FirestoreProvider {
     });
   }
 
-  //FIREBASE STORAGE
-  Future<void> uploadVideoFile(File file) async {
-    await storage
-        .ref()
-        .child(_firebaseAuth.currentUser.uid + file.path)
-        .putFile(file, StorageMetadata(contentType: 'video/mp4'));
-    // try {
-    //   await _firebaseStorage.FirebaseStorage.instance
-    //       .ref('uploads/file-to-upload.png')
-    //       .putFile(file);
-    // } on firebase_core.FirebaseException catch (e) {
-    //   // e.g, e.code == 'canceled'
-    // }
-  }
-
-  Future<void> uploadImageFile(File file) async {
-    await storage.ref().child(file.path).putFile(file);
-    // try {
-    //   await _firebaseStorage.FirebaseStorage.instance
-    //       .ref('uploads/file-to-upload.png')
-    //       .putFile(file);
-    // } on firebase_core.FirebaseException catch (e) {
-    //   // e.g, e.code == 'canceled'
-    // }
-  }
-
-  Future<String> downloadURL(String filePath) async {
-    String urlPath = _firebaseAuth.currentUser.uid + filePath;
-    return await storage.ref().child(urlPath).getDownloadURL();
+  Future<String> downloadURL(File file, String path) async {
+    final Reference reference = storage.ref().child(path);
+    await reference.putFile(file, SettableMetadata(contentType: 'video/mp4'));
+    return await reference.getDownloadURL();
 
     // Within your widgets:
     // Image.network(downloadURL);

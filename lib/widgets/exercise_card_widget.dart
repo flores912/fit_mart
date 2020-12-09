@@ -1,17 +1,25 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:fit_mart/widgets/video_player_workout_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../constants.dart';
 
 class ExerciseCardWidget extends StatelessWidget {
   final String title;
   final String videoUrl;
+
+  final String filePath;
+
   const ExerciseCardWidget({
     Key key,
     this.title,
     this.videoUrl,
+    this.filePath,
   }) : super(key: key);
 
   @override
@@ -35,13 +43,7 @@ class ExerciseCardWidget extends StatelessWidget {
                         child: Container(
                           height: 100,
                           width: 100,
-                          child: VideoPlayerWorkoutWidget(
-                            looping: true,
-                            autoPlay: false,
-                            showControls: false,
-                            videoPlayerController:
-                                VideoPlayerController.network(videoUrl),
-                          ),
+                          child: Image.file(File(filePath)),
                         ),
                       ),
                 Column(
