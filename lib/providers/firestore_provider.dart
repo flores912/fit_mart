@@ -36,6 +36,14 @@ class FirestoreProvider {
     return collectionReference.snapshots();
   }
 
+  Stream<QuerySnapshot> myWorkoutPlansLibraryQuerySnapshot() {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    return collectionReference
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
   Stream<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(
       String userUid, String workoutPlanUid) {
     CollectionReference collectionReference = _firestore
@@ -164,12 +172,15 @@ class FirestoreProvider {
   }
 
   Future<void> addDaysToPlan(int days, String workoutPlanUid) async {
-    CollectionReference collectionReference = _firestore
-        .collection('workoutPlans')
+    CollectionReference workoutPlansReference =
+        _firestore.collection('workoutPlans');
+    await workoutPlansReference
         .doc(workoutPlanUid)
-        .collection('workouts');
+        .update({'numberOfDays': days});
+    CollectionReference workoutsReference =
+        workoutPlansReference.doc(workoutPlanUid).collection('workouts');
     for (int i = 1; i <= days; i++) {
-      await collectionReference.doc('day ' + i.toString()).set({
+      await workoutsReference.doc('day ' + i.toString()).set({
         'day': i,
         'numberOfExercises': null,
         'title': null,

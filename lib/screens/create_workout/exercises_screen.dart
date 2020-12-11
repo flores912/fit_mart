@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,33 +6,35 @@ import 'package:fit_mart/blocs/add_exercises_screen_bloc.dart';
 import 'package:fit_mart/blocs/add_exercises_screen_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/models/exercise.dart';
-import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'package:fit_mart/screens/create_new_exercise_title_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_exercise/new_exercise_screen.dart';
 import 'package:fit_mart/widgets/exercise_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-import 'add_exercises_list_screen.dart';
-
-class AddExercisesScreen extends StatefulWidget {
-  static const String id = 'add_exercises_screen';
+class ExercisesScreen extends StatefulWidget {
+  static const String id = 'exercises_screen';
 
   final String workoutTitle;
   final String workoutPlanUid;
   final String workoutUid;
+  final bool isEdit;
 
-  const AddExercisesScreen(
-      {Key key, this.workoutTitle, this.workoutPlanUid, this.workoutUid})
+  const ExercisesScreen(
+      {Key key,
+      this.workoutTitle,
+      this.workoutPlanUid,
+      this.workoutUid,
+      this.isEdit})
       : super(key: key);
 
   @override
-  AddExercisesScreenState createState() => AddExercisesScreenState();
+  ExercisesScreenState createState() => ExercisesScreenState();
 }
 
-class AddExercisesScreenState extends State<AddExercisesScreen> {
+class ExercisesScreenState extends State<ExercisesScreen> {
   FirestoreProvider firestoreProvider = FirestoreProvider();
 
   String exerciseUid;
@@ -63,13 +66,13 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
                     ),
                     children: [
                       SimpleDialogOption(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                                  context, AddExercisesListScreen.id)
-                              .whenComplete(
-                            () => Navigator.pop(dialogContext),
-                          );
-                        },
+                        // onPressed: () {
+                        //   Navigator.pushNamed(
+                        //           context, AddExercisesListScreen.id)
+                        //       .whenComplete(
+                        //     () => Navigator.pop(dialogContext),
+                        //   );
+                        // },
                         child: const Text(
                           'Add exercises from library',
                         ),
@@ -85,8 +88,7 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    CreateNewExerciseTitleScreen(
+                                builder: (context) => NewExerciseScreen(
                                   workoutPlanUid: widget.workoutPlanUid,
                                   workoutUid: widget.workoutUid,
                                   exerciseUid: exerciseUid,
@@ -139,16 +141,19 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
       padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
       itemCount: myExercisesList.length,
       itemBuilder: (context, index) {
-        String thumb;
+        File thumbnailFile;
+        Uint8List bytes;
         getThumbnailPath(myExercisesList[index].videoUrl).then((value) {
-          thumb = value;
+          thumbnailFile = File(value);
+          bytes = thumbnailFile.readAsBytesSync();
+          print(bytes.isEmpty);
         });
         return GestureDetector(
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CreateNewExerciseTitleScreen(
+                builder: (context) => NewExerciseScreen(
                   workoutPlanUid: widget.workoutPlanUid,
                   workoutUid: widget.workoutUid,
                   exerciseUid: myExercisesList[index].uid,
@@ -161,7 +166,6 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
           child: ExerciseCardWidget(
             title: myExercisesList[index].title,
             videoUrl: myExercisesList[index].videoUrl,
-            filePath: thumb,
           ),
         );
       },
@@ -177,6 +181,6 @@ class AddExercisesScreenState extends State<AddExercisesScreen> {
       maxHeight:
           64, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
       quality: 75,
-    ).then((value) => value);
+    );
   }
 }

@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'create_new_plan_cover.dart';
+import 'cover_screen.dart';
 
 class CreateNewPlanPricingScreen extends StatefulWidget {
-  static const String title = ' Step 5 of 7: Pricing';
-  static const String id = 'create_new_plan_pricing_screen';
+  static const String title = ' Step 5 of 7: Price';
+  static const String id = 'price_screen';
 
   @override
   CreateNewPlanPricingScreenState createState() =>

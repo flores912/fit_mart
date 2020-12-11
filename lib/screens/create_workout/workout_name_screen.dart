@@ -1,32 +1,27 @@
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'package:fit_mart/screens/add_exercises_list_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
-import 'package:fit_mart/widgets/exercise_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
-import 'add_exercises_screen.dart';
+import '../../constants.dart';
+import 'exercises_screen.dart';
 
-class CreateNewWorkoutTitleScreen extends StatefulWidget {
-  static const String title = 'Workout Title';
-  static const String id = 'create_new_workout_title_screen';
+class WorkoutNameScreen extends StatefulWidget {
+  static const String title = 'Workout Name';
+  static const String id = 'workout_name_screen';
 
   final String workoutPlanUid;
   final String workoutUid;
 
-  const CreateNewWorkoutTitleScreen(
-      {Key key, this.workoutPlanUid, this.workoutUid})
+  const WorkoutNameScreen({Key key, this.workoutPlanUid, this.workoutUid})
       : super(key: key);
 
   @override
-  CreateNewWorkoutTitleScreenState createState() =>
-      CreateNewWorkoutTitleScreenState();
+  WorkoutNameScreenState createState() => WorkoutNameScreenState();
 }
 
-class CreateNewWorkoutTitleScreenState
-    extends State<CreateNewWorkoutTitleScreen> {
-  String title;
+class WorkoutNameScreenState extends State<WorkoutNameScreen> {
+  String workoutName;
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +34,13 @@ class CreateNewWorkoutTitleScreenState
               FirestoreProvider firestoreProvider = FirestoreProvider();
               firestoreProvider
                   .updateNewWorkoutToWorkoutPlan(
-                      widget.workoutPlanUid, widget.workoutUid, title)
+                      widget.workoutPlanUid, widget.workoutUid, workoutName)
                   .whenComplete(
                     () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AddExercisesScreen(
-                          workoutTitle: title,
+                        builder: (context) => ExercisesScreen(
+                          workoutTitle: workoutName,
                           workoutUid: widget.workoutUid,
                           workoutPlanUid: widget.workoutPlanUid,
                         ),
@@ -61,7 +56,7 @@ class CreateNewWorkoutTitleScreenState
             ),
           )
         ],
-        title: Text(CreateNewWorkoutTitleScreen.title),
+        title: Text(WorkoutNameScreen.title),
       ),
       body: SafeArea(
         child: Column(
@@ -71,10 +66,10 @@ class CreateNewWorkoutTitleScreenState
               padding: const EdgeInsets.all(8.0),
               child: CustomTextForm(
                 textInputType: TextInputType.text,
-                labelText: 'Title',
+                labelText: 'Create Workout Name',
                 obscureText: false,
                 onChanged: (value) {
-                  title = value;
+                  workoutName = value;
                 },
               ),
             ),

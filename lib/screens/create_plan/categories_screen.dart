@@ -1,26 +1,32 @@
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'package:fit_mart/screens/create_new_plan_add_workouts_screen.dart';
-import 'package:fit_mart/screens/create_new_plan_length_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/plan_length_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
-class CreateNewPlanCategoriesScreen extends StatefulWidget {
+class CategoriesScreen extends StatefulWidget {
   static const String title = 'Step 2 of 7: Categories';
-  static const String id = 'create_new_plan_step_categories_screen';
+  static const String id = 'categories_screen';
 
   final String workoutPlanUid;
+  final String category;
+  final String location;
+  final String skillLevel;
+  final bool isEdit;
 
   @override
-  CreateNewPlanCategoriesScreenState createState() =>
-      CreateNewPlanCategoriesScreenState();
+  CategoriesScreenState createState() => CategoriesScreenState();
 
-  const CreateNewPlanCategoriesScreen({this.workoutPlanUid});
+  const CategoriesScreen(
+      {this.workoutPlanUid,
+      this.category,
+      this.location,
+      this.skillLevel,
+      this.isEdit});
 }
 
-class CreateNewPlanCategoriesScreenState
-    extends State<CreateNewPlanCategoriesScreen> {
+class CategoriesScreenState extends State<CategoriesScreen> {
   String _categoryValue;
   String _locationValue;
   String _skillLevelValue;
@@ -45,6 +51,13 @@ class CreateNewPlanCategoriesScreenState
     'Advanced',
     'Any',
   ];
+  @override
+  void initState() {
+    _categoryValue = widget.category;
+    _locationValue = widget.location;
+    _skillLevelValue = widget.skillLevel;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +80,7 @@ class CreateNewPlanCategoriesScreenState
                       () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CreateNewPlanLengthScreen(
+                          builder: (context) => PlanLengthScreen(
                             workoutPlanUid: widget.workoutPlanUid,
                           ),
                         ),
@@ -84,7 +97,7 @@ class CreateNewPlanCategoriesScreenState
             ),
           )
         ],
-        title: Text(CreateNewPlanCategoriesScreen.title),
+        title: Text(CategoriesScreen.title),
         centerTitle: true,
       ),
       body: SafeArea(

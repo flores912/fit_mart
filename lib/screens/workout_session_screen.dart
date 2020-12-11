@@ -3,7 +3,7 @@ import 'package:fit_mart/blocs/exercises_bloc.dart';
 import 'package:fit_mart/blocs/exercises_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/models/exercise.dart';
-import 'package:fit_mart/models/my_workout_plan.dart';
+import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/widgets/exercise_workout_session_widget.dart';
@@ -15,7 +15,7 @@ class WorkoutSessionScreen extends StatefulWidget {
   //TODO:EXERCISES QUERY SNAPSHOT CHANGED AND THAT'S WHY QUERY LIST IS EMPTY
   static const String id = 'workout_session_screen';
   final Workout workout;
-  final MyWorkoutPlan myWorkoutPlan;
+  final WorkoutPlan myWorkoutPlan;
 
   const WorkoutSessionScreen(
       {Key key, @required this.workout, @required this.myWorkoutPlan})

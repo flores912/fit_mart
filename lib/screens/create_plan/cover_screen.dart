@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/create_new_plan_video_overview.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/video_overview_screen.dart';
 import 'package:fit_mart/widgets/workout_plan_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 
 class CreateNewPlanCoverScreen extends StatefulWidget {
   static const String title = ' Step 6 of 7: Cover Photo';
-  static const String id = 'create_new_plan_cover_screen';
+  static const String id = 'cover_screen';
 
   @override
   CreateNewPlanCoverScreenState createState() =>
@@ -56,7 +56,7 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
         actions: [
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, CreateNewPlanVideoOverview.id);
+              Navigator.pushNamed(context, VideoOverviewScreen.id);
             },
             textColor: Colors.white,
             child: Text(
@@ -71,7 +71,10 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
         child: Column(
           children: [
             WorkoutPlanCardWidget(
-              image: _croppedImage,
+              image: Image.file(
+                _croppedImage,
+                fit: BoxFit.fill,
+              ),
             ),
             SizedBox(
               height: 16,

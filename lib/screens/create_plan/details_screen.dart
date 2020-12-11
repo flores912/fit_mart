@@ -1,24 +1,29 @@
 import 'dart:ui';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'package:fit_mart/screens/create_new_plan_categories.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/categories_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CreateNewPlanStepDescriptionScreen extends StatefulWidget {
-  static const String title = 'Step 1 of 7: Description';
-  static const String id = 'create_new_plan_step_description_screen';
+class DetailsScreen extends StatefulWidget {
+  static const String title = 'Step 1 of 7: Details';
+  static const String id = 'details_screen';
+
+  final bool isEdit;
+  final String workoutPlanTitle;
+  final String description;
+
+  const DetailsScreen(
+      {Key key, this.isEdit, this.workoutPlanTitle, this.description})
+      : super(key: key);
 
   @override
-  CreateNewPlanStepDescriptionScreenState createState() =>
-      CreateNewPlanStepDescriptionScreenState();
+  DetailsScreenState createState() => DetailsScreenState();
 }
 
-class CreateNewPlanStepDescriptionScreenState
-    extends State<CreateNewPlanStepDescriptionScreen> {
+class DetailsScreenState extends State<DetailsScreen> {
   String title;
 
   String description;
@@ -52,11 +57,13 @@ class CreateNewPlanStepDescriptionScreenState
                   docId = doc.id;
                 }).whenComplete(() {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => CreateNewPlanCategoriesScreen(
-                                workoutPlanUid: docId,
-                              )));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CategoriesScreen(
+                        workoutPlanUid: docId,
+                      ),
+                    ),
+                  );
                 });
               } else {
                 //complete required fields
@@ -69,7 +76,7 @@ class CreateNewPlanStepDescriptionScreenState
             ),
           )
         ],
-        title: Text(CreateNewPlanStepDescriptionScreen.title),
+        title: Text(DetailsScreen.title),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -82,10 +89,11 @@ class CreateNewPlanStepDescriptionScreenState
                 padding: const EdgeInsets.all(8.0),
                 child: CustomTextForm(
                   textInputType: TextInputType.text,
-                  labelText: 'Title',
+                  labelText: 'Create a title',
                   obscureText: false,
                   maxLength: 60,
                   maxLines: 1,
+                  initialValue: widget.workoutPlanTitle,
                   onChanged: (value) {
                     setState(() {
                       title = value;
@@ -99,7 +107,8 @@ class CreateNewPlanStepDescriptionScreenState
                     textInputType: TextInputType.text,
                     maxLength: 300,
                     maxLines: 4,
-                    labelText: 'Description',
+                    labelText: 'Add a description',
+                    initialValue: widget.description,
                     obscureText: false,
                     onChanged: (value) {
                       setState(() {

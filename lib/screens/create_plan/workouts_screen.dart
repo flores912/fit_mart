@@ -3,30 +3,28 @@ import 'package:fit_mart/blocs/create_plan_workouts_bloc.dart';
 import 'package:fit_mart/blocs/create_plan_workouts_provider.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'package:fit_mart/screens/create_new_plan_pricing.dart';
-import 'package:fit_mart/screens/create_new_workout_title_screen.dart';
+import 'package:fit_mart/screens/create_workout/exercises_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/price_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_workout/workout_name_screen.dart';
 import 'package:fit_mart/widgets/workout_card_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'add_workouts_list_screen.dart';
-
-class CreateNewPlanAddWorkoutsScreen extends StatefulWidget {
+class WorkoutsScreen extends StatefulWidget {
   static const String title = 'Step 4 of 7: Workouts';
-  static const String id = 'create_new_plan_add_workouts_screen';
+  static const String id = 'workouts_screen';
 
   final String workoutPlanUid;
+  final bool isEdit;
 
-  const CreateNewPlanAddWorkoutsScreen({Key key, this.workoutPlanUid})
+  const WorkoutsScreen({Key key, this.workoutPlanUid, this.isEdit})
       : super(key: key);
 
   @override
-  CreateNewPlanAddWorkoutsScreenState createState() =>
-      CreateNewPlanAddWorkoutsScreenState();
+  WorkoutsScreenState createState() => WorkoutsScreenState();
 }
 
-class CreateNewPlanAddWorkoutsScreenState
-    extends State<CreateNewPlanAddWorkoutsScreen> {
+class WorkoutsScreenState extends State<WorkoutsScreen> {
   FirestoreProvider firestoreProvider = FirestoreProvider();
 
   CreatePlanWorkoutsBloc _bloc;
@@ -41,7 +39,7 @@ class CreateNewPlanAddWorkoutsScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(CreateNewPlanAddWorkoutsScreen.title),
+        title: Text(WorkoutsScreen.title),
         centerTitle: true,
         actions: [
           FlatButton(
@@ -99,7 +97,21 @@ class CreateNewPlanAddWorkoutsScreenState
       crossAxisCount: 2,
       children: List.generate(myWorkoutsList.length, (index) {
         return GestureDetector(
-          onTap: () {},
+          onTap: () {
+            if (myWorkoutsList[index].title != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExercisesScreen(
+                    isEdit: true,
+                    workoutPlanUid: widget.workoutPlanUid,
+                    workoutUid: myWorkoutsList[index].uid,
+                    workoutTitle: myWorkoutsList[index].title,
+                  ),
+                ),
+              );
+            }
+          },
           child: WorkoutCardWidget(
             title: myWorkoutsList[index].title,
             day: myWorkoutsList[index].day,
@@ -114,13 +126,13 @@ class CreateNewPlanAddWorkoutsScreenState
                       ),
                       children: [
                         SimpleDialogOption(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                    context, AddWorkoutsListScreen.id)
-                                .whenComplete(
-                              () => Navigator.pop(dialogContext),
-                            );
-                          },
+                          // onPressed: () {
+                          //   Navigator.pushNamed(
+                          //           context, AddWorkoutsListScreen.id)
+                          //       .whenComplete(
+                          //     () => Navigator.pop(dialogContext),
+                          //   );
+                          // },
                           child: const Text(
                             'Add workout from library',
                           ),
@@ -130,8 +142,7 @@ class CreateNewPlanAddWorkoutsScreenState
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    CreateNewWorkoutTitleScreen(
+                                builder: (context) => WorkoutNameScreen(
                                   workoutPlanUid: widget.workoutPlanUid,
                                   workoutUid: myWorkoutsList[index].uid,
                                 ),

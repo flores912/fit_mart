@@ -1,9 +1,10 @@
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/account_screen.dart';
-import 'package:fit_mart/screens/create_new_plan_step_description_screen.dart';
-import 'package:fit_mart/screens/discover_screen.dart';
-import 'package:fit_mart/screens/my_plans_screen.dart';
-import 'package:fit_mart/screens/wishlist_screen.dart';
+import 'package:fit_mart/screens/library_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/home/account_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/details_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/home/discover_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/home/my_plans_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/home/wishlist_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,6 +38,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, LibraryScreen.id);
+              },
+              child: Icon(Icons.library_books_rounded),
+            ),
+          )
+        ],
       ),
       body: SafeArea(
         child: IndexedStack(
@@ -46,16 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Create New Plan',
+        tooltip: 'Create',
         onPressed: () {
-          Navigator.pushNamed(context, CreateNewPlanStepDescriptionScreen.id);
+          Navigator.pushNamed(context, DetailsScreen.id);
         },
         child: Icon(Icons.add),
         backgroundColor: kPrimaryColor,
         elevation: 2.0,
       ),
       bottomNavigationBar: FABBottomAppBar(
-        centerItemText: 'Create New Plan',
+        centerItemText: 'Create',
         color: Colors.grey,
         onTabSelected: _selectedTab,
         selectedColor: Colors.red,

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/blocs/my_workout_plans_bloc.dart';
 import 'package:fit_mart/blocs/my_workout_plans_bloc_provider.dart';
-import 'package:fit_mart/models/my_workout_plan.dart';
+import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/my_plan_workouts_screen.dart';
 import 'package:fit_mart/widgets/my_workout_plan_widget.dart';
@@ -36,7 +36,7 @@ class MyPlansScreenState extends State<MyPlansScreen> {
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             List<DocumentSnapshot> docs = snapshot.data.docs;
-            List<MyWorkoutPlan> myWorkoutPlansList =
+            List<WorkoutPlan> myWorkoutPlansList =
                 _bloc.convertToMyWorkoutPlanList(docList: docs);
 
             if (myWorkoutPlansList.isNotEmpty) {
@@ -50,7 +50,7 @@ class MyPlansScreenState extends State<MyPlansScreen> {
         });
   }
 
-  ListView buildList(List<MyWorkoutPlan> myWorkoutPlansList) {
+  ListView buildList(List<WorkoutPlan> myWorkoutPlansList) {
     return ListView.builder(
       itemCount: myWorkoutPlansList.length,
       itemBuilder: (context, index) {
@@ -66,7 +66,7 @@ class MyPlansScreenState extends State<MyPlansScreen> {
           child: MyWorkoutPlanWidget(
             title: myWorkoutPlansList[index].title,
             trainer: myWorkoutPlansList[index].trainer,
-            imageUrl: myWorkoutPlansList[index].imageUrl,
+            coverPhotoUrl: myWorkoutPlansList[index].coverPhotoUrl,
             progressValue: myWorkoutPlansList[index].progress,
           ),
         );

@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:better_player/better_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc.dart';
 import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc_provider.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
+import 'package:fit_mart/widgets/better_player_widget.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:fit_mart/widgets/edit_set_widget.dart';
 import 'package:fit_mart/widgets/video_player_workout_widget.dart';
@@ -14,11 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
-class CreateNewExerciseTitleScreen extends StatefulWidget {
+class NewExerciseScreen extends StatefulWidget {
   static const String title = 'Edit Exercise';
-  static const String id = 'create_new_exercise_title_screen';
+  static const String id = 'new_exercise_title_screen';
 
   final String workoutPlanUid;
   final String workoutUid;
@@ -26,7 +28,7 @@ class CreateNewExerciseTitleScreen extends StatefulWidget {
   final String exerciseTitle;
   final String exerciseVideoUrl;
 
-  const CreateNewExerciseTitleScreen(
+  const NewExerciseScreen(
       {Key key,
       this.workoutPlanUid,
       this.workoutUid,
@@ -36,12 +38,10 @@ class CreateNewExerciseTitleScreen extends StatefulWidget {
       : super(key: key);
 
   @override
-  CreateNewExerciseTitleScreenState createState() =>
-      CreateNewExerciseTitleScreenState();
+  NewExerciseScreenState createState() => NewExerciseScreenState();
 }
 
-class CreateNewExerciseTitleScreenState
-    extends State<CreateNewExerciseTitleScreen> {
+class NewExerciseScreenState extends State<NewExerciseScreen> {
   int rest;
 
   var videoUrl;
@@ -124,14 +124,10 @@ class CreateNewExerciseTitleScreenState
     super.initState();
     title = widget.exerciseTitle;
     videoUrl = widget.exerciseVideoUrl;
-    if (widget.exerciseVideoUrl != null) {
-      _controller = VideoPlayerController.network(videoUrl);
-    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -159,7 +155,7 @@ class CreateNewExerciseTitleScreenState
         ),
       ),
       appBar: AppBar(
-        title: Text(CreateNewExerciseTitleScreen.title),
+        title: Text(NewExerciseScreen.title),
         actions: [
           FlatButton(
             onPressed: () {
@@ -235,24 +231,35 @@ class CreateNewExerciseTitleScreenState
               children: [
                 Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: this._controller != null
+                    child: videoUrl == null
                         ? Container(
-                            height: MediaQuery.of(context).size.width / 1.78,
-                            child: VideoPlayerWorkoutWidget(
-                                looping: false,
-                                autoPlay: false,
-                                showControls: true,
-                                videoPlayerController: _controller),
-                          )
-                        : Container(
                             color: Colors.grey.shade300,
                             height: MediaQuery.of(context).size.width / 1.78,
-                            child: Icon(
-                              Icons.play_circle_outline_rounded,
-                              color: Colors.white,
-                              size:
-                                  MediaQuery.of(context).size.width / 1.78 / 2,
-                            ))),
+                            child: this._controller != null
+                                ? VideoPlayerWorkoutWidget(
+                                    looping: false,
+                                    autoPlay: false,
+                                    showControls: true,
+                                    videoPlayerController: _controller)
+                                : Container(
+                                    height: MediaQuery.of(context).size.width /
+                                        1.78,
+                                    child: Icon(
+                                      Icons.play_circle_outline_rounded,
+                                      color: Colors.white,
+                                    ),
+                                  ))
+                        : Container(
+                            height: MediaQuery.of(context).size.width / 1.78,
+                            child: BetterPlayerWidget(
+                              aspectRatio: 1,
+                              showControls: true,
+                              autoPlay: false,
+                              looping: false,
+                              betterPlayerDataSource:
+                                  BetterPlayerDataSource.network(videoUrl),
+                            ),
+                          )),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(

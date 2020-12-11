@@ -1,7 +1,7 @@
 import 'package:fit_mart/blocs/login_bloc.dart';
 import 'package:fit_mart/blocs/login_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/screens/home_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/home/home_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

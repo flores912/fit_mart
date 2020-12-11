@@ -51,12 +51,15 @@ class WorkoutCardWidget extends StatelessWidget {
                       )
                     : Column(
                         children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                          Center(
+                            child: Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),

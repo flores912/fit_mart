@@ -1,28 +1,26 @@
-import 'package:fit_mart/screens/create_new_plan_add_workouts_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/workouts_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CreateNewPlanVideoOverview extends StatefulWidget {
+class VideoOverviewScreen extends StatefulWidget {
   static const String title = ' Step 7 of 7: Video Overview';
-  static const String id = 'create_new_plan_video_overview_screen';
+  static const String id = 'video_overview_screen';
 
   @override
-  CreateNewPlanVideoOverviewState createState() =>
-      CreateNewPlanVideoOverviewState();
+  VideoOverviewScreenState createState() => VideoOverviewScreenState();
 }
 
-class CreateNewPlanVideoOverviewState
-    extends State<CreateNewPlanVideoOverview> {
+class VideoOverviewScreenState extends State<VideoOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(CreateNewPlanVideoOverview.title),
+        title: Text(VideoOverviewScreen.title),
         centerTitle: true,
         actions: [
           FlatButton(
             onPressed: () {
-              Navigator.pushNamed(context, CreateNewPlanAddWorkoutsScreen.id);
+              Navigator.pushNamed(context, WorkoutsScreen.id);
             },
             textColor: Colors.white,
             child: Text(

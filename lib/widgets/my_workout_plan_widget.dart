@@ -5,10 +5,10 @@ class MyWorkoutPlanWidget extends StatelessWidget {
   final String title;
   final double progressValue;
   final String trainer;
-  final String imageUrl;
+  final String coverPhotoUrl;
 
   MyWorkoutPlanWidget(
-      {this.title, this.progressValue, this.trainer, this.imageUrl});
+      {this.title, this.progressValue, this.trainer, this.coverPhotoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class MyWorkoutPlanWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.network(
-                imageUrl,
+                coverPhotoUrl,
                 height: 100,
                 width: 100,
               ),

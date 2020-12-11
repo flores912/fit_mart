@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/blocs/my_plan_workouts_bloc.dart';
 import 'package:fit_mart/blocs/my_plan_workouts_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
-import 'package:fit_mart/models/my_workout_plan.dart';
+import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/screens/workout_session_screen.dart';
 import 'package:fit_mart/widgets/current_plan_workout_widget.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 class MyPlanWorkoutsScreen extends StatefulWidget {
   static const String id = 'current_workout_plan_workouts_screen';
-  final MyWorkoutPlan myWorkoutPlan;
+  final WorkoutPlan myWorkoutPlan;
 
   const MyPlanWorkoutsScreen({Key key, @required this.myWorkoutPlan})
       : super(key: key);

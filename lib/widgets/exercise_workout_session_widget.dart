@@ -1,7 +1,7 @@
-import 'package:fit_mart/widgets/video_player_workout_widget.dart';
+import 'package:better_player/better_player.dart';
+import 'package:fit_mart/widgets/better_player_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 
 class ExerciseWorkoutSessionWidget extends StatelessWidget {
   final ListView setsList;
@@ -47,10 +47,11 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
                     SizedBox(
                       height: 8,
                     ),
-                    VideoPlayerWorkoutWidget(
-                      videoPlayerController:
-                          VideoPlayerController.network(videoUrl),
-                      looping: true,
+                    BetterPlayerWidget(
+                      aspectRatio: 1,
+                      autoPlay: true,
+                      betterPlayerDataSource:
+                          BetterPlayerDataSource.network(videoUrl),
                     ),
                     SizedBox(
                       height: 16,
