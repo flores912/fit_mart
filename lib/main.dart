@@ -1,7 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/blocs/add_exercises_screen_bloc_provider.dart';
-import 'package:fit_mart/blocs/create_plan_workouts_provider.dart';
+import 'package:fit_mart/blocs/create_plan/categories_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_plan/cover_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_plan/details_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_plan/plan_length_screen_bloc_provider.dart';
 import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_plan/price_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_plan/promo_video_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/create_plan/workouts_screen_bloc_provider.dart';
+import 'package:fit_mart/blocs/edit_workout_plan_screen_bloc_provider.dart';
 import 'package:fit_mart/blocs/library_screen_bloc_provider.dart';
 import 'package:fit_mart/blocs/my_plan_workouts_bloc_provider.dart';
 import 'package:fit_mart/blocs/exercises_bloc_provider.dart';
@@ -18,7 +25,7 @@ import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/plan_length_screen.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/price_screen.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/details_screen.dart';
-import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/video_overview_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/promo_video_screen.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_workout/workout_name_screen.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/home/home_screen.dart';
 import 'package:fit_mart/screens/login_screen.dart';
@@ -35,40 +42,57 @@ class FitMart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoginBlocProvider(
-      child: LibraryScreenBlocProvider(
-        child: AddExercisesScreenBlocProvider(
-          child: CreateNewExerciseTitleScreenBlocProvider(
-            child: CreatePlanWorkoutsBlocProvider(
-              child: ExercisesBlocProvider(
-                child: MyPlanWorkoutsBlocProvider(
-                  child: MyWorkoutPlansBlocProvider(
-                    child: MaterialApp(
-                      title: 'FitMart',
-                      theme: ThemeData.light().copyWith(
-                          primaryColor: kPrimaryColor,
-                          accentColor: kAccentColor,
-                          highlightColor: kPrimaryColor),
-                      initialRoute: LoginScreen.id,
-                      routes: {
-                        HomeScreen.id: (context) => HomeScreen(),
-                        LoginScreen.id: (context) => LoginScreen(),
-                        DetailsScreen.id: (context) => DetailsScreen(),
-                        WorkoutsScreen.id: (context) => WorkoutsScreen(),
-                        WorkoutNameScreen.id: (context) => WorkoutNameScreen(),
-                        NewExerciseScreen.id: (context) => NewExerciseScreen(),
-                        ExercisesScreen.id: (context) => ExercisesScreen(),
-                        CreateNewPlanCoverScreen.id: (context) =>
-                            CreateNewPlanCoverScreen(),
-                        CreateNewPlanPricingScreen.id: (context) =>
-                            CreateNewPlanPricingScreen(),
-                        VideoOverviewScreen.id: (context) =>
-                            VideoOverviewScreen(),
-                        CategoriesScreen.id: (context) => CategoriesScreen(),
-                        PlanLengthScreen.id: (context) => PlanLengthScreen(),
-                        LibraryScreen.id: (context) => LibraryScreen(),
-                        EditWorkoutPlanScreen.id: (context) =>
-                            EditWorkoutPlanScreen(),
-                      },
+      child: PromoVideoScreenBlocProvider(
+        child: CoverScreenBlocProvider(
+          child: EditWorkoutPlanScreenBlocProvider(
+            child: PriceScreenBlocProvider(
+              child: WorkoutsScreenBlocProvider(
+                child: PlanLengthScreenBlocProvider(
+                  child: CategoriesScreenBlocProvider(
+                    child: DetailsScreenBlocProvider(
+                      child: LibraryScreenBlocProvider(
+                        child: AddExercisesScreenBlocProvider(
+                          child: CreateNewExerciseTitleScreenBlocProvider(
+                            child: ExercisesBlocProvider(
+                              child: MyPlanWorkoutsBlocProvider(
+                                child: MyWorkoutPlansBlocProvider(
+                                  child: MaterialApp(
+                                    title: 'FitMart',
+                                    theme: ThemeData.light().copyWith(
+                                        primaryColor: kPrimaryColor,
+                                        accentColor: kAccentColor,
+                                        highlightColor: kPrimaryColor),
+                                    initialRoute: LoginScreen.id,
+                                    routes: {
+                                      HomeScreen.id: (context) => HomeScreen(),
+                                      LoginScreen.id: (context) =>
+                                          LoginScreen(),
+                                      DetailsScreen.id: (context) =>
+                                          DetailsScreen(),
+                                      WorkoutsScreen.id: (context) =>
+                                          WorkoutsScreen(),
+                                      WorkoutNameScreen.id: (context) =>
+                                          WorkoutNameScreen(),
+                                      NewExerciseScreen.id: (context) =>
+                                          NewExerciseScreen(),
+                                      ExercisesScreen.id: (context) =>
+                                          ExercisesScreen(),
+                                      CategoriesScreen.id: (context) =>
+                                          CategoriesScreen(),
+                                      PlanLengthScreen.id: (context) =>
+                                          PlanLengthScreen(),
+                                      LibraryScreen.id: (context) =>
+                                          LibraryScreen(),
+                                      EditWorkoutPlanScreen.id: (context) =>
+                                          EditWorkoutPlanScreen(),
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

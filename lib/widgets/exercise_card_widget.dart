@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:better_player/better_player.dart';
+import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/widgets/better_player_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +11,31 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../constants.dart';
 
-class ExerciseCardWidget extends StatelessWidget {
+class ExerciseCardWidget extends StatefulWidget {
   final String title;
   final String videoUrl;
 
-  const ExerciseCardWidget({
-    Key key,
-    this.title,
-    this.videoUrl,
-  }) : super(key: key);
+  const ExerciseCardWidget({Key key, this.title, this.videoUrl})
+      : super(key: key);
+
+  @override
+  _ExerciseCardWidgetState createState() => _ExerciseCardWidgetState();
+}
+
+class _ExerciseCardWidgetState extends State<ExerciseCardWidget> {
+  BetterPlayerConfiguration betterPlayerConfiguration;
+  BetterPlayerListVideoPlayerController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = BetterPlayerListVideoPlayerController();
+    betterPlayerConfiguration = BetterPlayerConfiguration(autoPlay: false);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +48,7 @@ class ExerciseCardWidget extends StatelessWidget {
             child: Row(
               children: [
                 //TODO: Here place video preview
-                videoUrl == null
+                widget.videoUrl == null
                     ? Container(
                         height: 100,
                         width: 100,
@@ -39,22 +56,30 @@ class ExerciseCardWidget extends StatelessWidget {
                       )
                     : Center(
                         child: Container(
-                            height: 100,
-                            width: 100,
-                            child: BetterPlayerWidget(
-                              autoPlay: false,
-                              showControls: false,
+                          height: 100,
+                          width: 100,
+                          child: BetterPlayerListVideoPlayer(
+                            BetterPlayerDataSource(
+                                BetterPlayerDataSourceType.NETWORK,
+                                widget.videoUrl),
+                            configuration: BetterPlayerConfiguration(
+                              controlsConfiguration:
+                                  BetterPlayerControlsConfiguration(
+                                showControls: false,
+                              ),
                               aspectRatio: 1,
-                              betterPlayerDataSource:
-                                  BetterPlayerDataSource.network(videoUrl),
-                            )),
+                            ),
+                            betterPlayerListVideoPlayerController: controller,
+                            autoPlay: false,
+                          ),
+                        ),
                       ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
-                      child: title == null
+                      child: widget.title == null
                           ? Text(
                               '(No title)',
                               style: TextStyle(
@@ -63,7 +88,7 @@ class ExerciseCardWidget extends StatelessWidget {
                                   color: Colors.black),
                             )
                           : Text(
-                              title,
+                              widget.title,
                               style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold,

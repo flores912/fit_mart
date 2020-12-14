@@ -12,7 +12,7 @@ class WorkoutPlan {
   final bool isPublished;
   final String location;
   final int numberOfDays;
-  final int price;
+  final double price;
   final int rating;
   final String skillLevel;
   final String userUid; //Todo change to trainerUid

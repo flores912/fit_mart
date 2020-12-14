@@ -1,4 +1,6 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:fit_mart/blocs/create_plan/price_screen_bloc.dart';
+import 'package:fit_mart/blocs/create_plan/price_screen_bloc_provider.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,34 +8,88 @@ import 'package:flutter/services.dart';
 
 import 'cover_screen.dart';
 
-class CreateNewPlanPricingScreen extends StatefulWidget {
+class PriceScreen extends StatefulWidget {
   static const String title = ' Step 5 of 7: Price';
   static const String id = 'price_screen';
 
+  final bool isEdit;
+  final String workoutPlanUid;
+  final double price;
+
+  const PriceScreen({Key key, this.isEdit, this.workoutPlanUid, this.price})
+      : super(key: key);
+
   @override
-  CreateNewPlanPricingScreenState createState() =>
-      CreateNewPlanPricingScreenState();
+  PriceScreenState createState() => PriceScreenState();
 }
 
-class CreateNewPlanPricingScreenState
-    extends State<CreateNewPlanPricingScreen> {
+class PriceScreenState extends State<PriceScreen> {
+  PriceScreenBloc _bloc;
+
+  String price;
+
+  @override
+  void initState() {
+    if (widget.price != null) {
+      price = widget.price.toString();
+    }
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _bloc = PriceScreenBlocProvider.of(context);
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(CreateNewPlanPricingScreen.title),
+        title: Text(PriceScreen.title),
         centerTitle: true,
         actions: [
-          FlatButton(
-            onPressed: () {
-              Navigator.pushNamed(context, CreateNewPlanCoverScreen.id);
-            },
-            textColor: Colors.white,
-            child: Text(
-              'Next',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          )
+          widget.isEdit == true
+              ? FlatButton(
+                  onPressed: () {
+                    _bloc
+                        .updateWorkoutPlanPrice(
+                          widget.workoutPlanUid,
+                          double.parse(price),
+                        )
+                        .whenComplete(() => Navigator.pop(context));
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Save',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                )
+              : FlatButton(
+                  onPressed: () {
+                    _bloc
+                        .updateWorkoutPlanPrice(
+                          widget.workoutPlanUid,
+                          double.parse(price),
+                        )
+                        .whenComplete(
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CoverScreen(
+                                workoutPlanUid: widget.workoutPlanUid,
+                              ),
+                            ),
+                          ),
+                        );
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Next',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
         ],
       ),
       body: SafeArea(
@@ -59,6 +115,12 @@ class CreateNewPlanPricingScreenState
                     ],
                     labelText: 'Price',
                     obscureText: false,
+                    initialValue: price,
+                    onChanged: (value) {
+                      setState(() {
+                        price = value;
+                      });
+                    },
                   ),
                 ),
                 Padding(

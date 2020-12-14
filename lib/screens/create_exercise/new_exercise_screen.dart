@@ -1,6 +1,6 @@
 import 'dart:io';
-
 import 'package:better_player/better_player.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fit_mart/blocs/create_new_exercise_title_screen_bloc.dart';
@@ -57,8 +57,6 @@ class NewExerciseScreenState extends State<NewExerciseScreen> {
   File videoFile;
 
   VideoPlayerController _controller;
-
-  File newVideoFile;
 
   FirestoreProvider firestoreProvider = FirestoreProvider();
 
@@ -160,9 +158,8 @@ class NewExerciseScreenState extends State<NewExerciseScreen> {
           FlatButton(
             onPressed: () {
               if (videoFile != null) {
-                print(videoFile);
                 firestoreProvider
-                    .downloadURL(videoFile, widget.exerciseUid)
+                    .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
                     .then((value) {
                   videoUrl = value;
                   firestoreProvider
@@ -252,9 +249,9 @@ class NewExerciseScreenState extends State<NewExerciseScreen> {
                         : Container(
                             height: MediaQuery.of(context).size.width / 1.78,
                             child: BetterPlayerWidget(
-                              aspectRatio: 1,
                               showControls: true,
                               autoPlay: false,
+                              aspectRatio: 1,
                               looping: false,
                               betterPlayerDataSource:
                                   BetterPlayerDataSource.network(videoUrl),

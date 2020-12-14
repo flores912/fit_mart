@@ -48,7 +48,6 @@ class ExerciseWorkoutSessionWidget extends StatelessWidget {
                       height: 8,
                     ),
                     BetterPlayerWidget(
-                      aspectRatio: 1,
                       autoPlay: true,
                       betterPlayerDataSource:
                           BetterPlayerDataSource.network(videoUrl),

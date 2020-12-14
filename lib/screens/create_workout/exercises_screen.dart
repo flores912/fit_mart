@@ -141,13 +141,6 @@ class ExercisesScreenState extends State<ExercisesScreen> {
       padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
       itemCount: myExercisesList.length,
       itemBuilder: (context, index) {
-        File thumbnailFile;
-        Uint8List bytes;
-        getThumbnailPath(myExercisesList[index].videoUrl).then((value) {
-          thumbnailFile = File(value);
-          bytes = thumbnailFile.readAsBytesSync();
-          print(bytes.isEmpty);
-        });
         return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -169,18 +162,6 @@ class ExercisesScreenState extends State<ExercisesScreen> {
           ),
         );
       },
-    );
-  }
-
-  //TODO IMPLEMENT THUMBNAILS INSTEAD OF VIDEOS TO AVOID EXOPLAYER FORM CRASHING BECAUSE OF TO MANY RESOURCES OPENED
-  Future<String> getThumbnailPath(String videoUrl) async {
-    return await VideoThumbnail.thumbnailFile(
-      video: videoUrl,
-      thumbnailPath: (await getTemporaryDirectory()).path,
-      imageFormat: ImageFormat.WEBP,
-      maxHeight:
-          64, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
-      quality: 75,
     );
   }
 }

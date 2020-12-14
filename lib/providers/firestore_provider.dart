@@ -133,23 +133,22 @@ class FirestoreProvider {
   }
 
   Future<DocumentReference> createNewWorkoutPlan(
-    String userUid,
-    String trainer,
     String title,
     String description,
   ) async {
+    String userUid = _firebaseAuth.currentUser.uid;
+    String userName = _firebaseAuth.currentUser.displayName;
     CollectionReference collectionReference =
         _firestore.collection('workoutPlans');
     return await collectionReference.add({
       //this will create a new plan on step 1 and update the remaining steps as you go
       'userUid': userUid,
-      'trainer': trainer,
+      'trainer': userName,
       'title': title,
       'description': description,
       'isPublished':
-          false, // if not published it will be saved as draft //TODO: remember to update this field at the last step!
+          null, // if not published it will be saved as draft //TODO: remember to update this field at the last step!
 
-      //TODO: remember to update all fields as you go to each step
       //if null it will be updated later on next steps
       'category': null,
       'location': null,
@@ -159,16 +158,41 @@ class FirestoreProvider {
       'numberOfDays': null,
       'coverPhotoUrl': null,
       'rating': null,
-      'videoOverviewUrl': null,
+      'promoVideoUrl': null,
+      'numberOfReviews': null,
     });
   }
 
-  Future<void> updateWorkoutPlanCategoriesStep(String workoutPlanUid,
+  Future<void> updateWorkoutPlanCategories(String workoutPlanUid,
       String category, String location, String skillLevel) async {
     CollectionReference collectionReference =
         _firestore.collection('workoutPlans');
     await collectionReference.doc(workoutPlanUid).update(
         {'category': category, 'location': location, 'skillLevel': skillLevel});
+  }
+
+  Future<void> updateWorkoutPlanDetails(
+    String workoutPlanUid,
+    String title,
+    String description,
+  ) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.doc(workoutPlanUid).update({
+      'title': title,
+      'description': description,
+    });
+  }
+
+  Future<void> updateWorkoutPlanPrice(
+    String workoutPlanUid,
+    double price,
+  ) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.doc(workoutPlanUid).update({
+      'pricing': price,
+    });
   }
 
   Future<void> addDaysToPlan(int days, String workoutPlanUid) async {
@@ -177,19 +201,27 @@ class FirestoreProvider {
     await workoutPlansReference
         .doc(workoutPlanUid)
         .update({'numberOfDays': days});
+
     CollectionReference workoutsReference =
         workoutPlansReference.doc(workoutPlanUid).collection('workouts');
-    for (int i = 1; i <= days; i++) {
-      await workoutsReference.doc('day ' + i.toString()).set({
-        'day': i,
-        'numberOfExercises': null,
-        'title': null,
-      });
-    }
+    workoutsReference.get().then((value) async {
+      if (value.size + 1 >= days) {
+        for (int i = days + 1; i < value.size + 1; i++) {
+          await workoutsReference.doc('day ' + i.toString()).delete();
+        }
+      } else if (value.size + 1 < days) {
+        for (int i = value.size + 1; i <= days; i++) {
+          await workoutsReference.doc('day ' + i.toString()).set({
+            'day': i,
+            'numberOfExercises': null,
+            'title': null,
+          });
+        }
+      }
+    });
   }
 
-  Stream<QuerySnapshot> myWorkoutsCreatePlanQuerySnapshot(
-      String workoutPlanUid) {
+  Stream<QuerySnapshot> myWorkoutsQuerySnapshot(String workoutPlanUid) {
     CollectionReference collectionReference = _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
@@ -348,9 +380,37 @@ class FirestoreProvider {
     });
   }
 
-  Future<String> downloadURL(File file, String path) async {
+  Stream<DocumentSnapshot> getWorkoutPlanInfo(String workoutPlanUid) {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    return collectionReference.doc(workoutPlanUid).snapshots();
+  }
+
+  Future<void> updateCoverForWorkoutPlan(
+    String workoutPlanUid,
+    String coverPhotoUrl,
+  ) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.doc(workoutPlanUid).update({
+      'coverPhotoUrl': coverPhotoUrl,
+    });
+  }
+
+  Future<void> updatePromoVideoForWorkoutPlan(
+    String workoutPlanUid,
+    String promoVideoUrl,
+  ) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.doc(workoutPlanUid).update({
+      'promoVideoUrl': promoVideoUrl,
+    });
+  }
+
+  Future<String> downloadURL(File file, String path, String contentType) async {
     final Reference reference = storage.ref().child(path);
-    await reference.putFile(file, SettableMetadata(contentType: 'video/mp4'));
+    await reference.putFile(file, SettableMetadata(contentType: contentType));
     return await reference.getDownloadURL();
 
     // Within your widgets:

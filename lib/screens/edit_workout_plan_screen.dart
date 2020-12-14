@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/blocs/create_plan/cover_screen_bloc.dart';
+import 'package:fit_mart/blocs/edit_workout_plan_screen_bloc.dart';
+import 'package:fit_mart/blocs/edit_workout_plan_screen_bloc_provider.dart';
+import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/screens/create_plan/categories_screen.dart';
 import 'package:fit_mart/screens/create_plan/cover_screen.dart';
 import 'package:fit_mart/screens/create_plan/details_screen.dart';
 import 'package:fit_mart/screens/create_plan/plan_length_screen.dart';
 import 'package:fit_mart/screens/create_plan/price_screen.dart';
-import 'package:fit_mart/screens/create_plan/video_overview_screen.dart';
+import 'package:fit_mart/screens/create_plan/promo_video_screen.dart';
 import 'package:fit_mart/screens/create_plan/workouts_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,35 +18,57 @@ class EditWorkoutPlanScreen extends StatefulWidget {
   static const String id = 'edit_workout_plan_screen';
 
   final String workoutPlanUid;
-  final String workoutPlanTitle;
-  final String description;
-  final String category;
-  final String location;
-  final String skillLevel;
-  final int length;
-  final int price;
-  final String coverPhotoUrl;
-  final String videoOverviewUrl;
 
-  const EditWorkoutPlanScreen(
-      {Key key,
-      this.workoutPlanUid,
-      this.workoutPlanTitle,
-      this.description,
-      this.category,
-      this.location,
-      this.skillLevel,
-      this.length,
-      this.price,
-      this.coverPhotoUrl,
-      this.videoOverviewUrl})
-      : super(key: key);
+  const EditWorkoutPlanScreen({
+    Key key,
+    this.workoutPlanUid,
+  }) : super(key: key);
 
   @override
   EditWorkoutPlanScreenState createState() => EditWorkoutPlanScreenState();
 }
 
 class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
+  EditWorkoutPlanScreenBloc _bloc;
+  String workoutPlanTitle;
+
+  String description;
+
+  String category;
+
+  String location;
+
+  String skillLevel;
+
+  int length;
+
+  double price;
+  String coverPhotoUrl;
+
+  String promoVideoUrl;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _bloc = EditWorkoutPlanScreenBlocProvider.of(context);
+    _bloc.getWorkoutPlanInfo(widget.workoutPlanUid).forEach((value) async {
+      workoutPlanTitle = await value.get('title');
+      description = await value.get('description');
+      category = await value.get('category');
+      location = await value.get('location');
+      skillLevel = await value.get('skillLevel');
+      length = await value.get('numberOfDays');
+      price = await value.get('pricing');
+      coverPhotoUrl = await value.get('coverPhotoUrl');
+      promoVideoUrl = await value.get('promoVideoUrl');
+    });
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,8 +85,9 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
                   MaterialPageRoute(
                     builder: (context) => DetailsScreen(
                       isEdit: true,
-                      workoutPlanTitle: widget.workoutPlanTitle,
-                      description: widget.description,
+                      workoutPlanUid: widget.workoutPlanUid,
+                      workoutPlanTitle: workoutPlanTitle,
+                      description: description,
                     ),
                   ),
                 );
@@ -89,10 +117,11 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => CategoriesScreen(
+                      workoutPlanUid: widget.workoutPlanUid,
                       isEdit: true,
-                      category: widget.category,
-                      location: widget.location,
-                      skillLevel: widget.skillLevel,
+                      category: category,
+                      location: location,
+                      skillLevel: skillLevel,
                     ),
                   ),
                 );
@@ -123,7 +152,7 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
                   MaterialPageRoute(
                     builder: (context) => PlanLengthScreen(
                       isEdit: true,
-                      length: widget.length,
+                      length: length,
                       workoutPlanUid: widget.workoutPlanUid,
                     ),
                   ),
@@ -179,57 +208,99 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
                 ),
               ),
             ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      CreateNewPlanPricingScreen.title,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.normal,
-                      ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PriceScreen(
+                      isEdit: true,
+                      price: price,
+                      workoutPlanUid: widget.workoutPlanUid,
                     ),
-                    Icon(Icons.edit),
-                  ],
+                  ),
+                );
+              },
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        PriceScreen.title,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Icon(Icons.edit),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      CreateNewPlanCoverScreen.title,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.normal,
-                      ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CoverScreen(
+                      isEdit: true,
+                      workoutPlanUid: widget.workoutPlanUid,
+                      coverPhotoUrl: coverPhotoUrl,
                     ),
-                    Icon(Icons.edit),
-                  ],
+                  ),
+                );
+              },
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        CoverScreen.title,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Icon(Icons.edit),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      VideoOverviewScreen.title,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.normal,
-                      ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PromoVideoScreen(
+                      isEdit: true,
+                      workoutPlanUid: widget.workoutPlanUid,
+                      promoVideoUrl: promoVideoUrl,
                     ),
-                    Icon(Icons.edit),
-                  ],
+                  ),
+                );
+              },
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        PromoVideoScreen.title,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Icon(Icons.edit),
+                    ],
+                  ),
                 ),
               ),
             ),

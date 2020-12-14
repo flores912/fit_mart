@@ -1,3 +1,5 @@
+import 'package:fit_mart/blocs/create_plan/plan_length_screen_bloc.dart';
+import 'package:fit_mart/blocs/create_plan/plan_length_screen_bloc_provider.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/workouts_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
@@ -22,6 +24,8 @@ class PlanLengthScreen extends StatefulWidget {
 }
 
 class PlanLengthScreenState extends State<PlanLengthScreen> {
+  PlansLengthScreenBloc _bloc;
+
   String days;
   bool isProgressBarShowing = false;
 
@@ -34,8 +38,17 @@ class PlanLengthScreenState extends State<PlanLengthScreen> {
 
   @override
   void initState() {
-    days = widget.length.toString();
+    if (widget.length != null) {
+      days = widget.length.toString();
+    }
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _bloc = PlanLengthScreenBlocProvider.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -47,29 +60,39 @@ class PlanLengthScreenState extends State<PlanLengthScreen> {
           title: Text(PlanLengthScreen.title),
           centerTitle: true,
           actions: [
-            FlatButton(
-              onPressed: () {
-                FirestoreProvider firestoreProvider = FirestoreProvider();
-                firestoreProvider
-                    .addDaysToPlan(int.parse(days), widget.workoutPlanUid)
-                    .whenComplete(() {
-                  setState(() {
-                    isProgressBarShowing = false;
-                  });
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => WorkoutsScreen(
-                                workoutPlanUid: widget.workoutPlanUid,
-                              )));
-                });
-              },
-              textColor: Colors.white,
-              child: Text(
-                'Next',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            )
+            widget.isEdit != true
+                ? FlatButton(
+                    onPressed: () {
+                      _bloc
+                          .addDaysToPlan(int.parse(days), widget.workoutPlanUid)
+                          .whenComplete(() {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WorkoutsScreen(
+                                      workoutPlanUid: widget.workoutPlanUid,
+                                    )));
+                      });
+                    },
+                    textColor: Colors.white,
+                    child: Text(
+                      'Next',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  )
+                : FlatButton(
+                    onPressed: () {
+                      _bloc.addDaysToPlan(
+                          int.parse(days), widget.workoutPlanUid);
+                    },
+                    textColor: Colors.white,
+                    child: Text(
+                      'Save',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  )
           ],
         ),
         body: SafeArea(

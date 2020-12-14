@@ -1,5 +1,7 @@
+import 'package:fit_mart/blocs/create_plan/categories_screen_bloc.dart';
+import 'package:fit_mart/blocs/create_plan/categories_screen_bloc_provider.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
-import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/plan_length_screen.dart';
+import 'package:fit_mart/screens/create_plan/plan_length_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,9 +29,10 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class CategoriesScreenState extends State<CategoriesScreen> {
-  String _categoryValue;
-  String _locationValue;
-  String _skillLevelValue;
+  CategoriesScreenBloc _bloc;
+  String _category;
+  String _location;
+  String _skillLevel;
 
   List<String> _categoryItems = [
     'Weightlifting',
@@ -53,10 +56,16 @@ class CategoriesScreenState extends State<CategoriesScreen> {
   ];
   @override
   void initState() {
-    _categoryValue = widget.category;
-    _locationValue = widget.location;
-    _skillLevelValue = widget.skillLevel;
+    _category = widget.category;
+    _location = widget.location;
+    _skillLevel = widget.skillLevel;
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _bloc = CategoriesScreenBlocProvider.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -66,36 +75,65 @@ class CategoriesScreenState extends State<CategoriesScreen> {
       resizeToAvoidBottomInset: false, //new line
       appBar: AppBar(
         actions: [
-          FlatButton(
-            onPressed: () {
-              print(widget.workoutPlanUid);
-              FirestoreProvider firestoreProvider = FirestoreProvider();
-              if (_categoryValue.isNotEmpty &&
-                  _locationValue.isNotEmpty &&
-                  _skillLevelValue.isNotEmpty) {
-                firestoreProvider
-                    .updateWorkoutPlanCategoriesStep(widget.workoutPlanUid,
-                        _categoryValue, _locationValue, _skillLevelValue)
-                    .whenComplete(
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlanLengthScreen(
-                            workoutPlanUid: widget.workoutPlanUid,
-                          ),
-                        ),
-                      ),
-                    );
-              } else {
-                //complete required fields
-              }
-            },
-            textColor: Colors.white,
-            child: Text(
-              'Next',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          )
+          widget.isEdit == true
+              ? FlatButton(
+                  onPressed: () {
+                    if (_bloc.isFieldsValid(
+                          _category,
+                          _location,
+                          _skillLevel,
+                        ) ==
+                        true) {
+                      _bloc.updateWorkoutPlanCategories(
+                        widget.workoutPlanUid,
+                        _category,
+                        _location,
+                        _skillLevel,
+                      );
+                    } else {
+                      //fix fields
+                    }
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Save',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ))
+              : FlatButton(
+                  onPressed: () {
+                    if (_bloc.isFieldsValid(
+                          _category,
+                          _location,
+                          _skillLevel,
+                        ) ==
+                        true) {
+                      _bloc
+                          .updateWorkoutPlanCategories(
+                            widget.workoutPlanUid,
+                            _category,
+                            _location,
+                            _skillLevel,
+                          )
+                          .whenComplete(
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlanLengthScreen(
+                                  workoutPlanUid: widget.workoutPlanUid,
+                                  isEdit: false,
+                                ),
+                              ),
+                            ),
+                          );
+                    } else {
+                      //fix fields
+                    }
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Next',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  )),
         ],
         title: Text(CategoriesScreen.title),
         centerTitle: true,
@@ -122,10 +160,10 @@ class CategoriesScreenState extends State<CategoriesScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: _categoryValue,
+                        value: _category,
                         onChanged: (newValue) {
                           setState(() {
-                            _categoryValue = newValue;
+                            _category = newValue;
                           });
                         },
                         hint: Text('Select Category'),
@@ -156,10 +194,10 @@ class CategoriesScreenState extends State<CategoriesScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: _locationValue,
+                        value: _location,
                         onChanged: (newValue) {
                           setState(() {
-                            _locationValue = newValue;
+                            _location = newValue;
                           });
                         },
                         hint: Text('Select Location'),
@@ -190,10 +228,10 @@ class CategoriesScreenState extends State<CategoriesScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: _skillLevelValue,
+                        value: _skillLevel,
                         onChanged: (newValue) {
                           setState(() {
-                            _skillLevelValue = newValue;
+                            _skillLevel = newValue;
                           });
                         },
                         hint: Text('Select Skill Level'),

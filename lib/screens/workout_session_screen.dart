@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 
 class WorkoutSessionScreen extends StatefulWidget {
   //TODO:EXERCISES QUERY SNAPSHOT CHANGED AND THAT'S WHY QUERY LIST IS EMPTY
+  //TODO: ADD REP COUNTER TO SAVE REPS DONE EACH SET!
   static const String id = 'workout_session_screen';
   final Workout workout;
   final WorkoutPlan myWorkoutPlan;

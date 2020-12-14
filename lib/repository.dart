@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
@@ -52,4 +54,78 @@ class Repository {
 
   Stream<QuerySnapshot> myWorkoutPlansLibraryQuerySnapshot() =>
       _firestoreProvider.myWorkoutPlansLibraryQuerySnapshot();
+
+  Future<DocumentReference> createNewWorkoutPlan(
+    String title,
+    String description,
+  ) =>
+      _firestoreProvider.createNewWorkoutPlan(
+        title,
+        description,
+      );
+
+  Future<void> updateWorkoutPlanCategories(String workoutPlanUid,
+          String category, String location, String skillLevel) =>
+      _firestoreProvider.updateWorkoutPlanCategories(
+        workoutPlanUid,
+        category,
+        location,
+        skillLevel,
+      );
+  Future<void> updateWorkoutPlanDetails(
+    String workoutPlanUid,
+    String title,
+    String description,
+  ) =>
+      _firestoreProvider.updateWorkoutPlanDetails(
+        workoutPlanUid,
+        title,
+        description,
+      );
+
+  Future<void> addDaysToPlan(
+    int days,
+    String workoutPlanUid,
+  ) =>
+      _firestoreProvider.addDaysToPlan(
+        days,
+        workoutPlanUid,
+      );
+
+  Stream<QuerySnapshot> myWorkoutsQuerySnapshot(String workoutPlanUid) =>
+      _firestoreProvider.myWorkoutsQuerySnapshot(workoutPlanUid);
+
+  Future<void> updateWorkoutPlanPrice(
+    String workoutPlanUid,
+    double price,
+  ) =>
+      _firestoreProvider.updateWorkoutPlanPrice(workoutPlanUid, price);
+
+  Stream<DocumentSnapshot> getWorkoutPlanInfo(String workoutPlanUid) =>
+      _firestoreProvider.getWorkoutPlanInfo(workoutPlanUid);
+
+  Future<String> downloadURL(
+    File file,
+    String path,
+    String contentType,
+  ) =>
+      _firestoreProvider.downloadURL(
+        file,
+        path,
+        contentType,
+      );
+
+  Future<void> updateCoverForWorkoutPlan(
+    String workoutPlanUid,
+    String coverPhotoUrl,
+  ) =>
+      _firestoreProvider.updateCoverForWorkoutPlan(
+          workoutPlanUid, coverPhotoUrl);
+
+  Future<void> updatePromoVideoForWorkoutPlan(
+    String workoutPlanUid,
+    String promoVideoUrl,
+  ) =>
+      _firestoreProvider.updatePromoVideoForWorkoutPlan(
+          workoutPlanUid, promoVideoUrl);
 }

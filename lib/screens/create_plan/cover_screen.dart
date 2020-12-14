@@ -1,69 +1,107 @@
 import 'dart:io';
 
+import 'package:fit_mart/blocs/create_plan/cover_screen_bloc.dart';
+import 'package:fit_mart/blocs/create_plan/cover_screen_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
-import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/video_overview_screen.dart';
+import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/promo_video_screen.dart';
 import 'package:fit_mart/widgets/workout_plan_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CreateNewPlanCoverScreen extends StatefulWidget {
+class CoverScreen extends StatefulWidget {
   static const String title = ' Step 6 of 7: Cover Photo';
   static const String id = 'cover_screen';
 
+  final bool isEdit;
+  final String coverPhotoUrl;
+  final String workoutPlanUid;
+
+  const CoverScreen(
+      {Key key, this.isEdit, this.coverPhotoUrl, this.workoutPlanUid})
+      : super(key: key);
   @override
-  CreateNewPlanCoverScreenState createState() =>
-      CreateNewPlanCoverScreenState();
+  CoverScreenState createState() => CoverScreenState();
 }
 
-class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
-  File _pickedImage;
-  final picker = ImagePicker();
+class CoverScreenState extends State<CoverScreen> {
+  CoverScreenBloc _bloc;
 
   File _croppedImage;
 
-  Future getImage(bool isCamera) async {
-    final pickedFile = await picker.getImage(
-        source: (isCamera == true) ? ImageSource.camera : ImageSource.gallery);
-    cropImage(pickedFile.path);
+  @override
+  void didChangeDependencies() {
+    _bloc = CoverScreenBlocProvider.of(context);
+    super.didChangeDependencies();
   }
 
-  Future cropImage(String imagePath) async {
-    _pickedImage = await ImageCropper.cropImage(
-        sourcePath: imagePath,
-        aspectRatioPresets: [CropAspectRatioPreset.ratio16x9],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Cropper',
-            toolbarColor: kPrimaryColor,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          minimumAspectRatio: 1.0,
-        ));
-    setState(() {
-      _croppedImage = _pickedImage;
-    });
+  Widget getImage() {
+    Widget imageWidget;
+    if (_croppedImage != null) {
+      imageWidget = Image.file(
+        _croppedImage,
+        fit: BoxFit.fill,
+      );
+    } else if (widget.coverPhotoUrl != null) {
+      imageWidget = Image.network(
+        widget.coverPhotoUrl,
+        fit: BoxFit.fill,
+      );
+    } else if (widget.coverPhotoUrl == null && _croppedImage == null) {
+      imageWidget = Container(
+        height: MediaQuery.of(context).size.width / 1.5 / 1.78,
+        child: Icon(
+          Icons.image,
+          color: Colors.grey.shade800,
+          size: 100,
+        ),
+      );
+    }
+    return imageWidget;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(CreateNewPlanCoverScreen.title),
+        title: Text(CoverScreen.title),
         centerTitle: true,
         actions: [
-          FlatButton(
-            onPressed: () {
-              Navigator.pushNamed(context, VideoOverviewScreen.id);
-            },
-            textColor: Colors.white,
-            child: Text(
-              'Next',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          )
+          widget.isEdit != true
+              ? FlatButton(
+                  onPressed: () {
+                    _bloc
+                        .downloadURL(_croppedImage,
+                            widget.workoutPlanUid + '/coverPhoto', 'image/jpeg')
+                        .whenComplete(() => null);
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Next',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                )
+              : FlatButton(
+                  onPressed: () {
+                    _bloc
+                        .downloadURL(_croppedImage,
+                            widget.workoutPlanUid + '/coverPhoto', 'image/jpeg')
+                        .then((value) {
+                      _bloc
+                          .updateCoverForWorkoutPlan(
+                              widget.workoutPlanUid, value)
+                          .whenComplete(
+                            () => Navigator.pop(context),
+                          );
+                    });
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Save',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
         ],
       ),
       body: Padding(
@@ -71,10 +109,7 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
         child: Column(
           children: [
             WorkoutPlanCardWidget(
-              image: Image.file(
-                _croppedImage,
-                fit: BoxFit.fill,
-              ),
+              image: getImage(),
             ),
             SizedBox(
               height: 16,
@@ -96,7 +131,11 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
                       ),
                     ),
                     onPressed: () {
-                      getImage(false);
+                      _bloc.cropImage(false).then((value) {
+                        setState(() {
+                          _croppedImage = value;
+                        });
+                      });
                     },
                   ),
                 ),
@@ -114,7 +153,11 @@ class CreateNewPlanCoverScreenState extends State<CreateNewPlanCoverScreen> {
                       ),
                     ),
                     onPressed: () {
-                      getImage(true);
+                      _bloc.cropImage(true).then((value) {
+                        setState(() {
+                          _croppedImage = value;
+                        });
+                      });
                     },
                   ),
                 ),

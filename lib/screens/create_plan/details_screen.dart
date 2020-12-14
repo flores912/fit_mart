@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_mart/blocs/create_plan/details_screen_bloc.dart';
+import 'package:fit_mart/blocs/create_plan/details_screen_bloc_provider.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/screens/create_plan/categories_screen.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
@@ -12,11 +14,16 @@ class DetailsScreen extends StatefulWidget {
   static const String id = 'details_screen';
 
   final bool isEdit;
+  final String workoutPlanUid;
   final String workoutPlanTitle;
   final String description;
 
   const DetailsScreen(
-      {Key key, this.isEdit, this.workoutPlanTitle, this.description})
+      {Key key,
+      this.isEdit,
+      this.workoutPlanTitle,
+      this.description,
+      this.workoutPlanUid})
       : super(key: key);
 
   @override
@@ -28,7 +35,15 @@ class DetailsScreenState extends State<DetailsScreen> {
 
   String description;
 
-  String docId;
+  String workoutPlanUid;
+
+  DetailsScreenBloc _bloc;
+
+  @override
+  void didChangeDependencies() {
+    _bloc = DetailsScreenBlocProvider.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,45 +51,46 @@ class DetailsScreenState extends State<DetailsScreen> {
       resizeToAvoidBottomInset: true, //new line
       appBar: AppBar(
         actions: [
-          FlatButton(
-            onPressed: () {
-              if ( //TODO : add a minimum string length
-                  title.isNotEmpty &&
-                      title.contains(
-                          new RegExp(r'[A-Z]', caseSensitive: false)) &&
-                      description.isNotEmpty &&
-                      description.contains(
-                          new RegExp(r'[A-Z]', caseSensitive: false))) {
-                FirestoreProvider _firestoreProvider = FirestoreProvider();
-                _firestoreProvider
-                    .createNewWorkoutPlan(
-                  FirebaseAuth.instance.currentUser.uid,
-                  FirebaseAuth.instance.currentUser.displayName,
-                  title,
-                  description,
+          widget.isEdit == true
+              ? FlatButton(
+                  onPressed: () {
+                    if (_bloc.isFieldsValid(title, description) == true) {
+                      _bloc
+                          .createNewWorkoutPlan(title, description)
+                          .whenComplete(
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CategoriesScreen(
+                                  workoutPlanUid: workoutPlanUid,
+                                ),
+                              ),
+                            ),
+                          );
+                    } else {
+                      //fix fields
+                    }
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Save',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 )
-                    .then((doc) {
-                  docId = doc.id;
-                }).whenComplete(() {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoriesScreen(
-                        workoutPlanUid: docId,
-                      ),
-                    ),
-                  );
-                });
-              } else {
-                //complete required fields
-              }
-            },
-            textColor: Colors.white,
-            child: Text(
-              'Next',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          )
+              : FlatButton(
+                  onPressed: () {
+                    if (_bloc.isFieldsValid(title, description) == true) {
+                      _bloc.createNewWorkoutPlan(title, description);
+                    } else {
+                      //fix fields
+                    }
+                  },
+                  textColor: Colors.white,
+                  child: Text(
+                    'Next',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
         ],
         title: Text(DetailsScreen.title),
         centerTitle: true,

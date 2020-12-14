@@ -63,7 +63,7 @@ class LibraryScreenState extends State<LibraryScreen> {
 
         String title = myWorkoutPlansList[index].title;
         int rating = myWorkoutPlansList[index].rating;
-        int price = myWorkoutPlansList[index].price;
+        double price = myWorkoutPlansList[index].price;
         bool isFree = myWorkoutPlansList[index].isFree;
         String category = myWorkoutPlansList[index].category;
         String location = myWorkoutPlansList[index].location;
@@ -82,15 +82,6 @@ class LibraryScreenState extends State<LibraryScreen> {
               MaterialPageRoute(
                 builder: (context) => EditWorkoutPlanScreen(
                   workoutPlanUid: workoutPlanUid,
-                  workoutPlanTitle: title,
-                  description: description,
-                  category: category,
-                  location: location,
-                  skillLevel: skillLevel,
-                  length: length,
-                  price: price,
-                  coverPhotoUrl: coverPhotoUrl,
-                  videoOverviewUrl: videoOverviewUrl,
                 ),
               ),
             );
