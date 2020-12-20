@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/repository.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -9,6 +10,11 @@ import '../../constants.dart';
 
 class CoverScreenBloc {
   Repository _repository = Repository();
+
+  Stream<DocumentSnapshot> getWorkoutPlanInfo(
+    String workoutPlanUid,
+  ) =>
+      _repository.getWorkoutPlanInfo(workoutPlanUid);
 
   Future<String> downloadURL(
     File file,

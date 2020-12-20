@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/blocs/create_plan/cover_screen_bloc.dart';
 import 'package:fit_mart/blocs/create_plan/cover_screen_bloc_provider.dart';
 import 'package:fit_mart/constants.dart';
@@ -18,9 +19,12 @@ class CoverScreen extends StatefulWidget {
   final String coverPhotoUrl;
   final String workoutPlanUid;
 
-  const CoverScreen(
-      {Key key, this.isEdit, this.coverPhotoUrl, this.workoutPlanUid})
-      : super(key: key);
+  const CoverScreen({
+    Key key,
+    this.isEdit,
+    this.coverPhotoUrl,
+    this.workoutPlanUid,
+  }) : super(key: key);
   @override
   CoverScreenState createState() => CoverScreenState();
 }
@@ -30,9 +34,37 @@ class CoverScreenState extends State<CoverScreen> {
 
   File _croppedImage;
 
+  double price;
+
+  String category;
+
+  String location;
+
+  String skillLevel;
+
+  String title;
+
+  int numberOfReviews;
+
+  int rating;
+
+  DocumentSnapshot workoutPlan;
+
   @override
   void didChangeDependencies() {
     _bloc = CoverScreenBlocProvider.of(context);
+
+    _bloc.getWorkoutPlanInfo(widget.workoutPlanUid).forEach((element) {
+      setState(() {
+        category = element.get('category');
+        location = element.get('location');
+        skillLevel = element.get('skillLevel');
+        title = element.get('title');
+        rating = element.get('rating');
+        numberOfReviews = element.get('numberOfReviews');
+        price = element.get('pricing');
+      });
+    });
     super.didChangeDependencies();
   }
 
@@ -71,10 +103,28 @@ class CoverScreenState extends State<CoverScreen> {
           widget.isEdit != true
               ? FlatButton(
                   onPressed: () {
-                    _bloc
-                        .downloadURL(_croppedImage,
-                            widget.workoutPlanUid + '/coverPhoto', 'image/jpeg')
-                        .whenComplete(() => null);
+                    _croppedImage != null
+                        ? _bloc
+                            .downloadURL(
+                                _croppedImage,
+                                widget.workoutPlanUid + '/coverPhoto',
+                                'image/jpeg')
+                            .then((value) {
+                            _bloc
+                                .updateCoverForWorkoutPlan(
+                                    widget.workoutPlanUid, value)
+                                .whenComplete(
+                                  () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PromoVideoScreen(
+                                        workoutPlanUid: widget.workoutPlanUid,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                          })
+                        : null; //TODO: CORRECT DEFICIENCIES
                   },
                   textColor: Colors.white,
                   child: Text(
@@ -110,6 +160,13 @@ class CoverScreenState extends State<CoverScreen> {
           children: [
             WorkoutPlanCardWidget(
               image: getImage(),
+              price: price,
+              category: category,
+              location: location,
+              skillLevel: skillLevel,
+              title: title,
+              numberOfReviews: numberOfReviews,
+              rating: rating,
             ),
             SizedBox(
               height: 16,

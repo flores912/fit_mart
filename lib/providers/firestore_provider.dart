@@ -4,9 +4,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class FirestoreProvider {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -205,11 +202,11 @@ class FirestoreProvider {
     CollectionReference workoutsReference =
         workoutPlansReference.doc(workoutPlanUid).collection('workouts');
     workoutsReference.get().then((value) async {
-      if (value.size + 1 >= days) {
+      if (value.size >= days) {
         for (int i = days + 1; i < value.size + 1; i++) {
           await workoutsReference.doc('day ' + i.toString()).delete();
         }
-      } else if (value.size + 1 < days) {
+      } else if (value.size <= days) {
         for (int i = value.size + 1; i <= days; i++) {
           await workoutsReference.doc('day ' + i.toString()).set({
             'day': i,

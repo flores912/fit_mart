@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:fit_mart/blocs/create_plan/promo_video_screen_bloc.dart';
 import 'package:fit_mart/blocs/create_plan/promo_video_screen_bloc_provider.dart';
+import 'package:fit_mart/screens/edit_workout_plan_screen.dart';
 import 'package:fit_mart/widgets/video_player_workout_widget.dart';
 import 'package:video_player/video_player.dart';
 
@@ -109,7 +110,25 @@ class PromoVideoScreenState extends State<PromoVideoScreen> {
                   ),
                 )
               : FlatButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _bloc
+                        .downloadURL(videoFile,
+                            widget.workoutPlanUid + '/promoVideo', 'video/mp4')
+                        .then(
+                          (value) => _bloc.updatePromoVideoForWorkoutPlan(
+                              widget.workoutPlanUid, value),
+                        )
+                        .whenComplete(
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditWorkoutPlanScreen(
+                                workoutPlanUid: widget.workoutPlanUid,
+                              ),
+                            ),
+                          ),
+                        );
+                  },
                   textColor: Colors.white,
                   child: Text(
                     'Done',

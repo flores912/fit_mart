@@ -5,4 +5,7 @@ class EditWorkoutPlanScreenBloc {
   Repository _repository = Repository();
   Stream<DocumentSnapshot> getWorkoutPlanInfo(String workoutPlanUid) =>
       _repository.getWorkoutPlanInfo(workoutPlanUid);
+
+  Stream<QuerySnapshot> myWorkoutsQuerySnapshot(String workoutPlanUid) =>
+      _repository.myWorkoutsQuerySnapshot(workoutPlanUid);
 }

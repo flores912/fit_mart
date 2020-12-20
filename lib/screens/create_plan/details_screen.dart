@@ -42,6 +42,8 @@ class DetailsScreenState extends State<DetailsScreen> {
   @override
   void didChangeDependencies() {
     _bloc = DetailsScreenBlocProvider.of(context);
+    title = widget.workoutPlanTitle;
+    description = widget.description;
     super.didChangeDependencies();
   }
 
@@ -55,18 +57,16 @@ class DetailsScreenState extends State<DetailsScreen> {
               ? FlatButton(
                   onPressed: () {
                     if (_bloc.isFieldsValid(title, description) == true) {
-                      _bloc
-                          .createNewWorkoutPlan(title, description)
-                          .whenComplete(
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CategoriesScreen(
-                                  workoutPlanUid: workoutPlanUid,
-                                ),
-                              ),
-                            ),
-                          );
+                      if (_bloc.isFieldsValid(title, description) == true) {
+                        _bloc
+                            .updateWorkoutPlanDetails(
+                                widget.workoutPlanUid, title, description)
+                            .whenComplete(
+                              () => Navigator.pop(context),
+                            );
+                      } else {
+                        //fix fields
+                      }
                     } else {
                       //fix fields
                     }
@@ -79,11 +79,19 @@ class DetailsScreenState extends State<DetailsScreen> {
                 )
               : FlatButton(
                   onPressed: () {
-                    if (_bloc.isFieldsValid(title, description) == true) {
-                      _bloc.createNewWorkoutPlan(title, description);
-                    } else {
-                      //fix fields
-                    }
+                    _bloc
+                        .createNewWorkoutPlan(title, description)
+                        .then((value) => workoutPlanUid = value.id)
+                        .whenComplete(
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CategoriesScreen(
+                                workoutPlanUid: workoutPlanUid,
+                              ),
+                            ),
+                          ),
+                        );
                   },
                   textColor: Colors.white,
                   child: Text(
