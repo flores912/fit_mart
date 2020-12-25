@@ -3,13 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoPlayerWorkoutWidget extends StatefulWidget {
+class ChewiePlayerWidget extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
   final bool looping;
   final bool showControls;
   final bool autoPlay;
 
-  const VideoPlayerWorkoutWidget({
+  const ChewiePlayerWidget({
     Key key,
     this.videoPlayerController,
     this.looping,
@@ -17,11 +17,10 @@ class VideoPlayerWorkoutWidget extends StatefulWidget {
     this.autoPlay,
   }) : super(key: key);
   @override
-  _VideoPlayerWorkoutWidgetState createState() =>
-      _VideoPlayerWorkoutWidgetState();
+  _ChewiePlayerWidgetState createState() => _ChewiePlayerWidgetState();
 }
 
-class _VideoPlayerWorkoutWidgetState extends State<VideoPlayerWorkoutWidget> {
+class _ChewiePlayerWidgetState extends State<ChewiePlayerWidget> {
   ChewieController _chewieController;
 
   @override
@@ -30,7 +29,7 @@ class _VideoPlayerWorkoutWidgetState extends State<VideoPlayerWorkoutWidget> {
         showControls: widget.showControls,
         autoPlay: widget.autoPlay,
         videoPlayerController: widget.videoPlayerController,
-        aspectRatio: widget.videoPlayerController.value.aspectRatio,
+        aspectRatio: 16 / 9,
         looping: widget.looping,
         autoInitialize: true,
         errorBuilder: (context, errorMessage) {

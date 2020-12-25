@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:fit_mart/blocs/create_plan/promo_video_screen_bloc.dart';
 import 'package:fit_mart/blocs/create_plan/promo_video_screen_bloc_provider.dart';
 import 'package:fit_mart/screens/edit_workout_plan_screen.dart';
-import 'package:fit_mart/widgets/video_player_workout_widget.dart';
+import 'package:fit_mart/widgets/chewie_player_widget.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../constants.dart';
@@ -137,87 +137,90 @@ class PromoVideoScreenState extends State<PromoVideoScreen> {
                 ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          widget.promoVideoUrl == null
-              ? Container(
-                  color: Colors.grey.shade300,
-                  height: MediaQuery.of(context).size.width / 1.78,
-                  child: this._controller != null
-                      ? VideoPlayerWorkoutWidget(
-                          looping: false,
-                          autoPlay: false,
-                          showControls: true,
-                          videoPlayerController: _controller)
-                      : Container(
-                          height: MediaQuery.of(context).size.width / 1.78,
-                          child: Icon(
-                            Icons.play_circle_outline_rounded,
-                            color: Colors.white,
-                          ),
-                        ))
-              : Container(
-                  height: MediaQuery.of(context).size.width / 1.78,
-                  child: BetterPlayerWidget(
-                    showControls: true,
-                    autoPlay: false,
-                    aspectRatio: 1,
-                    looping: false,
-                    betterPlayerDataSource:
-                        BetterPlayerDataSource.network(widget.promoVideoUrl),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            widget.promoVideoUrl == null
+                ? Container(
+                    color: Colors.grey.shade300,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width / 1.78,
+                    child: this._controller != null
+                        ? ChewiePlayerWidget(
+                            looping: false,
+                            autoPlay: false,
+                            showControls: true,
+                            videoPlayerController: _controller)
+                        : Container(
+                            height: MediaQuery.of(context).size.width / 1.78,
+                            child: Icon(
+                              Icons.play_circle_outline_rounded,
+                              color: Colors.white,
+                            ),
+                          ))
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width / 1.78,
+                    child: ChewiePlayerWidget(
+                      videoPlayerController:
+                          VideoPlayerController.network(widget.promoVideoUrl),
+                      showControls: true,
+                      looping: false,
+                      autoPlay: false,
+                    ),
                   ),
+            RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-          RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              color: Colors.white,
-              textColor: kPrimaryColor,
-              child: Text(
-                'Add promo video',
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext dialogContext) {
-                    return SimpleDialog(
-                      title: Text(
-                        'Add video from...',
-                      ),
-                      children: [
-                        SimpleDialogOption(
-                          onPressed: () {
-                            getVideo(false).whenComplete(() {
-                              if (videoFile != null) {
-                                _onControllerChange(videoFile);
-                              }
-                            });
-                            Navigator.pop(dialogContext);
-                          },
-                          child: const Text(
-                            'Gallery',
+                color: Colors.white,
+                textColor: kPrimaryColor,
+                child: Text(
+                  'Add promo video',
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext dialogContext) {
+                      return SimpleDialog(
+                        title: Text(
+                          'Add video from...',
+                        ),
+                        children: [
+                          SimpleDialogOption(
+                            onPressed: () {
+                              getVideo(false).whenComplete(() {
+                                if (videoFile != null) {
+                                  _onControllerChange(videoFile);
+                                }
+                              });
+                              Navigator.pop(dialogContext);
+                            },
+                            child: const Text(
+                              'Gallery',
+                            ),
                           ),
-                        ),
-                        SimpleDialogOption(
-                          onPressed: () {
-                            getVideo(true).whenComplete(() {
-                              if (videoFile != null) {
-                                _onControllerChange(videoFile);
-                              }
-                            });
-                            Navigator.pop(dialogContext);
-                          },
-                          child: const Text('Record from camera'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }),
-        ],
+                          SimpleDialogOption(
+                            onPressed: () {
+                              getVideo(true).whenComplete(() {
+                                if (videoFile != null) {
+                                  _onControllerChange(videoFile);
+                                }
+                              });
+                              Navigator.pop(dialogContext);
+                            },
+                            child: const Text('Record from camera'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }),
+          ],
+        ),
       ),
     );
   }

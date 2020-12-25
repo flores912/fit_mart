@@ -37,10 +37,9 @@ class CategoriesScreenState extends State<CategoriesScreen> {
   List<String> _categoryItems = [
     'Weightlifting',
     'Bodyweight',
-    'Military',
-    'Sports',
     'Bodybuilding',
     'Strength',
+    'HIIT',
   ];
   List<String> _locationItems = [
     'Gym',

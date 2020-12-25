@@ -54,6 +54,8 @@ class Repository {
 
   Stream<QuerySnapshot> myWorkoutPlansLibraryQuerySnapshot() =>
       _firestoreProvider.myWorkoutPlansLibraryQuerySnapshot();
+  Stream<QuerySnapshot> workoutPlansQuerySnapshot(String category) =>
+      _firestoreProvider.workoutPlansQuerySnapshot(category);
 
   Future<DocumentReference> createNewWorkoutPlan(
     String title,
@@ -128,4 +130,10 @@ class Repository {
   ) =>
       _firestoreProvider.updatePromoVideoForWorkoutPlan(
           workoutPlanUid, promoVideoUrl);
+
+  Future<void> updatePublishStatus(
+    String workoutPlanUid,
+    bool isPublished,
+  ) =>
+      _firestoreProvider.updatePublishStatus(workoutPlanUid, isPublished);
 }

@@ -10,7 +10,7 @@ import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:fit_mart/widgets/better_player_widget.dart';
 import 'package:fit_mart/widgets/custom_text_form.dart';
 import 'package:fit_mart/widgets/edit_set_widget.dart';
-import 'package:fit_mart/widgets/video_player_workout_widget.dart';
+import 'package:fit_mart/widgets/chewie_player_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -233,7 +233,7 @@ class NewExerciseScreenState extends State<NewExerciseScreen> {
                             color: Colors.grey.shade300,
                             height: MediaQuery.of(context).size.width / 1.78,
                             child: this._controller != null
-                                ? VideoPlayerWorkoutWidget(
+                                ? ChewiePlayerWidget(
                                     looping: false,
                                     autoPlay: false,
                                     showControls: true,

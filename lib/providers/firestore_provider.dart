@@ -41,6 +41,15 @@ class FirestoreProvider {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> workoutPlansQuerySnapshot(String category) {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    return collectionReference
+        .where('isPublished', isEqualTo: true)
+        .where('category', isEqualTo: category)
+        .snapshots();
+  }
+
   Stream<QuerySnapshot> currentPlanWorkoutsQuerySnapshot(
       String userUid, String workoutPlanUid) {
     CollectionReference collectionReference = _firestore
@@ -402,6 +411,17 @@ class FirestoreProvider {
         _firestore.collection('workoutPlans');
     await collectionReference.doc(workoutPlanUid).update({
       'promoVideoUrl': promoVideoUrl,
+    });
+  }
+
+  Future<void> updatePublishStatus(
+    String workoutPlanUid,
+    bool isPublished,
+  ) async {
+    CollectionReference collectionReference =
+        _firestore.collection('workoutPlans');
+    await collectionReference.doc(workoutPlanUid).update({
+      'isPublished': isPublished,
     });
   }
 

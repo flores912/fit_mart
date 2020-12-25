@@ -50,8 +50,6 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
 
   bool isWorkoutsComplete;
 
-  bool isPlanComplete;
-
   @override
   void initState() {
     super.initState();
@@ -139,9 +137,11 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
         isPriceComplete() == true &&
         isCoverPhotoComplete() == true &&
         isPromoVideoComplete() == true) {
-      isPlanComplete = true;
+      _bloc.updatePublishStatus(widget.workoutPlanUid, true).whenComplete(
+            () => Navigator.pop(context),
+          );
     } else {
-      isPlanComplete = false;
+      // don't proceed
     }
   }
 
@@ -156,11 +156,6 @@ class EditWorkoutPlanScreenState extends State<EditWorkoutPlanScreen> {
             child: RaisedButton(
               onPressed: () {
                 checkIfPlanIsComplete();
-                if (isPlanComplete) {
-                  //publish plan
-                } else {
-                  //correct all other fields
-                }
               },
               color: Colors.white,
               textColor: kPrimaryColor,

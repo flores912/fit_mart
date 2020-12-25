@@ -50,7 +50,7 @@ class LibraryScreenState extends State<LibraryScreen> {
     );
   }
 
-  ListView buildList(List<WorkoutPlan> myWorkoutPlansList) {
+  Widget buildList(List<WorkoutPlan> myWorkoutPlansList) {
     return ListView.builder(
       itemCount: myWorkoutPlansList.length,
       itemBuilder: (context, index) {

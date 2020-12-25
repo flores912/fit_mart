@@ -38,125 +38,127 @@ class WorkoutPlanCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors.grey,
-              child: image == null
-                  ? Container(
-                      height: MediaQuery.of(context).size.width / 1.5 / 1.78,
-                      child: Icon(
-                        Icons.image,
-                        color: Colors.grey.shade800,
-                        size: 100,
+    return Wrap(
+      children: [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                image == null
+                    ? Container(
+                        color: Colors.grey,
+                        height: MediaQuery.of(context).size.width / 1.5 / 1.78,
+                        child: Icon(
+                          Icons.image,
+                          color: Colors.grey.shade800,
+                          size: 100,
+                        ),
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        height: MediaQuery.of(context).size.width / 1.5 / 1.78,
+                        child: image,
                       ),
-                    )
-                  : Container(
-                      height: MediaQuery.of(context).size.width / 1.5 / 1.78,
-                      child: image,
+                Row(
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                        child: category != null
+                            ? Text(
+                                category,
+                              )
+                            : Text(
+                                '(Category)',
+                              )),
+                    Icon(
+                      CupertinoIcons.circle_fill,
+                      size: 8,
                     ),
-            ),
-            Row(
-              children: [
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                    child: category != null
-                        ? Text(
-                            category,
-                          )
-                        : Text(
-                            '(Category)',
-                          )),
-                Icon(
-                  CupertinoIcons.circle_fill,
-                  size: 8,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: location != null
-                      ? Text(
-                          location,
-                        )
-                      : Text(
-                          '(Location)',
-                        ),
-                ),
-                Icon(
-                  CupertinoIcons.circle_fill,
-                  size: 8,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: skillLevel != null
-                      ? Text(
-                          skillLevel,
-                        )
-                      : Text(
-                          '(Skill Level)',
-                        ),
-                ),
-              ],
-            ),
-            title != null
-                ? Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.normal,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: location != null
+                          ? Text(
+                              location,
+                            )
+                          : Text(
+                              '(Location)',
+                            ),
                     ),
-                  )
-                : Text(
-                    '(No title Added)',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.normal,
+                    Icon(
+                      CupertinoIcons.circle_fill,
+                      size: 8,
                     ),
-                  ),
-            Row(
-              children: [
-                SmoothStarRating(
-                  rating: rating == null ? 0 : rating.toDouble(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: skillLevel != null
+                          ? Text(
+                              skillLevel,
+                            )
+                          : Text(
+                              '(Skill Level)',
+                            ),
+                    ),
+                  ],
                 ),
-                rating != null
+                title != null
                     ? Text(
-                        rating.toString() + '(${numberOfReviews})',
+                        title,
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
                           fontWeight: FontWeight.normal,
                         ),
                       )
                     : Text(
-                        0.toString() + '(${0})',
+                        '(No title Added)',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
                           fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                Row(
+                  children: [
+                    SmoothStarRating(
+                      rating: rating == null ? 0 : rating.toDouble(),
+                    ),
+                    rating != null
+                        ? Text(
+                            rating.toString() + '(${numberOfReviews})',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          )
+                        : Text(
+                            0.toString() + '(${0})',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          )
+                  ],
+                ),
+                isFree == true
+                    ? Text(
+                        'Free',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : Text(
+                        price != null ? '\$ ${price}' : '(No Price Added)',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
                       )
               ],
             ),
-            isFree == true
-                ? Text(
-                    'Free',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                : Text(
-                    price != null ? '\$ ${price}' : '(No Price Added)',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

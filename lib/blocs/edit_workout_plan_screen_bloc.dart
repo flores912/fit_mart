@@ -8,4 +8,9 @@ class EditWorkoutPlanScreenBloc {
 
   Stream<QuerySnapshot> myWorkoutsQuerySnapshot(String workoutPlanUid) =>
       _repository.myWorkoutsQuerySnapshot(workoutPlanUid);
+  Future<void> updatePublishStatus(
+    String workoutPlanUid,
+    bool isPublished,
+  ) =>
+      _repository.updatePublishStatus(workoutPlanUid, isPublished);
 }

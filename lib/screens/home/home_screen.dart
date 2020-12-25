@@ -63,17 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.pushNamed(context, DetailsScreen.id);
         },
         child: Icon(Icons.add),
-        backgroundColor: kPrimaryColor,
         elevation: 2.0,
       ),
       bottomNavigationBar: FABBottomAppBar(
         centerItemText: 'Create',
         color: Colors.grey,
         onTabSelected: _selectedTab,
-        selectedColor: Colors.red,
+        selectedColor: kPrimaryColor,
         notchedShape: CircularNotchedRectangle(),
         items: [
-          FABBottomAppBarItem(iconData: Icons.search, text: 'Explore'),
+          FABBottomAppBarItem(iconData: Icons.search, text: 'Discover'),
           FABBottomAppBarItem(iconData: Icons.fitness_center, text: 'My Plans'),
           FABBottomAppBarItem(iconData: Icons.favorite, text: 'Wishlist'),
           FABBottomAppBarItem(iconData: Icons.account_circle, text: 'Account'),
