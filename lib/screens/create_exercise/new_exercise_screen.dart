@@ -27,6 +27,7 @@ class NewExerciseScreen extends StatefulWidget {
   final String exerciseUid;
   final String exerciseTitle;
   final String exerciseVideoUrl;
+  final bool isEdit;
 
   const NewExerciseScreen(
       {Key key,
@@ -34,7 +35,8 @@ class NewExerciseScreen extends StatefulWidget {
       this.workoutUid,
       this.exerciseUid,
       this.exerciseTitle,
-      this.exerciseVideoUrl})
+      this.exerciseVideoUrl,
+      this.isEdit})
       : super(key: key);
 
   @override
@@ -122,6 +124,9 @@ class NewExerciseScreenState extends State<NewExerciseScreen> {
     super.initState();
     title = widget.exerciseTitle;
     videoUrl = widget.exerciseVideoUrl;
+    if (widget.isEdit == true && videoUrl != null) {
+      _controller = VideoPlayerController.network(videoUrl);
+    }
   }
 
   @override
@@ -227,36 +232,26 @@ class NewExerciseScreenState extends State<NewExerciseScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: videoUrl == null
-                        ? Container(
-                            color: Colors.grey.shade300,
-                            height: MediaQuery.of(context).size.width / 1.78,
-                            child: this._controller != null
-                                ? ChewiePlayerWidget(
-                                    looping: false,
-                                    autoPlay: false,
-                                    showControls: true,
-                                    videoPlayerController: _controller)
-                                : Container(
-                                    height: MediaQuery.of(context).size.width /
-                                        1.78,
-                                    child: Icon(
-                                      Icons.play_circle_outline_rounded,
-                                      color: Colors.white,
-                                    ),
-                                  ))
-                        : Container(
-                            height: MediaQuery.of(context).size.width / 1.78,
-                            child: BetterPlayerWidget(
-                              showControls: true,
-                              autoPlay: false,
-                              aspectRatio: 1,
+                  padding: const EdgeInsets.all(8.0),
+                  child: this._controller != null
+                      ? Container(
+                          color: Colors.grey.shade300,
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width / 1.78,
+                          child: ChewiePlayerWidget(
                               looping: false,
-                              betterPlayerDataSource:
-                                  BetterPlayerDataSource.network(videoUrl),
-                            ),
-                          )),
+                              autoPlay: false,
+                              showControls: true,
+                              videoPlayerController: _controller),
+                        )
+                      : Container(
+                          height: MediaQuery.of(context).size.width / 1.78,
+                          child: Icon(
+                            Icons.play_circle_outline_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: RaisedButton(
