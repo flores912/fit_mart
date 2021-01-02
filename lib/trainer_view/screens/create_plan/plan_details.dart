@@ -1,14 +1,13 @@
 import 'package:fit_mart/trainer_view/blocs/plan_details_bloc.dart';
+import 'package:fit_mart/trainer_view/screens/create_plan/plan_workouts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fit_mart/constants.dart';
 
 class PlanDetails extends StatefulWidget {
-  final bool isEdit;
   final String workoutPlanUid;
 
-  const PlanDetails({Key key, this.isEdit, this.workoutPlanUid})
-      : super(key: key);
+  const PlanDetails({Key key, this.workoutPlanUid}) : super(key: key);
   @override
   _PlanDetailsState createState() => _PlanDetailsState();
 }
@@ -25,21 +24,15 @@ class _PlanDetailsState extends State<PlanDetails> {
   bool isFree;
 
   final _formKey = GlobalKey<FormState>();
+
+  String workoutPlanUid;
+  bool isEdit;
+  bool isBackPressed;
   @override
   void initState() {
-    if (widget.isEdit == true) {
-      _bloc.getPlanDetails(widget.workoutPlanUid).then((value) {
-        title = value.get('title');
-        description = value.get('price');
-        isFree = value.get('isFree');
-        if (isFree == true) {
-          price = kFree;
-        }
-      });
-    } else {
-      //set default price for new workout - free
-      price = kPriceList.first;
-    }
+    workoutPlanUid = widget.workoutPlanUid;
+    checkIfEdit();
+
     super.initState();
   }
 
@@ -49,9 +42,11 @@ class _PlanDetailsState extends State<PlanDetails> {
       appBar: AppBar(
         actions: [
           FlatButton(
-            child: Text(kNext),
+            child: Text(isBackPressed == true || workoutPlanUid == null
+                ? kNext
+                : kSave),
             onPressed: () {
-              if (widget.isEdit == true) {
+              if (isEdit == true) {
                 //don't create a new workout and only update fields
               } else {
                 //is new so create a new one
@@ -60,7 +55,23 @@ class _PlanDetailsState extends State<PlanDetails> {
                 checkIfFree();
                 //validate fields before creating new plan
                 if (_formKey.currentState.validate()) {
-                  _bloc.createNewPlan(title, description, price, isFree);
+                  _bloc
+                      .createNewPlan(title, description, price, isFree)
+                      .then((value) {
+                    //this will stop from adding a new workout plan if user presses back button and will update instead
+                    workoutPlanUid = value.id;
+                    isEdit = true;
+                    isBackPressed = true;
+                  }).whenComplete(
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PlanWorkouts(
+                          workoutPlanUid: workoutPlanUid,
+                        ),
+                      ),
+                    ),
+                  );
                 }
               }
             },
@@ -129,6 +140,8 @@ class _PlanDetailsState extends State<PlanDetails> {
     }
     return items;
   }
+  //LOGIC
+  //TODO:PUT ALL THIS LOGIN IN BLOC
 
   checkIfFree() {
     if (price == kFree) {
@@ -136,6 +149,32 @@ class _PlanDetailsState extends State<PlanDetails> {
       price = null;
     } else {
       isFree = false;
+    }
+  }
+
+  checkIfEdit() {
+    if (workoutPlanUid != null) {
+      isEdit = true;
+    } else {
+      isEdit = false;
+      //set initial price for dropdown menu
+      price = kFree;
+    }
+  }
+
+  getValues() {
+    if (isEdit == true) {
+      _bloc.getPlanDetails(workoutPlanUid).then((value) {
+        title = value.get('title');
+        description = value.get('price');
+        isFree = value.get('isFree');
+        if (isFree == true) {
+          price = kFree;
+        }
+      });
+    } else {
+      //set default price for new workout - free
+      price = kPriceList.first;
     }
   }
 }

@@ -5,7 +5,7 @@ class PlanDetailsBloc {
   FirestoreProvider _firestoreProvider = FirestoreProvider();
   Future<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
       _firestoreProvider.getPlanDetails(workoutPlanUid);
-  Future<void> createNewPlan(
+  Future<DocumentReference> createNewPlan(
     String title,
     String description,
     double price,

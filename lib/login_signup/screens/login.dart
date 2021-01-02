@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/login_signup/blocs/login_bloc.dart';
 import 'package:fit_mart/login_signup/screens/sign_up.dart';
-import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/trainer_view/screens/home/home_trainer.dart';
+import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -59,12 +59,7 @@ class _LoginState extends State<Login> {
                   _bloc.login(email, password).whenComplete(() async {
                     if (FirebaseAuth.instance.currentUser != null) {
                       // signed in
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeTrainer(),
-                        ),
-                      );
+                      Navigator.popAndPushNamed(context, HomeTrainer.id);
                     } else {}
                   });
                 },

@@ -12,8 +12,11 @@ const String kDescription = 'Description';
 const String kOptional = '(Optional)';
 const String kPrice = 'Price';
 const String kNext = 'Next';
+const String kSave = 'Save';
 const String kFree = 'Free';
 const String kRequired = 'Required';
+const String kAddWeek = 'Add Week';
+const String kRest = 'Rest';
 
 const List<dynamic> kPriceList = [
   kFree,

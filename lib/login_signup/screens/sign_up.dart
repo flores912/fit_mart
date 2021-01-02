@@ -60,11 +60,8 @@ class _SignUpState extends State<SignUp> {
               onPressed: () {
                 _bloc.signUp(email, password).whenComplete(
                       () => _bloc.addUserDetails(name).whenComplete(
-                            () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeTrainer()),
-                            ),
+                            () => Navigator.popAndPushNamed(
+                                context, HomeTrainer.id),
                           ), //go to home page
                     );
               },

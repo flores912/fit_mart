@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/material.dart';
 
 import 'login_signup/screens/login.dart';
@@ -19,6 +20,7 @@ class Fitpo extends StatelessWidget {
       initialRoute: Login.id,
       routes: {
         Login.id: (context) => Login(),
+        HomeTrainer.id: (context) => HomeTrainer(),
       },
     );
   }

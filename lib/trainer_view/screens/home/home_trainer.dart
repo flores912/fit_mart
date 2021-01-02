@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 
 class HomeTrainer extends StatefulWidget {
+  static const String id = 'home_trainer';
   @override
   _HomeTrainerState createState() => _HomeTrainerState();
 }
