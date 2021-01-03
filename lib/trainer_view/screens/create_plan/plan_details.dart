@@ -78,50 +78,53 @@ class _PlanDetailsState extends State<PlanDetails> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                initialValue: title,
-                validator: (value) {
-                  title = value;
-                  if (title.isEmpty) {
-                    return kRequired;
-                  }
-                  return null;
-                },
-                maxLines: 1,
-                onChanged: (value) {
-                  title = value;
-                },
-                decoration: InputDecoration(
-                  labelText: kTitle + '*',
-                  alignLabelWithHint: true,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  initialValue: title,
+                  validator: (value) {
+                    title = value;
+                    if (title.isEmpty) {
+                      return kRequired;
+                    }
+                    return null;
+                  },
+                  maxLines: 1,
+                  onChanged: (value) {
+                    title = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: kTitle + '*',
+                    alignLabelWithHint: true,
+                  ),
                 ),
-              ),
-              TextFormField(
-                maxLines: 6,
-                onChanged: (value) {
-                  description = value;
-                },
-                decoration: InputDecoration(
-                  labelText: kDescription + kOptional,
-                  alignLabelWithHint: true,
+                TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  onChanged: (value) {
+                    description = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: kDescription + kOptional,
+                    alignLabelWithHint: true,
+                  ),
                 ),
-              ),
-              DropdownButton(
-                value: price,
-                onChanged: (value) {
-                  setState(() {
-                    price = value;
-                  });
-                },
-                items: dropdownMenuItems(),
-              ),
-            ],
+                DropdownButton(
+                  value: price,
+                  onChanged: (value) {
+                    setState(() {
+                      price = value;
+                    });
+                  },
+                  items: dropdownMenuItems(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
