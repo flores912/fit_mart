@@ -26,11 +26,15 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
 
   int numberOfWeeks;
 
-  bool isCopyMode;
+  bool isWorkoutCopyMode;
+  bool isWeekCopyMode;
 
   Workout workoutBeingCopied;
-  // List<String> copyWorkoutsList = []; //uids of workouts to copy
+  Week weekBeingCopied;
+
   List<Workout> copyWorkoutsList = [];
+  List<Week> copyWeeksList = [];
+
   @override
   void initState() {
     workoutPlanUid = widget.workoutPlanUid;
@@ -54,7 +58,9 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
         icon: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: isCopyMode == true ? copyModeAppBar() : AppBar(),
+      appBar: isWorkoutCopyMode == true || isWeekCopyMode == true
+          ? copyModeAppBar()
+          : AppBar(),
       body: SingleChildScrollView(
           child: Container(
               height: MediaQuery.of(context).size.height,
@@ -78,8 +84,60 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                 child: Container(
                   width: MediaQuery.of(context).size.width - 24,
                   child: WeekCard(
+                    checkBoxOnChanged: (value) {
+                      if (checkIfWeekIsAddedToCopyList(weeksList[index]) ==
+                          true) {
+                        //remove workout from  copy list
+                        setState(() {
+                          copyWeeksList.remove(copyWeeksList.firstWhere(
+                              (weekToCheck) =>
+                                  weekToCheck.uid == weeksList[index].uid));
+                        });
+                      } else {
+                        //add workout to copy list
+                        setState(() {
+                          copyWeeksList.add(weeksList[index]);
+                        });
+                      }
+                    },
+                    parentCheckBoxOnChanged: (value) {
+                      setState(() {
+                        turnWeekCopyModeOff();
+                      });
+                    },
+                    isSelected: checkIfWeekIsAddedToCopyList(weeksList[index]),
+                    isParentCheckbox: weekBeingCopied != null
+                        ? weekBeingCopied.uid == weeksList[index].uid
+                        : false,
+                    isOnCopyMode: isWeekCopyMode,
                     week: weeksList[index].week,
                     workoutList: workoutsListView(weeksList[index].uid),
+                    more: PopupMenuButton(
+                        child: Icon(Icons.more_vert),
+                        onSelected: (value) {
+                          switch (value) {
+                            case 1:
+                              //Edit workout name screen
+                              break;
+
+                            case 2:
+                              //show copy checkboxes
+
+                              setState(() {
+                                isWeekCopyMode = true;
+                                weekBeingCopied = weeksList[index];
+                              });
+                              break;
+                            case 3:
+                              //delete
+                              break;
+                            case 4:
+                              //swap
+                              break;
+                          }
+                        },
+                        itemBuilder: (BuildContext context) =>
+                            kWorkoutCardPopUpMenuList),
                   ),
                 ),
               );
@@ -131,12 +189,10 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                       index]), //check if workout is on the list if it i s its checked
                   parentCheckBoxOnChanged: (value) {
                     setState(() {
-                      workoutBeingCopied = null;
-                      copyWorkoutsList = [];
-                      isCopyMode = false;
+                      turnWorkoutCopyModeOff();
                     });
                   },
-                  isOnCopyMode: isCopyMode,
+                  isOnCopyMode: isWorkoutCopyMode,
                   exercises: workoutsList[index].exercises,
                   workoutName: workoutsList[index].workoutName,
                   day: workoutsList[index].day,
@@ -165,7 +221,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                             //show copy checkboxes
 
                             setState(() {
-                              isCopyMode = true;
+                              isWorkoutCopyMode = true;
                               workoutBeingCopied = workoutsList[index];
                             });
                             break;
@@ -217,7 +273,15 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     copyWorkoutsList.forEach((workout) async {
       _bloc
           .copyWorkout(workoutPlanUid, workoutBeingCopied, workout)
-          .whenComplete(() => turnCopyModeOff());
+          .whenComplete(() => turnWorkoutCopyModeOff());
+    });
+  }
+
+  void copyWeeks() {
+    copyWeeksList.forEach((week) async {
+      _bloc
+          .copyWeek(workoutPlanUid, weekBeingCopied, week)
+          .whenComplete(() => turnWeekCopyModeOff());
     });
   }
 
@@ -237,32 +301,79 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     return workoutExists;
   }
 
-  AppBar copyModeAppBar() {
-    return AppBar(
-      title: Text(copyWorkoutsList.length.toString() + ' selected'),
-      leading: GestureDetector(
-        child: Icon(Icons.close),
-        onTap: () {
-          turnCopyModeOff();
-        },
-      ),
-      actions: [
-        GestureDetector(
-          child: Icon(Icons.copy),
-          onTap: () {
-            copyWorkouts();
-          },
-        ),
-      ],
-      backgroundColor: Colors.black87,
-    );
+  bool checkIfWeekIsAddedToCopyList(
+    Week week,
+  ) {
+    bool weekExists;
+    Week existingWeek = copyWeeksList
+        .firstWhere((weekToCheck) => weekToCheck.uid == week.uid, orElse: () {
+      return null;
+    });
+    if (existingWeek == null) {
+      weekExists = false;
+    } else {
+      weekExists = true;
+    }
+    return weekExists;
   }
 
-  turnCopyModeOff() {
+  AppBar copyModeAppBar() {
+    AppBar appBar;
+    if (isWorkoutCopyMode == true) {
+      appBar = AppBar(
+        title: Text(copyWorkoutsList.length.toString() + ' selected'),
+        leading: GestureDetector(
+          child: Icon(Icons.close),
+          onTap: () {
+            turnWorkoutCopyModeOff();
+          },
+        ),
+        actions: [
+          GestureDetector(
+            child: Icon(Icons.copy),
+            onTap: () {
+              copyWorkouts();
+            },
+          ),
+        ],
+        backgroundColor: Colors.black87,
+      );
+    } else if (isWeekCopyMode == true) {
+      appBar = AppBar(
+        title: Text(copyWeeksList.length.toString() + ' selected'),
+        leading: GestureDetector(
+          child: Icon(Icons.close),
+          onTap: () {
+            turnWeekCopyModeOff();
+          },
+        ),
+        actions: [
+          GestureDetector(
+            child: Icon(Icons.copy),
+            onTap: () {
+              copyWeeks();
+            },
+          ),
+        ],
+        backgroundColor: Colors.black87,
+      );
+    }
+    return appBar;
+  }
+
+  turnWeekCopyModeOff() {
+    setState(() {
+      weekBeingCopied = null;
+      copyWeeksList = [];
+      isWeekCopyMode = false;
+    });
+  }
+
+  turnWorkoutCopyModeOff() {
     setState(() {
       workoutBeingCopied = null;
       copyWorkoutsList = [];
-      isCopyMode = false;
+      isWorkoutCopyMode = false;
     });
   }
 }

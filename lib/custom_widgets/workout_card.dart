@@ -44,7 +44,6 @@ class _WorkoutCardState extends State<WorkoutCard> {
             leading: widget.isOnCopyMode == true
                 ? checkBox(widget.isParentCheckbox)
                 : null,
-            //TODO :leading attribute will have checkbox
             title: Text(widget.workoutName +
                 ' - ' +
                 kDay +
