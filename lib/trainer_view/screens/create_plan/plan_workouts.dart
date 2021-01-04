@@ -29,9 +29,8 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
   bool isCopyMode;
 
   Workout workoutBeingCopied;
-  List<Workout> workoutsList = [];
-  List<String> copyWorkoutsList = []; //uids of workouts to copy
-
+  // List<String> copyWorkoutsList = []; //uids of workouts to copy
+  List<Workout> copyWorkoutsList = [];
   @override
   void initState() {
     workoutPlanUid = widget.workoutPlanUid;
@@ -55,7 +54,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
         icon: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: AppBar(),
+      appBar: isCopyMode == true ? copyModeAppBar() : AppBar(),
       body: SingleChildScrollView(
           child: Container(
               height: MediaQuery.of(context).size.height,
@@ -75,11 +74,13 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             itemCount: weeksList.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width - 24,
-                child: WeekCard(
-                  week: weeksList[index].week,
-                  workoutList: workoutsListView(weeksList[index].uid),
+              return Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 24,
+                  child: WeekCard(
+                    week: weeksList[index].week,
+                    workoutList: workoutsListView(weeksList[index].uid),
+                  ),
                 ),
               );
             },
@@ -96,7 +97,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
         stream: _bloc.getWorkouts(workoutPlanUid, weekUid),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            workoutsList = buildWorkoutsList(
+            List<Workout> workoutsList = buildWorkoutsList(
               snapshot.data.docs,
             );
             return ListView.builder(
@@ -108,25 +109,26 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                     workoutPlanUid, weekUid, workoutsList[index].uid);
                 return WorkoutCard(
                   checkBoxOnChanged: (value) {
-                    if (copyWorkoutsList.contains(workoutsList[index].uid) ==
-                        false) {
+                    if (checkIfWorkoutIsAddedToCopyList(workoutsList[index]) ==
+                        true) {
+                      //remove workout from  copy list
                       setState(() {
-                        copyWorkoutsList.add(workoutsList[index].uid);
+                        copyWorkoutsList.remove(copyWorkoutsList.firstWhere(
+                            (workoutToCheck) =>
+                                workoutToCheck.uid == workoutsList[index].uid));
                       });
                     } else {
+                      //add workout to copy list
                       setState(() {
-                        copyWorkoutsList.remove(workoutsList[index].uid);
+                        copyWorkoutsList.add(workoutsList[index]);
                       });
                     }
                   },
                   isParentCheckbox: workoutBeingCopied != null
                       ? workoutBeingCopied.uid == workoutsList[index].uid
                       : false,
-                  isSelected: copyWorkoutsList
-                              .contains(workoutsList[index].uid) ==
-                          true
-                      ? true
-                      : false, //check if workout is on the list if it i s its checked
+                  isSelected: checkIfWorkoutIsAddedToCopyList(workoutsList[
+                      index]), //check if workout is on the list if it i s its checked
                   parentCheckBoxOnChanged: (value) {
                     setState(() {
                       workoutBeingCopied = null;
@@ -211,11 +213,56 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     return weeksList;
   }
 
-  copyWorkouts() {
-    workoutsList.forEach((element) async {
-      if (copyWorkoutsList.contains(element.uid)) {
-        await _bloc.copyWorkout(workoutPlanUid, workoutBeingCopied, element);
-      }
+  void copyWorkouts() {
+    copyWorkoutsList.forEach((workout) async {
+      _bloc
+          .copyWorkout(workoutPlanUid, workoutBeingCopied, workout)
+          .whenComplete(() => turnCopyModeOff());
+    });
+  }
+
+  bool checkIfWorkoutIsAddedToCopyList(
+    Workout workout,
+  ) {
+    bool workoutExists;
+    Workout existingWorkout = copyWorkoutsList.firstWhere(
+        (workoutToCheck) => workoutToCheck.uid == workout.uid, orElse: () {
+      return null;
+    });
+    if (existingWorkout == null) {
+      workoutExists = false;
+    } else {
+      workoutExists = true;
+    }
+    return workoutExists;
+  }
+
+  AppBar copyModeAppBar() {
+    return AppBar(
+      title: Text(copyWorkoutsList.length.toString() + ' selected'),
+      leading: GestureDetector(
+        child: Icon(Icons.close),
+        onTap: () {
+          turnCopyModeOff();
+        },
+      ),
+      actions: [
+        GestureDetector(
+          child: Icon(Icons.copy),
+          onTap: () {
+            copyWorkouts();
+          },
+        ),
+      ],
+      backgroundColor: Colors.black87,
+    );
+  }
+
+  turnCopyModeOff() {
+    setState(() {
+      workoutBeingCopied = null;
+      copyWorkoutsList = [];
+      isCopyMode = false;
     });
   }
 }
