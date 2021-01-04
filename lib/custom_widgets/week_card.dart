@@ -13,14 +13,19 @@ class WeekCard extends StatefulWidget {
 class _WeekCardState extends State<WeekCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text('Week ' + widget.week.toString()),
-        trailing: Icon(Icons.more_vert), //here goes popUpMenuButton widget
-        //TODO :leading attribute will have checkbox
-        //TODO :subtitle attribute will have list of workouts of the week
-        subtitle: widget.workoutList,
-      ),
+    return Wrap(
+      children: [
+        Card(
+          elevation: 1,
+          child: ListTile(
+            title: Text('Week ' + widget.week.toString()),
+            trailing: Icon(Icons.more_vert), //here goes popUpMenuButton widget
+            //TODO :leading attribute will have checkbox
+            //TODO :subtitle attribute will have list of workouts of the week
+            subtitle: widget.workoutList,
+          ),
+        ),
+      ],
     );
   }
 }

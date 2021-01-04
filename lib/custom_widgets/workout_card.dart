@@ -8,10 +8,26 @@ class WorkoutCard extends StatefulWidget {
   final int exercises;
   final int day;
   final Widget more;
+  final Function onTap;
+  final bool isOnCopyMode;
+  final bool isParentCheckbox;
+  final bool isSelected;
+  final Function checkBoxOnChanged;
+  final Function parentCheckBoxOnChanged;
 
-  const WorkoutCard(
-      {Key key, this.workoutName, this.exercises, this.day, this.more})
-      : super(key: key);
+  const WorkoutCard({
+    Key key,
+    this.workoutName,
+    this.exercises,
+    this.day,
+    this.more,
+    this.onTap,
+    this.isOnCopyMode,
+    this.isParentCheckbox,
+    this.isSelected,
+    this.checkBoxOnChanged,
+    this.parentCheckBoxOnChanged,
+  }) : super(key: key);
   @override
   _WorkoutCardState createState() => _WorkoutCardState();
 }
@@ -19,12 +35,41 @@ class WorkoutCard extends StatefulWidget {
 class _WorkoutCardState extends State<WorkoutCard> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      //TODO :leading attribute will have checkbox
-      title:
-          Text(widget.workoutName + ' - ' + kDay + ' ' + widget.day.toString()),
-      subtitle: Text(widget.exercises.toString() + ' exercises'),
-      trailing: widget.more, //here goes popUpMenuButton widget
+    return Wrap(
+      children: [
+        Card(
+          elevation: 2,
+          child: ListTile(
+            onTap: widget.onTap,
+            leading: widget.isOnCopyMode == true
+                ? checkBox(widget.isParentCheckbox)
+                : null,
+            //TODO :leading attribute will have checkbox
+            title: Text(widget.workoutName +
+                ' - ' +
+                kDay +
+                ' ' +
+                widget.day.toString()),
+            subtitle: Text(widget.exercises.toString() + ' exercises'),
+            trailing: widget.more, //here goes popUpMenuButton widget
+          ),
+        ),
+      ],
     );
+  }
+
+  Checkbox checkBox(bool isParentCheckbox) {
+    if (isParentCheckbox == true) {
+      return Checkbox(
+        tristate: true,
+        onChanged: widget.parentCheckBoxOnChanged,
+      );
+    } else {
+      return Checkbox(
+        tristate: true,
+        onChanged: widget.checkBoxOnChanged,
+        value: widget.isSelected,
+      );
+    }
   }
 }

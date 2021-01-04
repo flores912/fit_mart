@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/providers/firestore_provider.dart';
 
 class PlanWorkoutsBloc {
@@ -21,4 +22,9 @@ class PlanWorkoutsBloc {
           String workoutPlanUid, String weekUid, String workoutUid) =>
       _firestoreProvider.updateWorkoutExerciseNumber(
           workoutPlanUid, weekUid, workoutUid);
+
+  Future<void> copyWorkout(String workoutPlanUid, Workout originalWorkout,
+          Workout copyWorkout) =>
+      _firestoreProvider.copyWorkout(
+          workoutPlanUid, originalWorkout, copyWorkout);
 }

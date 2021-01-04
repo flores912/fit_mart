@@ -55,18 +55,14 @@ const List<PopupMenuEntry> kWorkoutCardPopUpMenuList = [
   ),
   const PopupMenuItem(
     value: 2,
-    child: Text(kEditExercises),
-  ),
-  const PopupMenuItem(
-    value: 3,
     child: Text(kCopy),
   ),
   const PopupMenuItem(
-    value: 4,
+    value: 3,
     child: Text(kDelete),
   ),
   const PopupMenuItem(
-    value: 5,
+    value: 4,
     child: Text(kSwap),
   ),
 ];

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_mart/models/workout.dart';
 
 import '../constants.dart';
 
@@ -70,6 +71,7 @@ class FirestoreProvider {
       for (int day = 1; day <= 7; day++) {
         await weeksCollection.doc(weekUid).collection('workouts').add({
           'day': day,
+          'weekUid': weekUid,
           'workoutName': kRest, //default name
           'exercises': 0,
         });
@@ -220,5 +222,79 @@ class FirestoreProvider {
         .collection('workouts')
         .doc(workoutUid)
         .update({'exercises': exercises});
+  }
+
+  Future<void> copyWorkout(String workoutPlanUid, Workout originalWorkout,
+      Workout copyWorkout) async {
+    await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(copyWorkout.weekUid)
+        .collection('workouts')
+        .doc(copyWorkout.uid)
+        .update({
+      'workoutName': originalWorkout.workoutName,
+      'exercises': originalWorkout.exercises,
+    }).whenComplete(() async {
+      await _firestore
+          .collection('workoutPlans')
+          .doc(workoutPlanUid)
+          .collection('weeks')
+          .doc(copyWorkout.weekUid)
+          .collection('workouts')
+          .doc(copyWorkout.uid)
+          .collection('exercises')
+          .get()
+          .then((value) {
+        value.docs.forEach((element) async {
+          await element.reference.delete();
+        });
+      }).whenComplete(() async {
+        await _firestore
+            .collection('workoutPlans')
+            .doc(workoutPlanUid)
+            .collection('weeks')
+            .doc(originalWorkout.weekUid)
+            .collection('workouts')
+            .doc(originalWorkout.uid)
+            .collection('exercises')
+            .get()
+            .then((value) {
+          value.docs.forEach((element) async {
+            await _firestore
+                .collection('workoutPlans')
+                .doc(workoutPlanUid)
+                .collection('weeks')
+                .doc(copyWorkout.weekUid)
+                .collection('workouts')
+                .doc(copyWorkout.uid)
+                .collection('exercises')
+                .add({
+              'exerciseName': await element.get('exerciseName'),
+              'videoUrl': await element.get('videoUrl'),
+              'exercise': await element.get('exercise'),
+              'sets': await element.get('sets'),
+            }).then((value) async {
+              await _firestore
+                  .collection('workoutPlans')
+                  .doc(workoutPlanUid)
+                  .collection('weeks')
+                  .doc(copyWorkout.weekUid)
+                  .collection('workouts')
+                  .doc(copyWorkout.uid)
+                  .collection('exercises')
+                  .doc(value.id)
+                  .collection('sets')
+                  .add({
+                'set': await element.get('set'),
+                'reps': await element.get('reps'),
+                'rest': await element.get('rest'),
+              });
+            });
+          });
+        });
+      });
+    });
   }
 }
