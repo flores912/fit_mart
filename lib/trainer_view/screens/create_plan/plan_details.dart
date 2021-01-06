@@ -1,3 +1,4 @@
+import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/plan_details_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/plan_workouts.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,8 +7,12 @@ import 'package:fit_mart/constants.dart';
 
 class PlanDetails extends StatefulWidget {
   final String workoutPlanUid;
-
-  const PlanDetails({Key key, this.workoutPlanUid}) : super(key: key);
+  final WorkoutPlan workoutPlan;
+  const PlanDetails({
+    Key key,
+    this.workoutPlanUid,
+    this.workoutPlan,
+  }) : super(key: key);
   @override
   _PlanDetailsState createState() => _PlanDetailsState();
 }
@@ -29,10 +34,13 @@ class _PlanDetailsState extends State<PlanDetails> {
   bool isEdit;
   bool isBackPressed;
   @override
-  void initState() {
+  initState() {
     workoutPlanUid = widget.workoutPlanUid;
+    title = widget.workoutPlan.title;
+    isFree = widget.workoutPlan.isFree;
+    description = widget.workoutPlan.description;
+    price = widget.workoutPlan.price;
     checkIfEdit();
-
     super.initState();
   }
 
@@ -46,33 +54,18 @@ class _PlanDetailsState extends State<PlanDetails> {
                 ? kNext
                 : kSave),
             onPressed: () {
+              //check if its free to add details to DB accordingly
+              checkIfFree();
+
               if (isEdit == true) {
                 //don't create a new workout and only update fields
+                updateNewPlan();
               } else {
                 //is new so create a new one
+                createNewPlan();
 
-                //check if its free to add details to DB accordingly
-                checkIfFree();
                 //validate fields before creating new plan
-                if (_formKey.currentState.validate()) {
-                  _bloc
-                      .createNewPlan(title, description, price, isFree)
-                      .then((value) {
-                    //this will stop from adding a new workout plan if user presses back button and will update instead
-                    workoutPlanUid = value.id;
-                    isEdit = true;
-                    isBackPressed = true;
-                  }).whenComplete(
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PlanWorkouts(
-                          workoutPlanUid: workoutPlanUid,
-                        ),
-                      ),
-                    ),
-                  );
-                }
+
               }
             },
           )
@@ -158,6 +151,9 @@ class _PlanDetailsState extends State<PlanDetails> {
   checkIfEdit() {
     if (workoutPlanUid != null) {
       isEdit = true;
+      if (price == null) {
+        price = kFree;
+      }
     } else {
       isEdit = false;
       //set initial price for dropdown menu
@@ -165,19 +161,45 @@ class _PlanDetailsState extends State<PlanDetails> {
     }
   }
 
-  getValues() {
-    if (isEdit == true) {
-      _bloc.getPlanDetails(workoutPlanUid).then((value) {
-        title = value.get('title');
-        description = value.get('price');
-        isFree = value.get('isFree');
-        if (isFree == true) {
-          price = kFree;
-        }
+  createNewPlan() {
+    if (_formKey.currentState.validate()) {
+      _bloc
+          .createNewPlan(title, description, price, isFree)
+          .then((value) async {
+        //this will stop from adding a new workout plan if user presses back button and will update instead
+        workoutPlanUid = value.id;
+        isEdit = true;
+        isBackPressed = true;
+      }).whenComplete(
+        () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PlanWorkouts(
+              workoutPlanUid: workoutPlanUid,
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  updateNewPlan() {
+    if (_formKey.currentState.validate()) {
+      _bloc
+          .updatePlanDetails(workoutPlanUid, title, description, price, isFree)
+          .whenComplete(() {
+        //this will stop from adding a new workout plan if user presses back button and will update instead
+        isEdit = true;
+        isBackPressed = true;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PlanWorkouts(
+              workoutPlanUid: workoutPlanUid,
+            ),
+          ),
+        );
       });
-    } else {
-      //set default price for new workout - free
-      price = kPriceList.first;
     }
   }
 }

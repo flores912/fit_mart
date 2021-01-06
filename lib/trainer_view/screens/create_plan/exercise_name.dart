@@ -46,7 +46,10 @@ class _ExerciseNameState extends State<ExerciseName> {
                         widget.weekUid,
                         widget.workoutUid)
                     .then((value) => exerciseUid = value.id)
-                    .whenComplete(() => Navigator.pop(context))
+                    .whenComplete(() => _bloc
+                        .updateNumberOfExercises(widget.workoutPlanUid,
+                            widget.workoutUid, widget.exercise)
+                        .whenComplete(() => Navigator.pop(context)))
                     .whenComplete(() => Navigator.push(
                           context,
                           MaterialPageRoute(

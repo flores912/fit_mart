@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/week_card.dart';
 import 'package:fit_mart/custom_widgets/workout_card.dart';
 import 'package:fit_mart/trainer_view/blocs/plan_workouts_bloc.dart';
+import 'package:fit_mart/trainer_view/screens/create_plan/cover_photo.dart';
+import 'package:fit_mart/trainer_view/screens/create_plan/edit_workout_name.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/workout_exercises.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +26,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
   ScrollController _scrollController = ScrollController();
   String workoutPlanUid;
 
-  int numberOfWeeks;
-
   bool isWorkoutCopyMode;
   bool isWeekCopyMode;
 
@@ -34,6 +34,8 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
 
   List<Workout> copyWorkoutsList = [];
   List<Week> copyWeeksList = [];
+
+  List<Week> weeksList = [];
 
   @override
   void initState() {
@@ -46,13 +48,17 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _bloc.createNewWeek(workoutPlanUid, numberOfWeeks + 1).whenComplete(
+          _bloc
+              .createNewWeek(workoutPlanUid, weeksList.length + 1)
+              .whenComplete(
                 () => _scrollController.animateTo(
                   _scrollController.position.maxScrollExtent,
                   curve: Curves.fastOutSlowIn,
                   duration: Duration(seconds: 1),
                 ),
-              );
+              )
+              .whenComplete(() =>
+                  _bloc.updateNumberOfWeeks(workoutPlanUid, weeksList.length));
         },
         label: Text(kAddWeek),
         icon: Icon(Icons.add),
@@ -60,7 +66,23 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: isWorkoutCopyMode == true || isWeekCopyMode == true
           ? copyModeAppBar()
-          : AppBar(),
+          : AppBar(
+              actions: [
+                FlatButton(
+                  child: Text(kNext),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CoverPhoto(
+                          workoutPlanUid: workoutPlanUid,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
       body: SingleChildScrollView(
           child: Container(
               height: MediaQuery.of(context).size.height,
@@ -73,8 +95,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       stream: _bloc.getWeeks(workoutPlanUid),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
-          List<Week> weeksList = buildWeeksList(snapshot.data.docs);
-          numberOfWeeks = weeksList.length;
+          weeksList = buildWeeksList(snapshot.data.docs);
           return ListView.builder(
             controller: _scrollController,
             itemCount: weeksList.length,
@@ -163,8 +184,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
               shrinkWrap: true,
               itemCount: workoutsList.length,
               itemBuilder: (context, index) {
-                _bloc.updateWorkoutExerciseNumber(
-                    workoutPlanUid, weekUid, workoutsList[index].uid);
                 return WorkoutCard(
                   checkBoxOnChanged: (value) {
                     if (checkIfWorkoutIsAddedToCopyList(workoutsList[index]) ==
@@ -215,6 +234,16 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                         switch (value) {
                           case 1:
                             //Edit workout name screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditWorkoutName(
+                                    workoutPlanUid: workoutPlanUid,
+                                    weekUid: weekUid,
+                                    workout: workoutsList[index]),
+                              ),
+                            );
+
                             break;
 
                           case 2:

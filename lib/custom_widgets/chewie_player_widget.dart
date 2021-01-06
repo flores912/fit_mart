@@ -26,6 +26,7 @@ class _ChewiePlayerWidgetState extends State<ChewiePlayerWidget> {
   @override
   void initState() {
     _chewieController = ChewieController(
+        showControlsOnInitialize: false,
         showControls: widget.showControls,
         autoPlay: widget.autoPlay,
         videoPlayerController: widget.videoPlayerController,

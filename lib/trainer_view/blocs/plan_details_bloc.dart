@@ -3,7 +3,7 @@ import 'package:fit_mart/providers/firestore_provider.dart';
 
 class PlanDetailsBloc {
   FirestoreProvider _firestoreProvider = FirestoreProvider();
-  Future<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
+  Stream<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
       _firestoreProvider.getPlanDetails(workoutPlanUid);
   Future<DocumentReference> createNewPlan(
     String title,
@@ -12,4 +12,14 @@ class PlanDetailsBloc {
     bool isFree,
   ) =>
       _firestoreProvider.createNewPlan(title, description, price, isFree);
+
+  Future<void> updatePlanDetails(
+    String workoutPlanUid,
+    String title,
+    String description,
+    double price,
+    bool isFree,
+  ) =>
+      _firestoreProvider.updatePlanDetails(
+          workoutPlanUid, title, description, price, isFree);
 }

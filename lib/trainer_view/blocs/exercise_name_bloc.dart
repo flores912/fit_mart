@@ -7,4 +7,8 @@ class ExerciseNameBloc {
           exerciseName, exercise, workoutPlanUid, weekUid, workoutUid) =>
       firestoreProvider.addNewExercise(
           exerciseName, exercise, workoutPlanUid, weekUid, workoutUid);
+  Future<void> updateNumberOfExercises(
+          String workoutPlanUid, String workoutUid, int exercises) =>
+      firestoreProvider.updateNumberOfExercises(
+          workoutPlanUid, workoutUid, exercises);
 }

@@ -7,8 +7,8 @@ class WorkoutExercisesBloc {
           String workoutPlanUid, String weekUid, String workoutUid) =>
       _firestoreProvider.getExercises(workoutPlanUid, weekUid, workoutUid);
 
-  Future<void> updateWorkoutExerciseNumber(
-          String workoutPlanUid, String weekUid, String workoutUid) =>
-      _firestoreProvider.updateWorkoutExerciseNumber(
-          workoutPlanUid, weekUid, workoutUid);
+  // Future<void> updateWorkoutExerciseNumber(
+  //         String workoutPlanUid, String weekUid, String workoutUid) =>
+  //     _firestoreProvider.updateWorkoutExerciseNumber(
+  //         workoutPlanUid, weekUid, workoutUid);
 }

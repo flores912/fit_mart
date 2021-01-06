@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class Fitpo extends StatelessWidget {
     return MaterialApp(
       title: 'Fitpo',
       theme: ThemeData.light(),
-      initialRoute: Login.id,
+      initialRoute:
+          FirebaseAuth.instance.currentUser == null ? Login.id : HomeTrainer.id,
       routes: {
         Login.id: (context) => Login(),
         HomeTrainer.id: (context) => HomeTrainer(),

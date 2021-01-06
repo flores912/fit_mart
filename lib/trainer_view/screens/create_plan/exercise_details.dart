@@ -55,7 +55,6 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           FlatButton(
             child: Text(kSave),
             onPressed: () {
-              print(widget.weekUid);
               _bloc
                   .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
                   .then((value) {
@@ -110,7 +109,11 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                       videoPlayerController: _controller,
                     ),
                   )
-                : Container(),
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width / 1.78,
+                    color: CupertinoColors.placeholderText,
+                  ),
             OutlineButton(
               child: Text(_controller == null ? kAddVideo : kChangeVideo),
               onPressed: () {

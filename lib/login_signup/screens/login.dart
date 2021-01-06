@@ -20,6 +20,7 @@ class _LoginState extends State<Login> {
   String password;
 
   String email;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

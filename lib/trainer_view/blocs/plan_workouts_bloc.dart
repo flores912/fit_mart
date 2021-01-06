@@ -15,15 +15,8 @@ class PlanWorkoutsBloc {
   Stream<QuerySnapshot> getWorkouts(String workoutPlanUid, String weekUid) =>
       _firestoreProvider.getWorkouts(workoutPlanUid, weekUid);
 
-  Stream<QuerySnapshot> getExercises(
-          String workoutPlanUid, String weekUid, String workoutUid) =>
-      _firestoreProvider.getExercises(workoutPlanUid, weekUid, workoutUid);
-
-  Future<void> updateWorkoutExerciseNumber(
-          String workoutPlanUid, String weekUid, String workoutUid) =>
-      _firestoreProvider.updateWorkoutExerciseNumber(
-          workoutPlanUid, weekUid, workoutUid);
-
+  Future<void> updateNumberOfWeeks(String workoutPlanUid, int weeks) =>
+      _firestoreProvider.updateNumberOfWeeks(workoutPlanUid, weeks);
   Future<void> copyWorkout(String workoutPlanUid, Workout originalWorkout,
           Workout copyWorkout) =>
       _firestoreProvider.copyWorkout(
