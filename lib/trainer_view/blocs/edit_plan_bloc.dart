@@ -7,6 +7,6 @@ class EditPlanBloc {
   Future<void> updatePublishedStatus(String workoutPlanUid, bool isPublished) =>
       _firestoreProvider.updatePublishedStatus(workoutPlanUid, isPublished);
 
-  Stream<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
-      _firestoreProvider.getPlanDetails(workoutPlanUid);
+  Stream<DocumentSnapshot> getPlanDetailsStream(String workoutPlanUid) =>
+      _firestoreProvider.getPlanDetailsStream(workoutPlanUid);
 }

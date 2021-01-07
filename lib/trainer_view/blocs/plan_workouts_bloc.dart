@@ -27,4 +27,8 @@ class PlanWorkoutsBloc {
 
   Future<void> deleteWeek(String workoutPlanUid, String weekUid) =>
       _firestoreProvider.deleteWeek(workoutPlanUid, weekUid);
+
+  Future<void> updateWeekIndex(
+          String workoutPlanUid, String weekUid, int week) =>
+      _firestoreProvider.updateWeekIndex(workoutPlanUid, weekUid, week);
 }

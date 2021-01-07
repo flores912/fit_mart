@@ -155,11 +155,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                               break;
                             case 3:
                               //delete
-                              _bloc
-                                  .deleteWeek(
-                                      workoutPlanUid, weeksList[index].uid)
-                                  .whenComplete(() => _bloc.updateNumberOfWeeks(
-                                      workoutPlanUid, weeksList.length));
+                              deleteWeek(index);
                               break;
                           }
                         },
@@ -175,6 +171,22 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
         }
       },
     );
+  }
+
+  Future<void> deleteWeek(int index) async {
+    //delete
+    await _bloc.deleteWeek(workoutPlanUid, weeksList[index].uid).whenComplete(
+        () async =>
+            //update number of total weeks
+            await _bloc
+                .updateNumberOfWeeks(workoutPlanUid, weeksList.length)
+                .whenComplete(() async {
+              for (int i = 1; i <= weeksList.length; i++) {
+                //update indexes
+                await _bloc.updateWeekIndex(
+                    workoutPlanUid, weeksList[i].uid, ++i);
+              }
+            }));
   }
 
   Widget workoutsListView(String weekUid) {

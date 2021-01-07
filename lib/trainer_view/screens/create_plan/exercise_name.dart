@@ -48,21 +48,29 @@ class _ExerciseNameState extends State<ExerciseName> {
                         widget.weekUid,
                         widget.workoutUid)
                     .then((value) => exerciseUid = value.id)
-                    .whenComplete(() => _bloc
-                        .updateNumberOfExercises(widget.workoutPlanUid,
-                            widget.weekUid, widget.workoutUid, widget.exercise)
-                        .whenComplete(() => Navigator.pop(context)))
-                    .whenComplete(() => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ExerciseDetails(
-                              workoutPlanUid: widget.workoutPlanUid,
-                              weekUid: widget.weekUid,
-                              workoutUid: widget.workoutUid,
-                              exerciseUid: exerciseUid,
+                    .whenComplete(
+                      () => _bloc
+                          .updateNumberOfExercises(
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              widget.exercise)
+                          .whenComplete(
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ExerciseDetails(
+                                  workoutPlanUid: widget.workoutPlanUid,
+                                  weekUid: widget.weekUid,
+                                  workoutUid: widget.workoutUid,
+                                  exerciseUid: exerciseUid,
+                                ),
+                              ),
+                            ).then(
+                              (value) => Navigator.pop(context),
                             ),
                           ),
-                        ));
+                    );
               }
             },
           )

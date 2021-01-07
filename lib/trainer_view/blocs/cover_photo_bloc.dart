@@ -16,6 +16,6 @@ class CoverPhotoBloc {
   ) =>
       _firestoreProvider.updatePlanCover(workoutPlanUid, coverPhotoUrl);
 
-  Stream<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
+  Future<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
       _firestoreProvider.getPlanDetails(workoutPlanUid);
 }

@@ -39,12 +39,12 @@ class ExerciseDetailsBloc {
   Future<void> deleteSetFromCollectionExercise(
           String exerciseUid, String setUid) =>
       _firestoreProvider.deleteSetFromCollectionExercise(exerciseUid, setUid);
-  Stream<DocumentSnapshot> getExerciseDetails(String workoutPlanUid,
+  Future<DocumentSnapshot> getExerciseDetails(String workoutPlanUid,
           String weekUid, String workoutUid, String exerciseUid) =>
       _firestoreProvider.getExerciseDetails(
           workoutPlanUid, weekUid, workoutUid, exerciseUid);
 
-  Stream<DocumentSnapshot> getExerciseDetailsFromCollection(
+  Future<DocumentSnapshot> getExerciseDetailsFromCollection(
           String exerciseUid) =>
       _firestoreProvider.getExerciseDetailsFromCollectionExercise(exerciseUid);
 
@@ -60,4 +60,12 @@ class ExerciseDetailsBloc {
           String exerciseUid) =>
       _firestoreProvider.updateExerciseDetailsNumberOfSets(
           sets, workoutPlanUid, weekUid, workoutUid, exerciseUid);
+  Future<void> updateSetIndexCollection(
+          String exerciseUid, String setUid, int set) =>
+      _firestoreProvider.updateSetIndexCollection(exerciseUid, setUid, set);
+
+  Future<void> updateSetIndex(String workoutPlanUid, String weekUid,
+          String workoutUid, String exerciseUid, String setUid, int set) =>
+      _firestoreProvider.updateSetIndex(
+          workoutPlanUid, weekUid, workoutUid, exerciseUid, setUid, set);
 }

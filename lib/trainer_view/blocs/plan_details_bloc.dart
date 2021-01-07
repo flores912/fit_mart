@@ -3,8 +3,8 @@ import 'package:fit_mart/providers/firestore_provider.dart';
 
 class PlanDetailsBloc {
   FirestoreProvider _firestoreProvider = FirestoreProvider();
-  Stream<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
-      _firestoreProvider.getPlanDetails(workoutPlanUid);
+  Stream<DocumentSnapshot> getPlanDetailsStream(String workoutPlanUid) =>
+      _firestoreProvider.getPlanDetailsStream(workoutPlanUid);
   Future<DocumentReference> createNewPlan(
     String title,
     String description,

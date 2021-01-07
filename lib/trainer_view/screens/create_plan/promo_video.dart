@@ -34,6 +34,7 @@ class _PromoVideoState extends State<PromoVideo> {
 
   @override
   Widget build(BuildContext context) {
+    getVideoUrl();
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -67,51 +68,50 @@ class _PromoVideoState extends State<PromoVideo> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: StreamBuilder(
-              stream: _bloc.getPlanDetails(widget.workoutPlanUid),
-              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasData) {
-                  videoUrl = snapshot.data.get('promoVideoUrl');
-                  if (videoUrl != null) {
-                    _controller = VideoPlayerController.network(videoUrl);
-                  }
-                  return Column(
-                    children: [
-                      _controller != null
-                          ? Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.width / 1.78,
-                              child: ChewiePlayerWidget(
-                                autoPlay: false,
-                                looping: false,
-                                showControls: true,
-                                videoPlayerController: _controller,
-                              ),
-                            )
-                          : Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.width / 1.78,
-                              color: CupertinoColors.placeholderText,
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
-                          child: Text(
-                              _controller == null ? kAddVideo : kChangeVideo),
-                          onPressed: () {
-                            showAddVideoDialog();
-                          },
-                        ),
+          child: Column(
+            children: [
+              _controller != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      child: ChewiePlayerWidget(
+                        autoPlay: false,
+                        looping: false,
+                        showControls: true,
+                        videoPlayerController: _controller,
                       ),
-                    ],
-                  );
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              }),
+                    )
+                  : Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      color: CupertinoColors.placeholderText,
+                    ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child: Text(_controller == null ? kAddVideo : kChangeVideo),
+                  onPressed: () {
+                    showAddVideoDialog();
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future getVideoUrl() async {
+    await _bloc.getPlanDetails(widget.workoutPlanUid).then((value) async {
+      videoUrl = await value.get('promoVideoUrl');
+    }).whenComplete(() {
+      if (videoUrl != null) {
+        setState(() {
+          _controller = VideoPlayerController.network(videoUrl);
+        });
+      }
+    });
   }
 
   showAddVideoDialog() {

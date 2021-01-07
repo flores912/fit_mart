@@ -128,24 +128,28 @@ class FirestoreProvider {
         .snapshots();
   }
 
-  Stream<DocumentSnapshot> getPlanDetails(String workoutPlanUid) {
+  Future<DocumentSnapshot> getPlanDetails(String workoutPlanUid) {
+    return _firestore.collection('workoutPlans').doc(workoutPlanUid).get();
+  }
+
+  Stream<DocumentSnapshot> getPlanDetailsStream(String workoutPlanUid) {
     return _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
         .snapshots();
   }
 
-  Stream<DocumentSnapshot> getExerciseDetailsFromCollectionExercise(
+  Future<DocumentSnapshot> getExerciseDetailsFromCollectionExercise(
       String exerciseUid) {
     return _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
         .collection('exerciseCollection')
         .doc(exerciseUid)
-        .snapshots();
+        .get();
   }
 
-  Stream<DocumentSnapshot> getExerciseDetails(String workoutPlanUid,
+  Future<DocumentSnapshot> getExerciseDetails(String workoutPlanUid,
       String weekUid, String workoutUid, String exerciseUid) {
     return _firestore
         .collection('workoutPlans')
@@ -156,7 +160,7 @@ class FirestoreProvider {
         .doc(workoutUid)
         .collection('exercises')
         .doc(exerciseUid)
-        .snapshots();
+        .get();
   }
 
   Future<DocumentReference> createNewPlan(
@@ -185,6 +189,66 @@ class FirestoreProvider {
         .doc(workoutPlanUid)
         .update({
       'weeks': weeks,
+    });
+  }
+
+  Future<void> updateWeekIndex(
+      String workoutPlanUid, String weekUid, int week) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .update({
+      'week': week,
+    });
+  }
+
+  Future<void> updateExerciseIndex(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid, int exercise) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .update({
+      'exercise': exercise,
+    });
+  }
+
+  Future<void> updateSetIndex(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid, String setUid, int set) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .update({
+      'set': set,
+    });
+  }
+
+  Future<void> updateSetIndexCollection(
+      String exerciseUid, String setUid, int set) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .update({
+      'set': set,
     });
   }
 

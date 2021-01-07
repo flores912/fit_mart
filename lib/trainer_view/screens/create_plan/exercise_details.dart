@@ -46,98 +46,102 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
 
   @override
   Widget build(BuildContext context) {
+    getVideoUrl();
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          FlatButton(
-            child: Text(kSave),
-            onPressed: () {
-              _bloc
-                  .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
-                  .then((value) {
-                videoUrl = value;
-              }).whenComplete(
-                () => _bloc
-                    .updateExerciseDetails(
-                        videoUrl,
-                        setsList.length,
-                        widget.workoutPlanUid,
-                        widget.weekUid,
-                        widget.workoutUid,
-                        widget.exerciseUid)
-                    .whenComplete(
-                      () => Navigator.pop(context),
-                    ),
-              );
-            },
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Add Set'),
-        icon: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditSet(
-                workoutPlanUid: widget.workoutPlanUid,
-                weekUid: widget.weekUid,
-                workoutUid: widget.workoutUid,
-                exerciseUid: widget.exerciseUid,
-                set: setsList.length + 1,
-              ),
-            ),
-          );
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: StreamBuilder(
-          stream: _bloc.getExerciseDetails(widget.workoutPlanUid,
-              widget.weekUid, widget.workoutUid, widget.exerciseUid),
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            videoUrl = snapshot.data.get('videoUrl');
-
-            if (videoUrl != null) {
-              _controller = VideoPlayerController.network(videoUrl);
-            }
-
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _controller != null
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width / 1.78,
-                          child: ChewiePlayerWidget(
-                            autoPlay: false,
-                            looping: false,
-                            showControls: true,
-                            videoPlayerController: _controller,
-                          ),
-                        )
-                      : Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width / 1.78,
-                          color: CupertinoColors.placeholderText,
-                        ),
-                  OutlineButton(
-                    child: Text(_controller == null ? kAddVideo : kChangeVideo),
-                    onPressed: () {
-                      showAddVideoDialog();
-                    },
-                  ),
-                  Card(
-                    child: ListTile(
-                      title: Text(kSets),
-                      subtitle: setsListView(),
-                    ),
-                  )
-                ],
+        appBar: AppBar(
+          actions: [
+            FlatButton(
+              child: Text(kSave),
+              onPressed: () {
+                _bloc
+                    .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
+                    .then((value) {
+                  videoUrl = value;
+                }).whenComplete(
+                  () => _bloc
+                      .updateExerciseDetails(
+                          videoUrl,
+                          setsList.length,
+                          widget.workoutPlanUid,
+                          widget.weekUid,
+                          widget.workoutUid,
+                          widget.exerciseUid)
+                      .whenComplete(
+                        () => Navigator.pop(context),
+                      ),
+                );
+              },
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text('Add Set'),
+          icon: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditSet(
+                  workoutPlanUid: widget.workoutPlanUid,
+                  weekUid: widget.weekUid,
+                  workoutUid: widget.workoutUid,
+                  exerciseUid: widget.exerciseUid,
+                  set: setsList.length + 1,
+                ),
               ),
             );
-          }),
-    );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _controller != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      child: ChewiePlayerWidget(
+                        autoPlay: false,
+                        looping: false,
+                        showControls: true,
+                        videoPlayerController: _controller,
+                      ),
+                    )
+                  : Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      color: CupertinoColors.placeholderText,
+                    ),
+              OutlineButton(
+                child: Text(_controller == null ? kAddVideo : kChangeVideo),
+                onPressed: () {
+                  showAddVideoDialog();
+                },
+              ),
+              Card(
+                child: ListTile(
+                  title: Text(kSets),
+                  subtitle: setsListView(),
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+  Future getVideoUrl() async {
+    await _bloc
+        .getExerciseDetails(widget.workoutPlanUid, widget.weekUid,
+            widget.workoutUid, widget.exerciseUid)
+        .then((value) async {
+      videoUrl = await value.get('videoUrl');
+    }).whenComplete(() {
+      if (videoUrl != null) {
+        setState(() {
+          _controller = VideoPlayerController.network(videoUrl);
+        });
+      }
+    });
   }
 
   void _initController(File file) {
@@ -260,20 +264,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                   more: GestureDetector(
                     child: Icon(Icons.delete),
                     onTap: () {
-                      _bloc
-                          .deleteSetFromExercise(
-                              widget.workoutPlanUid,
-                              widget.weekUid,
-                              widget.workoutUid,
-                              widget.exerciseUid,
-                              setsList[index].setUid)
-                          .whenComplete(() =>
-                              _bloc.updateExerciseDetailsNumberOfSets(
-                                  setsList.length,
-                                  widget.workoutPlanUid,
-                                  widget.weekUid,
-                                  widget.workoutUid,
-                                  widget.exerciseUid));
+                      deleteSet(index);
                     },
                   ),
                 );
@@ -283,5 +274,23 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
             return Center(child: Text('Start Adding Sets!'));
           }
         });
+  }
+
+  Future<void> deleteSet(int index) async {
+    await _bloc
+        .deleteSetFromExercise(widget.workoutPlanUid, widget.weekUid,
+            widget.workoutUid, widget.exerciseUid, setsList[index].setUid)
+        .whenComplete(() async => await _bloc.updateExerciseDetailsNumberOfSets(
+            setsList.length,
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid,
+            widget.exerciseUid))
+        .whenComplete(() async {
+      for (int i = 0; i < setsList.length; i++) {
+        await _bloc.updateSetIndex(widget.workoutPlanUid, widget.weekUid,
+            widget.workoutUid, widget.exerciseUid, setsList[i].setUid, i + 1);
+      }
+    });
   }
 }

@@ -26,7 +26,7 @@ class _EditPlanState extends State<EditPlan> {
     return Scaffold(
       appBar: AppBar(),
       body: StreamBuilder(
-          stream: _bloc.getPlanDetails(widget.workoutPlanUid),
+          stream: _bloc.getPlanDetailsStream(widget.workoutPlanUid),
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
               workoutPlan = WorkoutPlan(

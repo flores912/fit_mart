@@ -72,8 +72,8 @@ class _CoverPhotoState extends State<CoverPhoto> {
           )
         ],
       ),
-      body: StreamBuilder(
-          stream: _bloc.getPlanDetails(widget.workoutPlanUid),
+      body: FutureBuilder(
+          future: _bloc.getPlanDetails(widget.workoutPlanUid),
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
               title = snapshot.data.get('title');

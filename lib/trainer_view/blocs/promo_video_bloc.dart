@@ -17,6 +17,6 @@ class PromoVideoBloc {
   ) =>
       _firestoreProvider.updatePlanPromo(workoutPlanUid, promoVideoUrl);
 
-  Stream<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
+  Future<DocumentSnapshot> getPlanDetails(String workoutPlanUid) =>
       _firestoreProvider.getPlanDetails(workoutPlanUid);
 }

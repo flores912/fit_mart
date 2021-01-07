@@ -15,13 +15,15 @@ class ExerciseCollectionList extends StatefulWidget {
   final String weekUid;
   final String workoutUid;
   final int exercise;
+  final int numberOfExercises;
 
   const ExerciseCollectionList(
       {Key key,
       this.workoutPlanUid,
       this.weekUid,
       this.workoutUid,
-      this.exercise})
+      this.exercise,
+      this.numberOfExercises})
       : super(key: key);
   @override
   _ExerciseCollectionListState createState() => _ExerciseCollectionListState();
@@ -89,7 +91,7 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                               widget.workoutPlanUid,
                               widget.weekUid,
                               widget.workoutUid,
-                              exercisesList.length))
+                              widget.exercise))
                           .whenComplete(() => Navigator.pop(context));
                     },
                     exerciseName: exercisesList[index].exerciseName,

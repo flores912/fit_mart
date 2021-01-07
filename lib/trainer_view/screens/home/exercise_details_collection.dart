@@ -32,90 +32,95 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
   File videoFile;
 
   List<Set> setsList = [];
-
   @override
   Widget build(BuildContext context) {
+    getVideoUrl();
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          FlatButton(
-            child: Text(kSave),
-            onPressed: () {
-              _bloc
-                  .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
-                  .then((value) {
-                videoUrl = value;
-              }).whenComplete(
-                () => _bloc
-                    .updateExerciseDetailsCollection(
-                        videoUrl, setsList.length, widget.exerciseUid)
-                    .whenComplete(
-                      () => Navigator.pop(context),
-                    ),
-              );
-            },
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Add Set'),
-        icon: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditSetCollection(
-                exerciseUid: widget.exerciseUid,
-                set: setsList.length + 1,
-              ),
-            ),
-          );
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: StreamBuilder(
-          stream: _bloc.getExerciseDetailsFromCollection(widget.exerciseUid),
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            videoUrl = snapshot.data.get('videoUrl');
-            if (videoUrl != null) {
-              _controller = VideoPlayerController.network(videoUrl);
-            }
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  _controller != null
-                      ? Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width / 1.78,
-                          child: ChewiePlayerWidget(
-                            autoPlay: false,
-                            looping: false,
-                            showControls: true,
-                            videoPlayerController: _controller,
-                          ),
-                        )
-                      : Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width / 1.78,
-                          color: CupertinoColors.placeholderText,
-                        ),
-                  OutlineButton(
-                    child: Text(_controller == null ? kAddVideo : kChangeVideo),
-                    onPressed: () {
-                      showAddVideoDialog();
-                    },
-                  ),
-                  Card(
-                    child: ListTile(
-                      title: Text(kSets),
-                      subtitle: setsListView(),
-                    ),
-                  )
-                ],
+        appBar: AppBar(
+          actions: [
+            FlatButton(
+              child: Text(kSave),
+              onPressed: () {
+                _bloc
+                    .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
+                    .then((value) {
+                  videoUrl = value;
+                }).whenComplete(
+                  () => _bloc
+                      .updateExerciseDetailsCollection(
+                          videoUrl, setsList.length, widget.exerciseUid)
+                      .whenComplete(
+                        () => Navigator.pop(context),
+                      ),
+                );
+              },
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text('Add Set'),
+          icon: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditSetCollection(
+                  exerciseUid: widget.exerciseUid,
+                  set: setsList.length + 1,
+                ),
               ),
             );
-          }),
-    );
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _controller != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      child: ChewiePlayerWidget(
+                        autoPlay: false,
+                        looping: false,
+                        showControls: true,
+                        videoPlayerController: _controller,
+                      ),
+                    )
+                  : Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      color: CupertinoColors.placeholderText,
+                    ),
+              OutlineButton(
+                child: Text(_controller == null ? kAddVideo : kChangeVideo),
+                onPressed: () {
+                  showAddVideoDialog();
+                },
+              ),
+              Card(
+                child: ListTile(
+                  title: Text(kSets),
+                  subtitle: setsListView(),
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+  Future getVideoUrl() async {
+    await _bloc
+        .getExerciseDetailsFromCollection(widget.exerciseUid)
+        .then((value) async {
+      videoUrl = await value.get('videoUrl');
+    }).whenComplete(() {
+      if (videoUrl != null) {
+        setState(() {
+          _controller = VideoPlayerController.network(videoUrl);
+        });
+      }
+    });
   }
 
   void _initController(File file) {
@@ -237,12 +242,7 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
                   more: GestureDetector(
                     child: Icon(Icons.delete),
                     onTap: () {
-                      _bloc
-                          .deleteSetFromCollectionExercise(
-                              widget.exerciseUid, setsList[index].setUid)
-                          .whenComplete(() =>
-                              _bloc.updateExerciseDetailsNumberOfSetsCollection(
-                                  setsList.length, widget.exerciseUid));
+                      deleteSet(index);
                     },
                   ),
                 );
@@ -252,5 +252,20 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
             return Center(child: Text('Start Adding Sets!'));
           }
         });
+  }
+
+  Future<void> deleteSet(int index) async {
+    await _bloc
+        .deleteSetFromCollectionExercise(
+            widget.exerciseUid, setsList[index].setUid)
+        .whenComplete(() async =>
+            await _bloc.updateExerciseDetailsNumberOfSetsCollection(
+                setsList.length, widget.exerciseUid))
+        .whenComplete(() async {
+      for (int i = 0; i <= setsList.length; i++) {
+        await _bloc.updateSetIndexCollection(
+            widget.exerciseUid, setsList[i].setUid, i + 1);
+      }
+    });
   }
 }

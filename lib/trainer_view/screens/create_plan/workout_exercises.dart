@@ -73,61 +73,62 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                       ),
                     );
                   },
-                  child: ExerciseCard(
-                      more: PopupMenuButton(
-                          onSelected: (value) {
-                            switch (value) {
-                              case 1:
-                                //Edit Name
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          exercisesList[index].exercise.toString(),
+                        ),
+                      ),
+                      Expanded(
+                        child: ExerciseCard(
+                            more: PopupMenuButton(
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case 1:
+                                      //Edit Name
 
-                                break;
-                              case 2:
-                                //delete
-                                _bloc
-                                    .deleteExerciseFromWorkout(
-                                        widget.workoutPlanUid,
-                                        widget.weekUid,
-                                        widget.workoutUid,
-                                        exercisesList[index].exerciseUid)
-                                    .whenComplete(() =>
-                                        _bloc.updateNumberOfExercises(
-                                            widget.workoutPlanUid,
-                                            widget.weekUid,
-                                            widget.workoutUid,
-                                            exercisesList.length));
-                                break;
-                            }
-                          },
-                          icon: Icon(Icons.more_vert),
-                          itemBuilder: (BuildContext context) =>
-                              kExerciseCardPopUpMenuList),
-                      exerciseName: exercisesList[index].exerciseName,
-                      sets: exercisesList[index].sets,
-                      thumbnail: exercisesList[index].videoUrl != null
-                          ? Container(
-                              height: 100,
-                              width: 100,
-                              child: BetterPlayerListVideoPlayer(
-                                BetterPlayerDataSource(
-                                    BetterPlayerDataSourceType.NETWORK,
-                                    exercisesList[index].videoUrl),
-                                configuration: BetterPlayerConfiguration(
-                                  controlsConfiguration:
-                                      BetterPlayerControlsConfiguration(
-                                    showControls: false,
-                                  ),
-                                  aspectRatio: 1,
-                                ),
-                                betterPlayerListVideoPlayerController:
-                                    controller,
-                                autoPlay: false,
-                              ),
-                            )
-                          : Container(
-                              color: CupertinoColors.placeholderText,
-                              height: 100,
-                              width: 100,
-                            )),
+                                      break;
+                                    case 2:
+                                      //delete
+                                      deleteExercise(index);
+                                      break;
+                                  }
+                                },
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (BuildContext context) =>
+                                    kExerciseCardPopUpMenuList),
+                            exerciseName: exercisesList[index].exerciseName,
+                            sets: exercisesList[index].sets,
+                            thumbnail: exercisesList[index].videoUrl != null
+                                ? Container(
+                                    height: 100,
+                                    width: 100,
+                                    child: BetterPlayerListVideoPlayer(
+                                      BetterPlayerDataSource(
+                                          BetterPlayerDataSourceType.NETWORK,
+                                          exercisesList[index].videoUrl),
+                                      configuration: BetterPlayerConfiguration(
+                                        controlsConfiguration:
+                                            BetterPlayerControlsConfiguration(
+                                          showControls: false,
+                                        ),
+                                        aspectRatio: 1,
+                                      ),
+                                      betterPlayerListVideoPlayerController:
+                                          controller,
+                                      autoPlay: false,
+                                    ),
+                                  )
+                                : Container(
+                                    color: CupertinoColors.placeholderText,
+                                    height: 100,
+                                    width: 100,
+                                  )),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -137,6 +138,24 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
         }
       },
     );
+  }
+
+  Future deleteExercise(int index) async {
+    await _bloc
+        .deleteExerciseFromWorkout(widget.workoutPlanUid, widget.weekUid,
+            widget.workoutUid, exercisesList[index].exerciseUid)
+        .whenComplete(() async => await _bloc.updateNumberOfExercises(
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid,
+            exercisesList.length))
+        .whenComplete(() async {
+      for (int i = 0; i <= exercisesList.length; i++) {
+        //update indexes
+        await _bloc.updateExerciseIndex(widget.workoutPlanUid, widget.weekUid,
+            widget.workoutUid, exercisesList[i].exerciseUid, i + 1);
+      }
+    });
   }
 
   List<Exercise> buildExerciseList(
