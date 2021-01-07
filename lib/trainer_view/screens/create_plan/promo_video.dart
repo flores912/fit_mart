@@ -13,8 +13,10 @@ import '../../../constants.dart';
 
 class PromoVideo extends StatefulWidget {
   final String workoutPlanUid;
+  final bool isEdit;
 
-  const PromoVideo({Key key, this.workoutPlanUid}) : super(key: key);
+  const PromoVideo({Key key, this.workoutPlanUid, this.isEdit})
+      : super(key: key);
   @override
   _PromoVideoState createState() => _PromoVideoState();
 }
@@ -36,7 +38,11 @@ class _PromoVideoState extends State<PromoVideo> {
       appBar: AppBar(
         actions: [
           FlatButton(
-            child: _controller != null ? Text(kNext) : Text(kSkip),
+            child: _controller != null
+                ? Text(kNext)
+                : widget.isEdit == true
+                    ? Text(kSave)
+                    : Text(kSkip),
             onPressed: () async {
               _bloc
                   .downloadURL(videoFile, widget.workoutPlanUid + '/promoVideo',

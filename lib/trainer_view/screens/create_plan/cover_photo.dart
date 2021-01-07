@@ -15,8 +15,10 @@ import '../../../constants.dart';
 
 class CoverPhoto extends StatefulWidget {
   final String workoutPlanUid;
+  final bool isEdit;
 
-  const CoverPhoto({Key key, this.workoutPlanUid}) : super(key: key);
+  const CoverPhoto({Key key, this.workoutPlanUid, this.isEdit})
+      : super(key: key);
 
   @override
   _CoverPhotoState createState() => _CoverPhotoState();
@@ -46,7 +48,11 @@ class _CoverPhotoState extends State<CoverPhoto> {
       appBar: AppBar(
         actions: [
           FlatButton(
-            child: _croppedImage != null ? Text(kNext) : Text(kSkip),
+            child: _croppedImage != null || coverPhotoUrl != null
+                ? Text(kNext)
+                : widget.isEdit == true
+                    ? Text(kSave)
+                    : Text(kSkip),
             onPressed: () async {
               _bloc
                   .downloadURL(_croppedImage,
@@ -112,7 +118,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
     );
   }
 
-  Future getImage(bool isCamera) async {
+  Future<void> getImage(bool isCamera) async {
     final pickedFile = await picker.getImage(
         source: (isCamera == true) ? ImageSource.camera : ImageSource.gallery);
     cropImage(pickedFile.path);
@@ -146,7 +152,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
           children: [
             SimpleDialogOption(
               onPressed: () {
-                getImage(false);
+                getImage(false).whenComplete(() => Navigator.pop(context));
               },
               child: const Text(
                 'Gallery',
@@ -154,7 +160,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
             ),
             SimpleDialogOption(
               onPressed: () {
-                getImage(true);
+                getImage(true).whenComplete(() => Navigator.pop(context));
               },
               child: const Text('Camera'),
             ),

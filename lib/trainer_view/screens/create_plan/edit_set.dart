@@ -55,6 +55,13 @@ class _EditSetState extends State<EditSet> {
                           widget.set,
                           reps,
                           rest)
+                      .whenComplete(() =>
+                          _bloc.updateExerciseDetailsNumberOfSets(
+                              widget.set,
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              widget.exerciseUid))
                       .whenComplete(() => Navigator.pop(context));
                 }
               },

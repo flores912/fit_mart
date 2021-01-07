@@ -42,13 +42,15 @@ class _ExerciseNameState extends State<ExerciseName> {
                     .addNewExercise(
                         exerciseName,
                         widget.exercise,
+                        0,
+                        null,
                         widget.workoutPlanUid,
                         widget.weekUid,
                         widget.workoutUid)
                     .then((value) => exerciseUid = value.id)
                     .whenComplete(() => _bloc
                         .updateNumberOfExercises(widget.workoutPlanUid,
-                            widget.workoutUid, widget.exercise)
+                            widget.weekUid, widget.workoutUid, widget.exercise)
                         .whenComplete(() => Navigator.pop(context)))
                     .whenComplete(() => Navigator.push(
                           context,

@@ -24,4 +24,7 @@ class PlanWorkoutsBloc {
   Future<void> copyWeek(
           String workoutPlanUid, Week originalWeek, Week copyWeek) =>
       _firestoreProvider.copyWeek(workoutPlanUid, originalWeek, copyWeek);
+
+  Future<void> deleteWeek(String workoutPlanUid, String weekUid) =>
+      _firestoreProvider.deleteWeek(workoutPlanUid, weekUid);
 }

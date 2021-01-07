@@ -2,42 +2,42 @@ import 'package:better_player/better_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/exercise_card.dart';
 import 'package:fit_mart/models/exercise.dart';
+import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/home/exercise_details_collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
-import 'exercise_name_collection.dart';
 
-class ExerciseCollection extends StatefulWidget {
-  static const String title = kExerciseCollection;
+class ExerciseCollectionList extends StatefulWidget {
+  final String workoutPlanUid;
+  final String weekUid;
+  final String workoutUid;
+  final int exercise;
 
+  const ExerciseCollectionList(
+      {Key key,
+      this.workoutPlanUid,
+      this.weekUid,
+      this.workoutUid,
+      this.exercise})
+      : super(key: key);
   @override
-  _ExerciseCollectionState createState() => _ExerciseCollectionState();
+  _ExerciseCollectionListState createState() => _ExerciseCollectionListState();
 }
 
-class _ExerciseCollectionState extends State<ExerciseCollection> {
+class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
   WorkoutExercisesBloc _bloc = WorkoutExercisesBloc();
   BetterPlayerListVideoPlayerController controller =
       BetterPlayerListVideoPlayerController();
   BetterPlayerConfiguration betterPlayerConfiguration =
       BetterPlayerConfiguration(autoPlay: false);
   List<Exercise> exercisesList = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        heroTag: ExerciseCollection,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ExerciseNameCollection()),
-          );
-        },
-      ),
+      appBar: AppBar(),
       body: exercisesListView(),
     );
   }
@@ -55,32 +55,43 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
                 width: MediaQuery.of(context).size.width - 24,
                 child: ExerciseCard(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ExerciseDetailsCollection(
-                                  exerciseUid: exercisesList[index].exerciseUid,
-                                )),
-                      );
+                      _bloc
+                          .addNewExercise(
+                              exercisesList[index].exerciseName,
+                              widget.exercise,
+                              exercisesList[index].sets,
+                              exercisesList[index].videoUrl,
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid)
+                          .then((value) {
+                            _bloc
+                                .getSetsCollection(
+                                    exercisesList[index].exerciseUid)
+                                .forEach((element) {
+                              element.docs.forEach((element) async {
+                                int set = await element.get('set');
+                                int reps = await element.get('reps');
+                                int rest = await element.get('rest');
+
+                                _bloc.addNewSet(
+                                    widget.workoutPlanUid,
+                                    widget.weekUid,
+                                    widget.workoutUid,
+                                    value.id,
+                                    set,
+                                    reps,
+                                    rest);
+                              });
+                            });
+                          })
+                          .whenComplete(() => _bloc.updateNumberOfExercises(
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              exercisesList.length))
+                          .whenComplete(() => Navigator.pop(context));
                     },
-                    more: PopupMenuButton(
-                        onSelected: (value) {
-                          switch (value) {
-                            case 1:
-                              //Edit name
-
-                              break;
-
-                            case 2:
-                              //delete
-                              _bloc.deleteExerciseFromCollection(
-                                  exercisesList[index].exerciseUid);
-                              break;
-                          }
-                        },
-                        icon: Icon(Icons.more_vert),
-                        itemBuilder: (BuildContext context) =>
-                            kExerciseCardPopUpMenuList),
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
                     thumbnail: exercisesList[index].videoUrl != null

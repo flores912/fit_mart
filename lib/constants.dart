@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/providers/firestore_provider.dart';
 import 'package:flutter/material.dart';
 
 const String kLogin = 'Login';
@@ -62,22 +64,19 @@ const List<PopupMenuEntry> kWorkoutCardPopUpMenuList = [
     value: 2,
     child: Text(kCopy),
   ),
-  const PopupMenuItem(
-    value: 3,
-    child: Text(kDelete),
-  ),
-  const PopupMenuItem(
-    value: 4,
-    child: Text(kSwap),
-  ),
+  //add reset button later?
 ];
-const List<PopupMenuEntry> kSetCardPopUpMenuList = [
+const List<PopupMenuEntry> kWeekCardPopUpMenuList = [
   const PopupMenuItem(
     value: 1,
-    child: Text(kEdit),
+    child: Text(kEditName),
   ),
   const PopupMenuItem(
     value: 2,
+    child: Text(kCopy),
+  ),
+  const PopupMenuItem(
+    value: 3,
     child: Text(kDelete),
   ),
 ];
@@ -88,14 +87,6 @@ const List<PopupMenuEntry> kExerciseCardPopUpMenuList = [
   ),
   const PopupMenuItem(
     value: 2,
-    child: Text(kEditSets),
-  ),
-  const PopupMenuItem(
-    value: 3,
-    child: Text(kSwap),
-  ),
-  const PopupMenuItem(
-    value: 4,
     child: Text(kDelete),
   ),
 ];

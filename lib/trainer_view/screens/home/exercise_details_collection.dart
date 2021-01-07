@@ -32,13 +32,6 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
   File videoFile;
 
   List<Set> setsList = [];
-  @override
-  void initState() {
-    if (videoUrl != null) {
-      _controller = VideoPlayerController.network(videoUrl);
-    }
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,40 +73,48 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _controller != null
-                ? Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width / 1.78,
-                    child: ChewiePlayerWidget(
-                      autoPlay: false,
-                      looping: false,
-                      showControls: true,
-                      videoPlayerController: _controller,
+      body: StreamBuilder(
+          stream: _bloc.getExerciseDetailsFromCollection(widget.exerciseUid),
+          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            videoUrl = snapshot.data.get('videoUrl');
+            if (videoUrl != null) {
+              _controller = VideoPlayerController.network(videoUrl);
+            }
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  _controller != null
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width / 1.78,
+                          child: ChewiePlayerWidget(
+                            autoPlay: false,
+                            looping: false,
+                            showControls: true,
+                            videoPlayerController: _controller,
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width / 1.78,
+                          color: CupertinoColors.placeholderText,
+                        ),
+                  OutlineButton(
+                    child: Text(_controller == null ? kAddVideo : kChangeVideo),
+                    onPressed: () {
+                      showAddVideoDialog();
+                    },
+                  ),
+                  Card(
+                    child: ListTile(
+                      title: Text(kSets),
+                      subtitle: setsListView(),
                     ),
                   )
-                : Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width / 1.78,
-                    color: CupertinoColors.placeholderText,
-                  ),
-            OutlineButton(
-              child: Text(_controller == null ? kAddVideo : kChangeVideo),
-              onPressed: () {
-                showAddVideoDialog();
-              },
-            ),
-            Card(
-              child: ListTile(
-                title: Text(kSets),
-                subtitle: setsListView(),
+                ],
               ),
-            )
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 
@@ -204,10 +205,10 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
     List<Set> setsList = [];
     docList.forEach((element) {
       Set set = Set(
-        reps: element.get('reps'),
-        rest: element.get('rest'),
-        set: element.get('set'),
-      );
+          reps: element.get('reps'),
+          rest: element.get('rest'),
+          set: element.get('set'),
+          setUid: element.id);
       setsList.add(set);
     });
     return setsList;
@@ -233,30 +234,17 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
                   set: setsList[index].set,
                   reps: setsList[index].reps,
                   rest: setsList[index].rest,
-                  more: PopupMenuButton(
-                      onSelected: (value) {
-                        switch (value) {
-                          case 1:
-                            //Edit exercise name
-
-                            break;
-                          case 2:
-                            //Edit exercise sets
-
-                            break;
-                          case 3:
-                            // swap exercise
-
-                            break;
-                          case 4:
-                            //delete exercise
-
-                            break;
-                        }
-                      },
-                      icon: Icon(Icons.more_vert),
-                      itemBuilder: (BuildContext context) =>
-                          kExerciseCardPopUpMenuList),
+                  more: GestureDetector(
+                    child: Icon(Icons.delete),
+                    onTap: () {
+                      _bloc
+                          .deleteSetFromCollectionExercise(
+                              widget.exerciseUid, setsList[index].setUid)
+                          .whenComplete(() =>
+                              _bloc.updateExerciseDetailsNumberOfSetsCollection(
+                                  setsList.length, widget.exerciseUid));
+                    },
+                  ),
                 );
               },
             );

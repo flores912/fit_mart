@@ -14,8 +14,10 @@ import '../../../models/workout.dart';
 
 class PlanWorkouts extends StatefulWidget {
   final String workoutPlanUid;
+  final bool isEdit;
 
-  const PlanWorkouts({Key key, this.workoutPlanUid}) : super(key: key);
+  const PlanWorkouts({Key key, this.workoutPlanUid, this.isEdit})
+      : super(key: key);
   @override
   _PlanWorkoutsState createState() => _PlanWorkoutsState();
 }
@@ -68,19 +70,21 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
           ? copyModeAppBar()
           : AppBar(
               actions: [
-                FlatButton(
-                  child: Text(kNext),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CoverPhoto(
-                          workoutPlanUid: workoutPlanUid,
-                        ),
-                      ),
-                    );
-                  },
-                )
+                widget.isEdit == null
+                    ? FlatButton(
+                        child: Text(kNext),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CoverPhoto(
+                                workoutPlanUid: workoutPlanUid,
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : Container() //nothing
               ],
             ),
       body: SingleChildScrollView(
@@ -151,21 +155,23 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                               break;
                             case 3:
                               //delete
-                              break;
-                            case 4:
-                              //swap
+                              _bloc
+                                  .deleteWeek(
+                                      workoutPlanUid, weeksList[index].uid)
+                                  .whenComplete(() => _bloc.updateNumberOfWeeks(
+                                      workoutPlanUid, weeksList.length));
                               break;
                           }
                         },
                         itemBuilder: (BuildContext context) =>
-                            kWorkoutCardPopUpMenuList),
+                            kWeekCardPopUpMenuList),
                   ),
                 ),
               );
             },
           );
         } else {
-          return CircularProgressIndicator();
+          return Center(child: Text('Start Adding Weeks!'));
         }
       },
     );
@@ -268,7 +274,8 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
               },
             );
           } else {
-            return CircularProgressIndicator();
+            return Container(
+                height: 48, width: 48, child: CircularProgressIndicator());
           }
         });
   }

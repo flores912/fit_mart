@@ -32,4 +32,32 @@ class ExerciseDetailsBloc {
 
   Future<String> downloadURL(File file, String path, String contentType) =>
       _firebaseProvider.downloadURL(file, path, contentType);
+  Future<void> deleteSetFromExercise(String workoutPlanUid, String weekUid,
+          String workoutUid, String exerciseUid, String setUid) =>
+      _firestoreProvider.deleteSetFromExercise(
+          workoutPlanUid, weekUid, workoutUid, exerciseUid, setUid);
+  Future<void> deleteSetFromCollectionExercise(
+          String exerciseUid, String setUid) =>
+      _firestoreProvider.deleteSetFromCollectionExercise(exerciseUid, setUid);
+  Stream<DocumentSnapshot> getExerciseDetails(String workoutPlanUid,
+          String weekUid, String workoutUid, String exerciseUid) =>
+      _firestoreProvider.getExerciseDetails(
+          workoutPlanUid, weekUid, workoutUid, exerciseUid);
+
+  Stream<DocumentSnapshot> getExerciseDetailsFromCollection(
+          String exerciseUid) =>
+      _firestoreProvider.getExerciseDetailsFromCollectionExercise(exerciseUid);
+
+  Future<void> updateExerciseDetailsNumberOfSetsCollection(
+          int sets, String exerciseUid) =>
+      _firestoreProvider.updateExerciseDetailsNumberOfSetsCollection(
+          sets, exerciseUid);
+  Future<void> updateExerciseDetailsNumberOfSets(
+          int sets,
+          String workoutPlanUid,
+          String weekUid,
+          String workoutUid,
+          String exerciseUid) =>
+      _firestoreProvider.updateExerciseDetailsNumberOfSets(
+          sets, workoutPlanUid, weekUid, workoutUid, exerciseUid);
 }

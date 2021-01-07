@@ -35,6 +35,9 @@ class _EditSetCollectionState extends State<EditSetCollection> {
                   _bloc
                       .addNewSetCollection(
                           widget.exerciseUid, widget.set, reps, rest)
+                      .whenComplete(() =>
+                          _bloc.updateExerciseDetailsNumberOfSetsCollection(
+                              widget.set, widget.exerciseUid))
                       .whenComplete(() => Navigator.pop(context));
                 }
               },

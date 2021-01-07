@@ -41,6 +41,86 @@ class FirestoreProvider {
         .snapshots();
   }
 
+  Future<void> deleteExerciseFromCollection(String exerciseUid) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .delete();
+  }
+
+  Future<void> deleteSetFromCollectionExercise(
+      String exerciseUid, String setUid) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .delete();
+  }
+
+  Future<void> deleteSetFromExercise(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid, String setUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .delete();
+  }
+
+  Future<void> deleteWeek(String workoutPlanUid, String weekUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .delete();
+  }
+
+  Future<void> deleteExerciseFromWorkout(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .delete();
+  }
+
+  Future<void> deleteSetFromWorkoutExercise(
+      String workoutPlanUid,
+      String weekUid,
+      String workoutUid,
+      String exerciseUid,
+      String setUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .delete();
+  }
+
   Stream<QuerySnapshot> getTrainerPlans() {
     return _firestore
         .collection('workoutPlans')
@@ -52,6 +132,30 @@ class FirestoreProvider {
     return _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
+        .snapshots();
+  }
+
+  Stream<DocumentSnapshot> getExerciseDetailsFromCollectionExercise(
+      String exerciseUid) {
+    return _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .snapshots();
+  }
+
+  Stream<DocumentSnapshot> getExerciseDetails(String workoutPlanUid,
+      String weekUid, String workoutUid, String exerciseUid) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
         .snapshots();
   }
 
@@ -94,11 +198,13 @@ class FirestoreProvider {
     });
   }
 
-  Future<void> updateNumberOfExercises(
-      String workoutPlanUid, String workoutUid, int exercises) async {
+  Future<void> updateNumberOfExercises(String workoutPlanUid, String weekUid,
+      String workoutUid, int exercises) async {
     return await _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
         .collection('workouts')
         .doc(workoutUid)
         .update({
@@ -180,6 +286,7 @@ class FirestoreProvider {
         .collection('workoutPlans')
         .doc(workoutPlanUid)
         .collection('weeks')
+        .orderBy('week', descending: false)
         .snapshots();
   }
 
@@ -195,8 +302,14 @@ class FirestoreProvider {
         .snapshots();
   }
 
-  Future<DocumentReference> addNewExercise(String exerciseName, int exercise,
-      String workoutPlanUid, String weekUid, String workoutUid) async {
+  Future<DocumentReference> addNewExercise(
+      String exerciseName,
+      int exercise,
+      int sets,
+      String videoUrl,
+      String workoutPlanUid,
+      String weekUid,
+      String workoutUid) async {
     return await _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
@@ -207,9 +320,9 @@ class FirestoreProvider {
         .collection('exercises')
         .add({
       'exerciseName': exerciseName,
-      'videoUrl': null,
+      'videoUrl': videoUrl,
       'exercise': exercise,
-      'sets': 0
+      'sets': sets
     });
   }
 
@@ -232,6 +345,38 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .update({
       'videoUrl': videoUrl,
+      'sets': sets,
+    });
+  }
+
+  Future<void> updateExerciseDetailsNumberOfSetsCollection(
+      int sets, String exerciseUid) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .update({
+      'sets': sets,
+    });
+  }
+
+  Future<void> updateExerciseDetailsNumberOfSets(
+      int sets,
+      String workoutPlanUid,
+      String weekUid,
+      String workoutUid,
+      String exerciseUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .update({
       'sets': sets,
     });
   }

@@ -66,6 +66,7 @@ class _EditPlanState extends State<EditPlan> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PlanWorkouts(
+                                isEdit: true,
                                 workoutPlanUid: widget.workoutPlanUid,
                               ),
                             ),
@@ -80,6 +81,7 @@ class _EditPlanState extends State<EditPlan> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => CoverPhoto(
+                                isEdit: true,
                                 workoutPlanUid: widget.workoutPlanUid,
                               ),
                             ),
@@ -94,6 +96,7 @@ class _EditPlanState extends State<EditPlan> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => PromoVideo(
+                                isEdit: true,
                                 workoutPlanUid: widget.workoutPlanUid,
                               ),
                             ),
@@ -113,7 +116,10 @@ class _EditPlanState extends State<EditPlan> {
                           padding: const EdgeInsets.all(8.0),
                           child: OutlineButton(
                             child: Text('Exit'),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).popUntil(
+                                  ModalRoute.withName(HomeTrainer.id));
+                            },
                           ),
                         ),
                         workoutPlan.isPublished == false
