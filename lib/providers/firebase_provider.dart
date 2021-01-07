@@ -6,7 +6,7 @@ class FirebaseProvider {
   FirebaseStorage storage = FirebaseStorage.instance;
 
   Future<String> downloadURL(File file, String path, String contentType) async {
-    final Reference reference = storage.ref().child(path);
+    final Reference reference = storage.ref().child(path.toString());
     await reference.putFile(file, SettableMetadata(contentType: contentType));
     return await reference.getDownloadURL();
   }

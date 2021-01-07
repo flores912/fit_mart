@@ -33,7 +33,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
   int weeks;
   String coverPhotoUrl;
 
-  int price;
+  double price;
 
   @override
   void initState() {
@@ -48,12 +48,13 @@ class _CoverPhotoState extends State<CoverPhoto> {
           FlatButton(
             child: _croppedImage != null ? Text(kNext) : Text(kSkip),
             onPressed: () async {
-              coverPhotoUrl = await _bloc
+              _bloc
                   .downloadURL(_croppedImage,
                       widget.workoutPlanUid + '/coverPhoto', 'image/jpeg')
-                  .whenComplete(() => _bloc.updatePlanCover(
-                      widget.workoutPlanUid, coverPhotoUrl))
-                  .whenComplete(() => Navigator.push(
+                  .then((value) => coverPhotoUrl = value)
+                  .whenComplete(() {
+                _bloc.updatePlanCover(widget.workoutPlanUid, coverPhotoUrl);
+              }).whenComplete(() => Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PromoVideo(
@@ -73,7 +74,6 @@ class _CoverPhotoState extends State<CoverPhoto> {
               weeks = snapshot.data.get('weeks');
               price = snapshot.data.get('price');
               coverPhotoUrl = snapshot.data.get('coverPhotoUrl');
-              print(coverPhotoUrl);
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -36,10 +36,13 @@ class _PlanDetailsState extends State<PlanDetails> {
   @override
   initState() {
     workoutPlanUid = widget.workoutPlanUid;
-    title = widget.workoutPlan.title;
-    isFree = widget.workoutPlan.isFree;
-    description = widget.workoutPlan.description;
-    price = widget.workoutPlan.price;
+    if (workoutPlanUid != null) {
+      title = widget.workoutPlan.title;
+      isFree = widget.workoutPlan.isFree;
+      description = widget.workoutPlan.description;
+      price = widget.workoutPlan.price;
+    }
+
     checkIfEdit();
     super.initState();
   }

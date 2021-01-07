@@ -6,8 +6,10 @@ class WorkoutExercisesBloc {
   Stream<QuerySnapshot> getExercises(
           String workoutPlanUid, String weekUid, String workoutUid) =>
       _firestoreProvider.getExercises(workoutPlanUid, weekUid, workoutUid);
+  Stream<QuerySnapshot> getExercisesCollection() =>
+      _firestoreProvider.getExercisesCollection();
 
-  // Future<void> updateWorkoutExerciseNumber(
+// Future<void> updateWorkoutExerciseNumber(
   //         String workoutPlanUid, String weekUid, String workoutUid) =>
   //     _firestoreProvider.updateWorkoutExerciseNumber(
   //         workoutPlanUid, weekUid, workoutUid);

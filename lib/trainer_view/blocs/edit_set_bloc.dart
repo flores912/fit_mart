@@ -8,4 +8,8 @@ class EditSetBloc {
           String workoutUid, String exerciseUid, int set, int reps, int rest) =>
       firestoreProvider.addNewSet(
           workoutPlanUid, weekUid, workoutUid, exerciseUid, set, reps, rest);
+
+  Future<DocumentReference> addNewSetCollection(
+          String exerciseUid, int set, int reps, int rest) =>
+      firestoreProvider.addNewSetCollection(exerciseUid, set, reps, rest);
 }

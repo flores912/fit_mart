@@ -3,25 +3,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/exercise_card.dart';
 import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
-import 'package:fit_mart/trainer_view/screens/create_plan/exercise_name.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
+import 'exercise_name_collection.dart';
 
-class WorkoutExercises extends StatefulWidget {
-  final String workoutPlanUid;
-  final String weekUid;
-  final String workoutUid;
+class ExerciseCollection extends StatefulWidget {
+  static const String title = kExerciseCollection;
 
-  const WorkoutExercises(
-      {Key key, this.workoutPlanUid, this.weekUid, this.workoutUid})
-      : super(key: key);
   @override
-  _WorkoutExercisesState createState() => _WorkoutExercisesState();
+  _ExerciseCollectionState createState() => _ExerciseCollectionState();
 }
 
-class _WorkoutExercisesState extends State<WorkoutExercises> {
+class _ExerciseCollectionState extends State<ExerciseCollection> {
   WorkoutExercisesBloc _bloc = WorkoutExercisesBloc();
   BetterPlayerListVideoPlayerController controller =
       BetterPlayerListVideoPlayerController();
@@ -32,33 +27,23 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add),
-        label: Text(kAddExercise),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        heroTag: ExerciseCollection,
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => ExerciseName(
-                exercise: exercisesList.length + 1,
-                workoutPlanUid: widget.workoutPlanUid,
-                weekUid: widget.weekUid,
-                workoutUid: widget.workoutUid,
-              ),
-            ),
+            MaterialPageRoute(builder: (context) => ExerciseNameCollection()),
           );
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: exercisesListView(),
     );
   }
 
   Widget exercisesListView() {
     return StreamBuilder(
-      stream: _bloc.getExercises(
-          widget.workoutPlanUid, widget.weekUid, widget.workoutUid),
+      stream: _bloc.getExercisesCollection(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
           exercisesList = buildExerciseList(snapshot.data.docs);
@@ -127,7 +112,6 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
     docList.forEach((element) {
       Exercise exercise = Exercise(
           exerciseName: element.get('exerciseName'),
-          exercise: element.get('exercise'),
           videoUrl: element.get('videoUrl'),
           sets: element.get('sets'),
           exerciseUid: element.id);

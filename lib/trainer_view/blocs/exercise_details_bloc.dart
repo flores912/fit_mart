@@ -12,6 +12,9 @@ class ExerciseDetailsBloc {
       _firestoreProvider.getSets(
           workoutPlanUid, weekUid, workoutUid, exerciseUid);
 
+  Stream<QuerySnapshot> getSetsCollection(String exerciseUid) =>
+      _firestoreProvider.getSetsCollection(exerciseUid);
+
   Future<void> updateExerciseDetails(
           String videoUrl,
           int sets,
@@ -21,6 +24,11 @@ class ExerciseDetailsBloc {
           String exerciseUid) =>
       _firestoreProvider.updateExerciseDetails(
           videoUrl, sets, workoutPlanUid, weekUid, workoutUid, exerciseUid);
+
+  Future<void> updateExerciseDetailsCollection(
+          String videoUrl, int sets, String exerciseUid) =>
+      _firestoreProvider.updateExerciseDetailsCollection(
+          videoUrl, sets, exerciseUid);
 
   Future<String> downloadURL(File file, String path, String contentType) =>
       _firebaseProvider.downloadURL(file, path, contentType);

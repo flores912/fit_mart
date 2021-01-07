@@ -213,6 +213,29 @@ class FirestoreProvider {
     });
   }
 
+  Future<DocumentReference> addNewExerciseToCollection(
+    String exerciseName,
+  ) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .add({'exerciseName': exerciseName, 'videoUrl': null, 'sets': 0});
+  }
+
+  Future<void> updateExerciseDetailsCollection(
+      String videoUrl, int sets, String exerciseUid) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .update({
+      'videoUrl': videoUrl,
+      'sets': sets,
+    });
+  }
+
   Future<void> updateExerciseDetails(
       String videoUrl,
       int sets,
@@ -260,6 +283,21 @@ class FirestoreProvider {
     });
   }
 
+  Future<DocumentReference> addNewSetCollection(
+      String exerciseUid, int set, int reps, int rest) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .collection('sets')
+        .add({
+      'set': set,
+      'reps': reps,
+      'rest': rest,
+    });
+  }
+
   Stream<QuerySnapshot> getSets(String workoutPlanUid, String weekUid,
       String workoutUid, String exerciseUid) {
     return _firestore
@@ -270,6 +308,17 @@ class FirestoreProvider {
         .collection('workouts')
         .doc(workoutUid)
         .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .orderBy('set', descending: false)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getSetsCollection(String exerciseUid) {
+    return _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
         .doc(exerciseUid)
         .collection('sets')
         .orderBy('set', descending: false)
@@ -287,6 +336,14 @@ class FirestoreProvider {
         .doc(workoutUid)
         .collection('exercises')
         .orderBy('exercise', descending: false)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getExercisesCollection() {
+    return _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
         .snapshots();
   }
 

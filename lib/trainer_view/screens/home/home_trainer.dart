@@ -1,5 +1,6 @@
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/trainer_view/screens/home/plans.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/trainer_view/screens/home/trainer_account.dart';
+import 'package:fit_mart/trainer_view/screens/home/exercise_collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class _HomeTrainerState extends State<HomeTrainer> {
   final _tabs = [
     //ADD SCREENS FOR TABS HERE
     Plans(),
+    ExerciseCollection(),
     TrainerAccount(),
   ];
   String _title;
@@ -37,6 +39,10 @@ class _HomeTrainerState extends State<HomeTrainer> {
           BottomNavigationBarItem(
             label: kWorkoutPlans,
             icon: Icon(Icons.list_alt),
+          ),
+          BottomNavigationBarItem(
+            label: kExerciseCollection,
+            icon: Icon(Icons.collections_bookmark),
           ),
           BottomNavigationBarItem(
             label: kAccount,
@@ -64,6 +70,11 @@ class _HomeTrainerState extends State<HomeTrainer> {
           }
           break;
         case 1:
+          {
+            _title = ExerciseCollection.title;
+          }
+          break;
+        case 2:
           {
             _title = TrainerAccount.title;
           }

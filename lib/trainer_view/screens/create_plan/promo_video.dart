@@ -38,23 +38,22 @@ class _PromoVideoState extends State<PromoVideo> {
           FlatButton(
             child: _controller != null ? Text(kNext) : Text(kSkip),
             onPressed: () async {
-              videoUrl = await _bloc
+              _bloc
                   .downloadURL(videoFile, widget.workoutPlanUid + '/promoVideo',
                       'video/mp4')
-                  .whenComplete(
-                    () =>
-                        _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl),
-                  )
-                  .whenComplete(
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditPlan(
-                          workoutPlanUid: widget.workoutPlanUid,
-                        ),
-                      ),
+                  .then((value) => videoUrl = value)
+                  .whenComplete(() {
+                _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
+              }).whenComplete(
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditPlan(
+                      workoutPlanUid: widget.workoutPlanUid,
                     ),
-                  );
+                  ),
+                ),
+              );
             },
           )
         ],

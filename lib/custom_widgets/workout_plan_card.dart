@@ -7,7 +7,7 @@ class WorkoutPlanCard extends StatefulWidget {
   final Widget image;
   final String title;
   final int weeks;
-  final int price;
+  final double price;
   final Widget more;
 
   const WorkoutPlanCard(
