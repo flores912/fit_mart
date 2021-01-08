@@ -102,7 +102,7 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                             width: 100,
                             child: BetterPlayerListVideoPlayer(
                               BetterPlayerDataSource(
-                                  BetterPlayerDataSourceType.NETWORK,
+                                  BetterPlayerDataSourceType.network,
                                   exercisesList[index].videoUrl),
                               configuration: BetterPlayerConfiguration(
                                 controlsConfiguration:

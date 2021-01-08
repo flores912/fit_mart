@@ -29,7 +29,21 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
       BetterPlayerListVideoPlayerController();
   BetterPlayerConfiguration betterPlayerConfiguration =
       BetterPlayerConfiguration(autoPlay: false);
+
   List<Exercise> exercisesList = [];
+
+  String workoutPlanUid;
+  String workoutUid;
+  String weekUid;
+
+  Future _saving;
+  @override
+  void initState() {
+    workoutPlanUid = widget.workoutPlanUid;
+    weekUid = widget.weekUid;
+    workoutUid = widget.workoutUid;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +53,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
         icon: Icon(Icons.add),
         label: Text(kAddExercise),
         onPressed: () {
-          showAddPhotoDialog();
+          showAddExerciseDialog();
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -49,89 +63,79 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
 
   Widget exercisesListView() {
     return StreamBuilder(
-      stream: _bloc.getExercises(
-          widget.workoutPlanUid, widget.weekUid, widget.workoutUid),
+      stream: _bloc.getExercises(workoutPlanUid, weekUid, workoutUid),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasData) {
           exercisesList = buildExerciseList(snapshot.data.docs);
-          return ListView.builder(
-            itemCount: exercisesList.length,
-            itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width - 24,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseDetails(
-                          workoutPlanUid: widget.workoutPlanUid,
-                          weekUid: widget.weekUid,
-                          workoutUid: widget.workoutUid,
-                          exerciseUid: exercisesList[index].exerciseUid,
+          return Container(
+            height: MediaQuery.of(context).size.height,
+            child: ListView.builder(
+              itemCount: exercisesList.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseDetails(
+                            workoutPlanUid: widget.workoutPlanUid,
+                            weekUid: widget.weekUid,
+                            workoutUid: widget.workoutUid,
+                            exerciseUid: exercisesList[index].exerciseUid,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          exercisesList[index].exercise.toString(),
-                        ),
-                      ),
-                      Expanded(
-                        child: ExerciseCard(
-                            more: PopupMenuButton(
-                                onSelected: (value) {
-                                  switch (value) {
-                                    case 1:
-                                      //Edit Name
+                      );
+                    },
+                    child: ExerciseCard(
+                      more: PopupMenuButton(
+                          onSelected: (value) {
+                            switch (value) {
+                              case 1:
+                                //Edit Name
 
-                                      break;
-                                    case 2:
-                                      //delete
-                                      deleteExercise(index);
-                                      break;
-                                  }
-                                },
-                                icon: Icon(Icons.more_vert),
-                                itemBuilder: (BuildContext context) =>
-                                    kExerciseCardPopUpMenuList),
-                            exerciseName: exercisesList[index].exerciseName,
-                            sets: exercisesList[index].sets,
-                            thumbnail: exercisesList[index].videoUrl != null
-                                ? Container(
-                                    height: 100,
-                                    width: 100,
-                                    child: BetterPlayerListVideoPlayer(
-                                      BetterPlayerDataSource(
-                                          BetterPlayerDataSourceType.NETWORK,
-                                          exercisesList[index].videoUrl),
-                                      configuration: BetterPlayerConfiguration(
-                                        controlsConfiguration:
-                                            BetterPlayerControlsConfiguration(
-                                          showControls: false,
-                                        ),
-                                        aspectRatio: 1,
-                                      ),
-                                      betterPlayerListVideoPlayerController:
-                                          controller,
-                                      autoPlay: false,
-                                    ),
-                                  )
-                                : Container(
-                                    color: CupertinoColors.placeholderText,
-                                    height: 100,
-                                    width: 100,
-                                  )),
-                      ),
-                    ],
+                                break;
+                              case 2:
+                                //delete
+                                deleteExercise(index);
+                                break;
+                            }
+                          },
+                          icon: Icon(Icons.more_vert),
+                          itemBuilder: (BuildContext context) =>
+                              kExerciseCardPopUpMenuList),
+                      exerciseName: exercisesList[index].exerciseName,
+                      sets: exercisesList[index].sets,
+                      thumbnail: exercisesList[index].videoUrl != null
+                          ? Container(
+                              height: 100,
+                              width: 100,
+                              child: BetterPlayerListVideoPlayer(
+                                BetterPlayerDataSource(
+                                    BetterPlayerDataSourceType.network,
+                                    exercisesList[index].videoUrl),
+                                configuration: BetterPlayerConfiguration(
+                                  controlsConfiguration:
+                                      BetterPlayerControlsConfiguration(
+                                    showControls: false,
+                                  ),
+                                  aspectRatio: 1,
+                                ),
+                                betterPlayerListVideoPlayerController:
+                                    controller,
+                                autoPlay: false,
+                              ),
+                            )
+                          : Container(
+                              color: CupertinoColors.placeholderText,
+                              height: 100,
+                              width: 100,
+                            ),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         } else {
           return Text('Start Adding Exercises!');
@@ -174,7 +178,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
     return exerciseList;
   }
 
-  showAddPhotoDialog() {
+  showAddExerciseDialog() {
     showDialog(
       context: context,
       barrierDismissible: true,

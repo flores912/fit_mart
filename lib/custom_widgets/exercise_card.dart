@@ -23,14 +23,19 @@ class ExerciseCard extends StatefulWidget {
 class _ExerciseCardState extends State<ExerciseCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: widget.onTap,
-        trailing: widget.more,
-        leading: widget.thumbnail,
-        title: Text(widget.exerciseName),
-        subtitle: Text(widget.sets.toString() + ' ' + kSets),
-      ),
+    return Wrap(
+      children: [
+        Card(
+          elevation: 2,
+          child: ListTile(
+            onTap: widget.onTap,
+            trailing: widget.more,
+            leading: widget.thumbnail,
+            title: Text(widget.exerciseName),
+            subtitle: Text(widget.sets.toString() + ' ' + kSets),
+          ),
+        ),
+      ],
     );
   }
 }

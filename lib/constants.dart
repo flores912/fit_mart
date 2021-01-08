@@ -55,6 +55,9 @@ const List<dynamic> kPriceList = [
   89.99,
   99.99
 ];
+
+const Color kPrimaryColor = Colors.blue;
+
 const List<PopupMenuEntry> kWorkoutCardPopUpMenuList = [
   const PopupMenuItem(
     value: 1,
@@ -64,16 +67,20 @@ const List<PopupMenuEntry> kWorkoutCardPopUpMenuList = [
     value: 2,
     child: Text(kCopy),
   ),
+  const PopupMenuItem(
+    value: 3,
+    child: Text(kSwap),
+  ),
   //add reset button later?
 ];
 const List<PopupMenuEntry> kWeekCardPopUpMenuList = [
   const PopupMenuItem(
     value: 1,
-    child: Text(kEditName),
+    child: Text(kCopy),
   ),
   const PopupMenuItem(
     value: 2,
-    child: Text(kCopy),
+    child: Text(kSwap),
   ),
   const PopupMenuItem(
     value: 3,

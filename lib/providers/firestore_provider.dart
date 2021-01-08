@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/models/workout.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../constants.dart';
 import 'package:fit_mart/models/week.dart';
@@ -204,6 +205,20 @@ class FirestoreProvider {
     });
   }
 
+  Future<void> updateWorkoutIndex(
+      String workoutPlanUid, String weekUid, String workoutId, int day) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutId)
+        .update({
+      'day': day,
+    });
+  }
+
   Future<void> updateExerciseIndex(String workoutPlanUid, String weekUid,
       String workoutUid, String exerciseUid, int exercise) async {
     return await _firestore
@@ -336,6 +351,7 @@ class FirestoreProvider {
       String weekUid = value.id;
       for (int day = 1; day <= 7; day++) {
         await weeksCollection.doc(weekUid).collection('workouts').add({
+          'week': week,
           'day': day,
           'weekUid': weekUid,
           'workoutName': kRest, //default name

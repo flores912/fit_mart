@@ -31,4 +31,9 @@ class PlanWorkoutsBloc {
   Future<void> updateWeekIndex(
           String workoutPlanUid, String weekUid, int week) =>
       _firestoreProvider.updateWeekIndex(workoutPlanUid, weekUid, week);
+
+  Future<void> updateWorkoutIndex(
+          String workoutPlanUid, String weekUid, String workoutId, int day) =>
+      _firestoreProvider.updateWorkoutIndex(
+          workoutPlanUid, weekUid, workoutId, day);
 }

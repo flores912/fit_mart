@@ -5,7 +5,9 @@ class Workout {
   final bool isSelected;
   final String uid;
   final String weekUid;
+  final int week;
   Workout({
+    this.week,
     this.weekUid,
     this.isSelected,
     this.day,

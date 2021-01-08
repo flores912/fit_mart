@@ -7,6 +7,7 @@ import 'package:fit_mart/trainer_view/screens/create_plan/edit_workout_name.dart
 import 'package:fit_mart/trainer_view/screens/create_plan/workout_exercises.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../constants.dart';
 import '../../../models/week.dart';
@@ -25,49 +26,57 @@ class PlanWorkouts extends StatefulWidget {
 class _PlanWorkoutsState extends State<PlanWorkouts> {
   PlanWorkoutsBloc _bloc = PlanWorkoutsBloc();
 
-  ScrollController _scrollController = ScrollController();
   String workoutPlanUid;
 
   bool isWorkoutCopyMode;
   bool isWeekCopyMode;
+  bool isWeekSwapMode;
 
   Workout workoutBeingCopied;
   Week weekBeingCopied;
+  bool isWorkoutSwapMode;
 
   List<Workout> copyWorkoutsList = [];
   List<Week> copyWeeksList = [];
 
   List<Week> weeksList = [];
 
+  Week oldWeek;
+  Week newWeek;
+
+  Workout oldWorkout;
+  Workout newWorkout;
+  AutoScrollController controller;
+
   @override
   void initState() {
     workoutPlanUid = widget.workoutPlanUid;
+
+    controller = AutoScrollController(
+        //add this for advanced viewport boundary. e.g. SafeArea
+        viewportBoundaryGetter: () =>
+            Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+
+        //choose vertical/horizontal
+        axis: Axis.horizontal,
+
+        //this given value will bring the scroll offset to the nearest position in fixed row height case.
+        //for variable row height case, you can still set the average height, it will try to get to the relatively closer offset
+        //and then start searching.
+        suggestedRowHeight: 200);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          _bloc
-              .createNewWeek(workoutPlanUid, weeksList.length + 1)
-              .whenComplete(
-                () => _scrollController.animateTo(
-                  _scrollController.position.maxScrollExtent,
-                  curve: Curves.fastOutSlowIn,
-                  duration: Duration(seconds: 1),
-                ),
-              )
-              .whenComplete(() =>
-                  _bloc.updateNumberOfWeeks(workoutPlanUid, weeksList.length));
-        },
-        label: Text(kAddWeek),
-        icon: Icon(Icons.add),
-      ),
+      floatingActionButton: floatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      appBar: isWorkoutCopyMode == true || isWeekCopyMode == true
-          ? copyModeAppBar()
+      appBar: isWorkoutCopyMode == true ||
+              isWeekCopyMode == true ||
+              isWeekSwapMode == true ||
+              isWorkoutSwapMode == true
+          ? appBarMode()
           : AppBar(
               actions: [
                 widget.isEdit == null
@@ -87,10 +96,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                     : Container() //nothing
               ],
             ),
-      body: SingleChildScrollView(
-          child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: weeksListView())),
+      body: weeksListView(),
     );
   }
 
@@ -101,66 +107,118 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
         if (snapshot.hasData) {
           weeksList = buildWeeksList(snapshot.data.docs);
           return ListView.builder(
-            controller: _scrollController,
             itemCount: weeksList.length,
+            controller: controller,
+            physics: isWorkoutSwapMode == true
+                ? NeverScrollableScrollPhysics()
+                : null,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 24,
-                  child: WeekCard(
-                    checkBoxOnChanged: (value) {
-                      if (checkIfWeekIsAddedToCopyList(weeksList[index]) ==
-                          true) {
-                        //remove workout from  copy list
-                        setState(() {
-                          copyWeeksList.remove(copyWeeksList.firstWhere(
-                              (weekToCheck) =>
-                                  weekToCheck.uid == weeksList[index].uid));
-                        });
-                      } else {
-                        //add workout to copy list
-                        setState(() {
-                          copyWeeksList.add(weeksList[index]);
-                        });
-                      }
-                    },
-                    parentCheckBoxOnChanged: (value) {
-                      setState(() {
-                        turnWeekCopyModeOff();
-                      });
-                    },
-                    isSelected: checkIfWeekIsAddedToCopyList(weeksList[index]),
-                    isParentCheckbox: weekBeingCopied != null
-                        ? weekBeingCopied.uid == weeksList[index].uid
-                        : false,
-                    isOnCopyMode: isWeekCopyMode,
-                    week: weeksList[index].week,
-                    workoutList: workoutsListView(weeksList[index].uid),
-                    more: PopupMenuButton(
-                        child: Icon(Icons.more_vert),
-                        onSelected: (value) {
-                          switch (value) {
-                            case 1:
-                              //Edit workout name screen
-                              break;
-
-                            case 2:
-                              //show copy checkboxes
-
-                              setState(() {
-                                isWeekCopyMode = true;
-                                weekBeingCopied = weeksList[index];
-                              });
-                              break;
-                            case 3:
-                              //delete
-                              deleteWeek(index);
-                              break;
+              return AutoScrollTag(
+                controller: controller,
+                key: ValueKey(weeksList[index].uid),
+                index: index,
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: isWeekSwapMode == true ||
+                            isWeekCopyMode ||
+                            isWorkoutCopyMode == true
+                        ? MediaQuery.of(context).size.width / 2
+                        : MediaQuery.of(context).size.width,
+                    child: GestureDetector(
+                      onTap: isWeekSwapMode == true &&
+                              oldWeek.uid != weeksList[index].uid
+                          ? () {
+                              if (weeksList[index].uid != oldWeek.uid) {
+                                setState(() {
+                                  newWeek = weeksList[index];
+                                });
+                              }
+                            }
+                          : () {},
+                      child: WeekCard(
+                        elevation: isWeekSwapMode == true &&
+                                weeksList[index].uid == oldWeek.uid
+                            ? 40
+                            : isWeekSwapMode == true &&
+                                    newWeek != null &&
+                                    weeksList[index].uid == newWeek.uid
+                                ? 0
+                                : 4,
+                        swapMode: isWeekSwapMode == true &&
+                                weeksList[index].uid == oldWeek.uid
+                            ? true
+                            : isWeekSwapMode == true &&
+                                    newWeek != null &&
+                                    weeksList[index].uid == newWeek.uid
+                                ? true
+                                : false,
+                        checkBoxOnChanged: (value) {
+                          if (checkIfWeekIsAddedToCopyList(weeksList[index]) ==
+                              true) {
+                            //remove workout from  copy list
+                            setState(() {
+                              copyWeeksList.remove(copyWeeksList.firstWhere(
+                                  (weekToCheck) =>
+                                      weekToCheck.uid == weeksList[index].uid));
+                            });
+                          } else {
+                            //add workout to copy list
+                            setState(() {
+                              copyWeeksList.add(weeksList[index]);
+                            });
                           }
                         },
-                        itemBuilder: (BuildContext context) =>
-                            kWeekCardPopUpMenuList),
+                        parentCheckBoxOnChanged: (value) {
+                          setState(() {
+                            turnWeekCopyModeOff();
+                          });
+                        },
+                        isSelected:
+                            checkIfWeekIsAddedToCopyList(weeksList[index]),
+                        isParentCheckbox: weekBeingCopied != null
+                            ? weekBeingCopied.uid == weeksList[index].uid
+                            : false,
+                        isOnCopyMode: isWeekCopyMode,
+                        week: weeksList[index].week,
+                        workoutList: workoutsListView(weeksList[index].uid),
+                        more: isWorkoutSwapMode == true ||
+                                isWorkoutCopyMode == true ||
+                                isWeekSwapMode == true ||
+                                isWeekCopyMode == true
+                            ? null
+                            : PopupMenuButton(
+                                child: Icon(Icons.more_vert),
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case 1:
+                                      //show copy checkboxes
+
+                                      setState(() {
+                                        isWeekCopyMode = true;
+                                        weekBeingCopied = weeksList[index];
+                                      });
+                                      break;
+                                    //swap mode
+                                    case 2:
+                                      if (weeksList.length > 1) {
+                                        setState(() {
+                                          isWeekSwapMode = true;
+                                          oldWeek = weeksList[index];
+                                        });
+                                      }
+
+                                      break;
+                                    case 3:
+                                      //delete
+                                      deleteWeek(index);
+                                      break;
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) =>
+                                    kWeekCardPopUpMenuList),
+                      ),
+                    ),
                   ),
                 ),
               );
@@ -181,10 +239,10 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             await _bloc
                 .updateNumberOfWeeks(workoutPlanUid, weeksList.length)
                 .whenComplete(() async {
-              for (int i = 1; i <= weeksList.length; i++) {
+              for (int i = 0; i <= weeksList.length; i++) {
                 //update indexes
                 await _bloc.updateWeekIndex(
-                    workoutPlanUid, weeksList[i].uid, ++i);
+                    workoutPlanUid, weeksList[i].uid, i + 1);
               }
             }));
   }
@@ -198,11 +256,29 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
               snapshot.data.docs,
             );
             return ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
+              padding: EdgeInsets.only(bottom: 56),
+              primary: false,
               itemCount: workoutsList.length,
+              shrinkWrap: true,
               itemBuilder: (context, index) {
                 return WorkoutCard(
+                  elevation: isWorkoutSwapMode == true &&
+                          workoutsList[index].uid == oldWorkout.uid
+                      ? 40
+                      : isWorkoutSwapMode == true &&
+                              newWorkout != null &&
+                              workoutsList[index].uid == newWorkout.uid
+                          ? 0
+                          : 4,
+                  isWorkoutSwapMode: isWorkoutSwapMode == true &&
+                          workoutsList[index].uid == oldWorkout.uid
+                      ? true
+                      : isWorkoutSwapMode == true &&
+                              newWorkout != null &&
+                              workoutsList[index].uid == newWorkout.uid
+                          ? true
+                          : false,
+
                   checkBoxOnChanged: (value) {
                     if (checkIfWorkoutIsAddedToCopyList(workoutsList[index]) ==
                         true) {
@@ -233,55 +309,71 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                   exercises: workoutsList[index].exercises,
                   workoutName: workoutsList[index].workoutName,
                   day: workoutsList[index].day,
-                  onTap: () {
-                    //edit exercises screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WorkoutExercises(
-                          workoutPlanUid: workoutPlanUid,
-                          weekUid: weekUid,
-                          workoutUid: workoutsList[index].uid,
-                        ),
-                      ),
-                    );
-                  },
-                  more: PopupMenuButton(
-                      child: Icon(Icons.more_vert),
-                      onSelected: (value) {
-                        switch (value) {
-                          case 1:
-                            //Edit workout name screen
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EditWorkoutName(
-                                    workoutPlanUid: workoutPlanUid,
-                                    weekUid: weekUid,
-                                    workout: workoutsList[index]),
-                              ),
-                            );
-
-                            break;
-
-                          case 2:
-                            //show copy checkboxes
-
+                  onTap: isWorkoutSwapMode == true
+                      ? () {
+                          if (workoutsList[index].uid != oldWorkout.uid) {
                             setState(() {
-                              isWorkoutCopyMode = true;
-                              workoutBeingCopied = workoutsList[index];
+                              newWorkout = workoutsList[index];
                             });
-                            break;
-                          case 3:
-                            //delete
-                            break;
-                          case 4:
-                            //swap
-                            break;
+                          }
                         }
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          kWorkoutCardPopUpMenuList),
+                      : () {
+                          //edit exercises screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WorkoutExercises(
+                                workoutPlanUid: workoutPlanUid,
+                                weekUid: weekUid,
+                                workoutUid: workoutsList[index].uid,
+                              ),
+                            ),
+                          );
+                        },
+                  more: isWorkoutSwapMode == true ||
+                          isWorkoutCopyMode == true ||
+                          isWeekSwapMode == true ||
+                          isWeekCopyMode == true
+                      ? null
+                      : PopupMenuButton(
+                          child: Icon(Icons.more_vert),
+                          onSelected: (value) {
+                            switch (value) {
+                              case 1:
+                                //Edit workout name screen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditWorkoutName(
+                                        workoutPlanUid: workoutPlanUid,
+                                        weekUid: weekUid,
+                                        workout: workoutsList[index]),
+                                  ),
+                                );
+
+                                break;
+
+                              case 2:
+                                //show copy checkboxes
+
+                                setState(() {
+                                  isWorkoutCopyMode = true;
+                                  workoutBeingCopied = workoutsList[index];
+                                });
+                                break;
+                              case 3:
+                                //swap
+                                setState(() {
+                                  oldWorkout = workoutsList[index];
+                                  controller.scrollToIndex(
+                                      workoutsList[index].week - 1);
+                                  isWorkoutSwapMode = true;
+                                });
+                                break;
+                            }
+                          },
+                          itemBuilder: (BuildContext context) =>
+                              kWorkoutCardPopUpMenuList),
                 );
               },
             );
@@ -296,6 +388,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     List<Workout> workoutsList = [];
     docList.forEach((element) {
       Workout workout = Workout(
+          week: element.get('week'),
           weekUid: element.get('weekUid'),
           workoutName: element.get('workoutName'),
           exercises: element.get('exercises'),
@@ -365,7 +458,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     return weekExists;
   }
 
-  AppBar copyModeAppBar() {
+  AppBar appBarMode() {
     AppBar appBar;
     if (isWorkoutCopyMode == true) {
       appBar = AppBar(
@@ -376,14 +469,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             turnWorkoutCopyModeOff();
           },
         ),
-        actions: [
-          GestureDetector(
-            child: Icon(Icons.copy),
-            onTap: () {
-              copyWorkouts();
-            },
-          ),
-        ],
         backgroundColor: Colors.black87,
       );
     } else if (isWeekCopyMode == true) {
@@ -395,18 +480,77 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             turnWeekCopyModeOff();
           },
         ),
-        actions: [
-          GestureDetector(
-            child: Icon(Icons.copy),
-            onTap: () {
-              copyWeeks();
-            },
-          ),
-        ],
+        backgroundColor: Colors.black87,
+      );
+    } else if (isWeekSwapMode == true) {
+      appBar = AppBar(
+        title: Row(
+          children: [
+            Text('Swap Week ' + oldWeek.week.toString() + ' with '),
+            Text(newWeek != null ? 'Week ' + newWeek.week.toString() : '...'),
+          ],
+        ),
+        leading: GestureDetector(
+          child: Icon(Icons.close),
+          onTap: () {
+            turnWeekSwapModeOff();
+          },
+        ),
+        backgroundColor: Colors.black87,
+      );
+    } else if (isWorkoutSwapMode == true) {
+      appBar = AppBar(
+        title: Row(
+          children: [
+            Text('Swap Day ' + oldWorkout.day.toString() + ' with '),
+            Text(newWorkout != null
+                ? 'Day ' + newWorkout.day.toString()
+                : '...'),
+          ],
+        ),
+        leading: GestureDetector(
+          child: Icon(Icons.close),
+          onTap: () {
+            turnWorkoutSwapModeOff();
+          },
+        ),
         backgroundColor: Colors.black87,
       );
     }
     return appBar;
+  }
+
+  swapWeeks(Week oldWeek, Week newWeek) async {
+    await _bloc
+        .updateWeekIndex(workoutPlanUid, oldWeek.uid, newWeek.week)
+        .whenComplete(() async => await _bloc.updateWeekIndex(
+            workoutPlanUid, newWeek.uid, oldWeek.week))
+        .whenComplete(() => turnWeekSwapModeOff());
+  }
+
+  swapWorkouts(Workout oldWorkout, Workout newWorkout) async {
+    await _bloc
+        .updateWorkoutIndex(
+            workoutPlanUid, oldWorkout.weekUid, oldWorkout.uid, newWorkout.day)
+        .whenComplete(() => _bloc.updateWorkoutIndex(
+            workoutPlanUid, newWorkout.weekUid, newWorkout.uid, oldWorkout.day))
+        .whenComplete(() => turnWorkoutSwapModeOff());
+  }
+
+  turnWorkoutSwapModeOff() {
+    setState(() {
+      oldWorkout = null;
+      newWorkout = null;
+      isWorkoutSwapMode = false;
+    });
+  }
+
+  turnWeekSwapModeOff() {
+    setState(() {
+      oldWeek = null;
+      newWeek = null;
+      isWeekSwapMode = false;
+    });
   }
 
   turnWeekCopyModeOff() {
@@ -423,5 +567,77 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       copyWorkoutsList = [];
       isWorkoutCopyMode = false;
     });
+  }
+
+  floatingActionButton() {
+    if (isWorkoutSwapMode == true) {
+      return Visibility(
+        visible: newWorkout == null ? false : true,
+        child: FloatingActionButton(
+          backgroundColor: Colors.black87,
+          onPressed: () {
+            swapWorkouts(
+              oldWorkout,
+              newWorkout,
+            );
+          },
+          child: Icon(Icons.swap_horiz),
+        ),
+      );
+    } else if (isWeekSwapMode == true) {
+      return Visibility(
+        visible: newWeek == null ? false : true,
+        child: FloatingActionButton(
+          backgroundColor: Colors.black87,
+          onPressed: () {
+            swapWeeks(
+              oldWeek,
+              newWeek,
+            );
+          },
+          child: Icon(Icons.swap_horiz),
+        ),
+      );
+    } else if (isWeekCopyMode == true) {
+      return Visibility(
+        visible: copyWeeksList.isEmpty ? false : true,
+        child: FloatingActionButton(
+          backgroundColor: Colors.black87,
+          onPressed: () {
+            copyWeeks();
+          },
+          child: Icon(Icons.copy),
+        ),
+      );
+    } else if (isWorkoutCopyMode == true) {
+      return Visibility(
+        visible: copyWorkoutsList.isEmpty ? false : true,
+        child: FloatingActionButton(
+          backgroundColor: Colors.black87,
+          onPressed: () {
+            copyWorkouts();
+          },
+          child: Icon(Icons.copy),
+        ),
+      );
+    } else {
+      return FloatingActionButton.extended(
+        onPressed: () {
+          _bloc
+              .createNewWeek(workoutPlanUid, weeksList.length + 1)
+              .whenComplete(
+                () => controller.animateTo(
+                  controller.position.maxScrollExtent,
+                  curve: Curves.fastOutSlowIn,
+                  duration: Duration(seconds: 1),
+                ),
+              )
+              .whenComplete(() =>
+                  _bloc.updateNumberOfWeeks(workoutPlanUid, weeksList.length));
+        },
+        label: Text(kAddWeek),
+        icon: Icon(Icons.add),
+      );
+    }
   }
 }

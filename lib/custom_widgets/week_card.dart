@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
+
 class WeekCard extends StatefulWidget {
   final int week;
   final Widget workoutList;
@@ -10,6 +12,8 @@ class WeekCard extends StatefulWidget {
   final bool isOnCopyMode;
   final bool isParentCheckbox;
   final Widget more;
+  final bool swapMode;
+  final double elevation;
 
   const WeekCard(
       {Key key,
@@ -20,7 +24,9 @@ class WeekCard extends StatefulWidget {
       this.parentCheckBoxOnChanged,
       this.isOnCopyMode,
       this.isParentCheckbox,
-      this.more})
+      this.more,
+      this.swapMode,
+      this.elevation})
       : super(key: key);
   @override
   _WeekCardState createState() => _WeekCardState();
@@ -32,7 +38,8 @@ class _WeekCardState extends State<WeekCard> {
     return Wrap(
       children: [
         Card(
-          elevation: 1,
+          color: widget.swapMode == true ? kPrimaryColor : null,
+          elevation: widget.elevation,
           child: ListTile(
             title: Text('Week ' + widget.week.toString()),
             trailing: widget.more,

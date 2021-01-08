@@ -6,7 +6,6 @@ import '../constants.dart';
 class WorkoutCard extends StatefulWidget {
   final String workoutName;
   final int exercises;
-  final int day;
   final Widget more;
   final Function onTap;
   final bool isOnCopyMode;
@@ -14,12 +13,14 @@ class WorkoutCard extends StatefulWidget {
   final bool isSelected;
   final Function checkBoxOnChanged;
   final Function parentCheckBoxOnChanged;
+  final bool isWorkoutSwapMode;
+  final double elevation;
+  final int day;
 
   const WorkoutCard({
     Key key,
     this.workoutName,
     this.exercises,
-    this.day,
     this.more,
     this.onTap,
     this.isOnCopyMode,
@@ -27,6 +28,9 @@ class WorkoutCard extends StatefulWidget {
     this.isSelected,
     this.checkBoxOnChanged,
     this.parentCheckBoxOnChanged,
+    this.isWorkoutSwapMode,
+    this.elevation,
+    this.day,
   }) : super(key: key);
   @override
   _WorkoutCardState createState() => _WorkoutCardState();
@@ -37,18 +41,23 @@ class _WorkoutCardState extends State<WorkoutCard> {
   Widget build(BuildContext context) {
     return Wrap(
       children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+              child: Text(
+            'Day ' + widget.day.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+        ),
         Card(
-          elevation: 2,
+          color: widget.isWorkoutSwapMode == true ? kPrimaryColor : null,
+          elevation: widget.elevation,
           child: ListTile(
             onTap: widget.onTap,
             leading: widget.isOnCopyMode == true
                 ? checkBox(widget.isParentCheckbox)
                 : null,
-            title: Text(widget.workoutName +
-                ' - ' +
-                kDay +
-                ' ' +
-                widget.day.toString()),
+            title: Text(widget.workoutName),
             subtitle: Text(widget.exercises.toString() + ' exercises'),
             trailing: widget.more, //here goes popUpMenuButton widget
           ),
