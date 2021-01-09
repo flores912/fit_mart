@@ -137,9 +137,11 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
       videoUrl = await value.get('videoUrl');
     }).whenComplete(() {
       if (videoUrl != null) {
-        setState(() {
-          _controller = VideoPlayerController.network(videoUrl);
-        });
+        if (mounted) {
+          setState(() {
+            _controller = VideoPlayerController.network(videoUrl);
+          });
+        }
       }
     });
   }

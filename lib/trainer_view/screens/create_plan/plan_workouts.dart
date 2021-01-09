@@ -70,7 +70,10 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: floatingActionButton(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: floatingActionButton(),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       appBar: isWorkoutCopyMode == true ||
               isWeekCopyMode == true ||
@@ -96,7 +99,13 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                     : Container() //nothing
               ],
             ),
-      body: weeksListView(),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: weeksListView()),
+        ),
+      ),
     );
   }
 
@@ -119,11 +128,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                 key: ValueKey(weeksList[index].uid),
                 index: index,
                 child: Container(
-                  width: isWeekSwapMode == true ||
-                          isWeekCopyMode == true ||
-                          isWorkoutCopyMode == true
-                      ? MediaQuery.of(context).size.width / 2
-                      : MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width,
                   child: GestureDetector(
                     onTap: isWeekSwapMode == true &&
                             oldWeek.uid != weeksList[index].uid
@@ -135,7 +140,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                             }
                           }
                         : () {},
-                    child: SingleChildScrollView(
+                    child: Center(
                       child: WeekCard(
                         elevation: isWeekSwapMode == true &&
                                 weeksList[index].uid == oldWeek.uid
@@ -421,7 +426,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
 
   void copyWeeks() {
     copyWeeksList.forEach((week) async {
-      _bloc
+      await _bloc
           .copyWeek(workoutPlanUid, weekBeingCopied, week)
           .whenComplete(() => turnWeekCopyModeOff());
     });
@@ -570,7 +575,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     });
   }
 
-  floatingActionButton() {
+  Widget floatingActionButton() {
     if (isWorkoutSwapMode == true) {
       return Visibility(
         visible: newWorkout == null ? false : true,

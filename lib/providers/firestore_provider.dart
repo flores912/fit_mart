@@ -652,112 +652,140 @@ class FirestoreProvider {
 
   Future<void> copyWeek(
       String workoutPlanUid, Week originalWeek, Week copyWeek) async {
-    await _firestore
-        .collection('workoutPlans')
-        .doc(workoutPlanUid)
-        .collection('weeks')
-        .doc(copyWeek.uid)
-        .collection('workouts')
-        .get()
-        .then((value) {
-      value.docs.forEach((workoutCopyDoc) async {
-        Workout workoutCopy = Workout(
-            uid: workoutCopyDoc.id,
-            workoutName: await workoutCopyDoc.get('workoutName'),
-            weekUid: await workoutCopyDoc.get('weekUid'),
-            day: await workoutCopyDoc.get('day'),
-            exercises: await workoutCopyDoc.get('exercises'));
-        print(workoutCopy.weekUid);
-        await _firestore
-            .collection('workoutPlans')
-            .doc(workoutPlanUid)
-            .collection('weeks')
-            .doc(originalWeek.uid)
-            .collection('workouts')
-            .get()
-            .then((value) {
-          value.docs.forEach((originalWorkoutDoc) async {
-            Workout originalWorkout = Workout(
-              uid: originalWorkoutDoc.id,
-              workoutName: await originalWorkoutDoc.get('workoutName'),
-              weekUid: await originalWorkoutDoc.get('weekUid'),
-              day: await originalWorkoutDoc.get('day'),
-              exercises: await originalWorkoutDoc.get('exercises'),
-            );
-            await _firestore
-                .collection('workoutPlans')
-                .doc(workoutPlanUid)
-                .collection('weeks')
-                .doc(workoutCopy.weekUid)
-                .collection('workouts')
-                .doc(workoutCopy.uid)
-                .update({
-              'day': originalWorkout.day,
-              'workoutName': originalWorkout.workoutName,
-              'exercises': originalWorkout.exercises,
-            }).whenComplete(() async {
-              await _firestore
-                  .collection('workoutPlans')
-                  .doc(workoutPlanUid)
-                  .collection('weeks')
-                  .doc(workoutCopy.weekUid)
-                  .collection('workouts')
-                  .doc(workoutCopy.uid)
-                  .collection('exercises')
-                  .get()
-                  .then((value) {
-                value.docs.forEach((element) async {
-                  await element.reference.delete();
-                });
-              }).whenComplete(() async {
-                await _firestore
-                    .collection('workoutPlans')
-                    .doc(workoutPlanUid)
-                    .collection('weeks')
-                    .doc(originalWorkout.weekUid)
-                    .collection('workouts')
-                    .doc(originalWorkout.uid)
-                    .collection('exercises')
-                    .get()
-                    .then((value) {
-                  value.docs.forEach((element) async {
+    String newWeekUid;
+    //delete week doc
+    await deleteWeek(workoutPlanUid, copyWeek.uid).whenComplete(() async {
+      //create new week
+      await createNewWeekWithoutWorkouts(workoutPlanUid, copyWeek.week)
+          .then((value) => newWeekUid = value.id)
+          .whenComplete(() async {
+        //get workouts from the week we are copying
+        await getWorkoutsFuture(workoutPlanUid, originalWeek.uid)
+            .then((value) => {
+                  value.docs.forEach((originalWorkout) async {
+                    //start adding those workouts to the new week
                     await _firestore
                         .collection('workoutPlans')
                         .doc(workoutPlanUid)
                         .collection('weeks')
-                        .doc(workoutCopy.weekUid)
+                        .doc(newWeekUid)
                         .collection('workouts')
-                        .doc(workoutCopy.uid)
-                        .collection('exercises')
                         .add({
-                      'exerciseName': await element.get('exerciseName'),
-                      'videoUrl': await element.get('videoUrl'),
-                      'exercise': await element.get('exercise'),
-                      'sets': await element.get('sets'),
-                    }).then((value) async {
-                      await _firestore
-                          .collection('workoutPlans')
-                          .doc(workoutPlanUid)
-                          .collection('weeks')
-                          .doc(workoutCopy.weekUid)
-                          .collection('workouts')
-                          .doc(workoutCopy.uid)
-                          .collection('exercises')
-                          .doc(value.id)
-                          .collection('sets')
-                          .add({
-                        'set': await element.get('set'),
-                        'reps': await element.get('reps'),
-                        'rest': await element.get('rest'),
-                      });
+                      'week': copyWeek.week,
+                      'day': await originalWorkout.get('day'),
+                      'weekUid': newWeekUid,
+                      'workoutName': await originalWorkout
+                          .get('workoutName'), //default name
+                      'exercises': await originalWorkout.get('exercises'),
+                      //get exercises of each workout from the workout we are copying
+                    }).then((newWorkout) async {
+                      await getExercisesFuture(workoutPlanUid, originalWeek.uid,
+                              originalWorkout.id)
+                          .then((value) => {
+                                value.docs.forEach((originalExercise) async {
+                                  //add exercises to new workout
+                                  await addNewExercise(
+                                          await originalExercise
+                                              .get('exerciseName'),
+                                          await originalExercise
+                                              .get('exercise'),
+                                          await originalExercise.get('sets'),
+                                          await originalExercise
+                                              .get('videoUrl'),
+                                          workoutPlanUid,
+                                          newWeekUid,
+                                          newWorkout.id)
+                                      .then((newExercise) async => {
+                                            //get sets from the exercise we are copying
+                                            await getSetsFuture(
+                                                    workoutPlanUid,
+                                                    originalWeek.uid,
+                                                    originalWorkout.id,
+                                                    originalExercise.id)
+                                                .then((value) {
+                                              value.docs.forEach((set) async {
+                                                //add sets to the new exercise
+                                                await addNewSet(
+                                                    workoutPlanUid,
+                                                    newWeekUid,
+                                                    newWorkout.id,
+                                                    newExercise.id,
+                                                    await set.get('set'),
+                                                    await set.get('reps'),
+                                                    await set.get('rest'));
+                                              });
+                                            })
+                                          });
+                                })
+                              });
                     });
-                  });
+                  })
                 });
-              });
-            });
-          });
-        });
       });
     });
+  }
+
+  Future<DocumentReference> createNewWeekWithoutWorkouts(
+      String workoutPlanUid, int week) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .add({'week': week});
+    // await weeksCollection.add({'week': week}).then((value) async {
+    //   String weekUid = value.id;
+    //   for (int day = 1; day <= 7; day++) {
+    //     await weeksCollection.doc(weekUid).collection('workouts').add({
+    //       'week': week,
+    //       'day': day,
+    //       'weekUid': weekUid,
+    //       'workoutName': kRest, //default name
+    //       'exercises': 0,
+    //     });
+    //   }
+    // });
+  }
+
+  Future<QuerySnapshot> getWorkoutsFuture(
+      String workoutPlanUid, String weekUid) {
+    CollectionReference weeksReference = _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks');
+    return weeksReference
+        .doc(weekUid)
+        .collection('workouts')
+        .orderBy('day', descending: false)
+        .get();
+  }
+
+  Future<QuerySnapshot> getExercisesFuture(
+      String workoutPlanUid, String weekUid, String workoutUid) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .orderBy('exercise', descending: false)
+        .get();
+  }
+
+  Future<QuerySnapshot> getSetsFuture(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .orderBy('set', descending: false)
+        .get();
   }
 }
