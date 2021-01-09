@@ -118,24 +118,24 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                 controller: controller,
                 key: ValueKey(weeksList[index].uid),
                 index: index,
-                child: SingleChildScrollView(
-                  child: Container(
-                    width: isWeekSwapMode == true ||
-                            isWeekCopyMode ||
-                            isWorkoutCopyMode == true
-                        ? MediaQuery.of(context).size.width / 2
-                        : MediaQuery.of(context).size.width,
-                    child: GestureDetector(
-                      onTap: isWeekSwapMode == true &&
-                              oldWeek.uid != weeksList[index].uid
-                          ? () {
-                              if (weeksList[index].uid != oldWeek.uid) {
-                                setState(() {
-                                  newWeek = weeksList[index];
-                                });
-                              }
+                child: Container(
+                  width: isWeekSwapMode == true ||
+                          isWeekCopyMode == true ||
+                          isWorkoutCopyMode == true
+                      ? MediaQuery.of(context).size.width / 2
+                      : MediaQuery.of(context).size.width,
+                  child: GestureDetector(
+                    onTap: isWeekSwapMode == true &&
+                            oldWeek.uid != weeksList[index].uid
+                        ? () {
+                            if (weeksList[index].uid != oldWeek.uid) {
+                              setState(() {
+                                newWeek = weeksList[index];
+                              });
                             }
-                          : () {},
+                          }
+                        : () {},
+                    child: SingleChildScrollView(
                       child: WeekCard(
                         elevation: isWeekSwapMode == true &&
                                 weeksList[index].uid == oldWeek.uid
@@ -257,8 +257,9 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             );
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 56),
-              primary: false,
               itemCount: workoutsList.length,
+              scrollDirection: Axis.vertical,
+              primary: false,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return WorkoutCard(
