@@ -3,6 +3,16 @@ import 'package:fit_mart/providers/firestore_provider.dart';
 
 class ExerciseNameBloc {
   FirestoreProvider firestoreProvider = FirestoreProvider();
+
+  Future<void> updateExerciseName(String workoutPlanUid, String weekUid,
+          String workoutUid, String exerciseUid, String exerciseName) =>
+      firestoreProvider.updateExerciseName(
+          workoutPlanUid, weekUid, workoutUid, exerciseUid, exerciseName);
+
+  Future<void> updateExerciseNameCollection(
+          String exerciseUid, String exerciseName) =>
+      firestoreProvider.updateExerciseNameCollection(exerciseUid, exerciseName);
+
   Future<DocumentReference> addNewExercise(
           String exerciseName,
           int exercise,
@@ -19,7 +29,6 @@ class ExerciseNameBloc {
           workoutPlanUid, weekUid, workoutUid, exercises);
 
   Future<DocumentReference> addNewExerciseToCollection(
-    String exerciseName,
-  ) =>
-      firestoreProvider.addNewExerciseToCollection(exerciseName);
+          String exerciseName, int sets) =>
+      firestoreProvider.addNewExerciseToCollection(exerciseName, sets);
 }

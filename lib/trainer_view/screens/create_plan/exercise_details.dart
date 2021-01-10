@@ -53,6 +53,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
             FlatButton(
               child: Text(kSave),
               onPressed: () {
+                //TODO handle exception when user doesnt upload a file
                 _bloc
                     .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
                     .then((value) {

@@ -68,10 +68,24 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
                           switch (value) {
                             case 1:
                               //Edit name
-
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ExerciseNameCollection(
+                                    isEdit: true,
+                                    exercise: exercisesList[index],
+                                    exerciseIndex: exercisesList.length + 1,
+                                  ),
+                                ),
+                              );
                               break;
-
                             case 2:
+                              //duplicate
+                              _bloc.duplicateExerciseCollection(
+                                exercisesList[index],
+                              );
+                              break;
+                            case 3:
                               //delete
                               _bloc.deleteExerciseFromCollection(
                                   exercisesList[index].exerciseUid);
@@ -80,7 +94,7 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
                         },
                         icon: Icon(Icons.more_vert),
                         itemBuilder: (BuildContext context) =>
-                            kExerciseCardPopUpMenuList),
+                            kExerciseCardCollectionPopUpMenuList),
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
                     thumbnail: exercisesList[index].videoUrl != null

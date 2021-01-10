@@ -41,6 +41,9 @@ const String kSet = 'Set';
 const String kSets = 'Sets';
 const String kEdit = 'Edit';
 const String kEditSets = 'Edit Sets';
+const String kDuplicate = 'Duplicate';
+const String kAddToCollection = 'Add to Collection';
+const String kUnpublish = 'Unpublish';
 
 const List<dynamic> kPriceList = [
   kFree,
@@ -56,7 +59,8 @@ const List<dynamic> kPriceList = [
   99.99
 ];
 
-const Color kPrimaryColor = Colors.blue;
+const Color kPrimaryColor = Colors.yellow;
+const Color kAccentColor = Colors.yellowAccent;
 
 const List<PopupMenuEntry> kWorkoutCardPopUpMenuList = [
   const PopupMenuItem(
@@ -91,6 +95,42 @@ const List<PopupMenuEntry> kExerciseCardPopUpMenuList = [
   const PopupMenuItem(
     value: 1,
     child: Text(kEditName),
+  ),
+  const PopupMenuItem(
+    value: 2,
+    child: Text(kSwap),
+  ),
+  const PopupMenuItem(
+    value: 3,
+    child: Text(kDuplicate),
+  ),
+  const PopupMenuItem(
+    value: 4,
+    child: Text(kAddToCollection),
+  ),
+  const PopupMenuItem(
+    value: 5,
+    child: Text(kDelete),
+  ),
+];
+const List<PopupMenuEntry> kExerciseCardCollectionPopUpMenuList = [
+  const PopupMenuItem(
+    value: 1,
+    child: Text(kEditName),
+  ),
+  const PopupMenuItem(
+    value: 2,
+    child: Text(kDuplicate),
+  ),
+  const PopupMenuItem(
+    value: 3,
+    child: Text(kDelete),
+  ),
+];
+const List<PopupMenuEntry> kMyCreatedWorkoutPlanCardPopUpMenuList = [
+  const PopupMenuItem(
+    value: 1,
+    child: Text(kEdit),
   ),
   const PopupMenuItem(
     value: 2,

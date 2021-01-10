@@ -7,11 +7,13 @@ import 'package:fit_mart/constants.dart';
 
 class PlanDetails extends StatefulWidget {
   final String workoutPlanUid;
+  final bool isEdit;
   final WorkoutPlan workoutPlan;
   const PlanDetails({
     Key key,
     this.workoutPlanUid,
     this.workoutPlan,
+    this.isEdit,
   }) : super(key: key);
   @override
   _PlanDetailsState createState() => _PlanDetailsState();
@@ -100,6 +102,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                   ),
                 ),
                 TextFormField(
+                  initialValue: description,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   onChanged: (value) {
@@ -191,17 +194,21 @@ class _PlanDetailsState extends State<PlanDetails> {
       _bloc
           .updatePlanDetails(workoutPlanUid, title, description, price, isFree)
           .whenComplete(() {
-        //this will stop from adding a new workout plan if user presses back button and will update instead
-        isEdit = true;
-        isBackPressed = true;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PlanWorkouts(
-              workoutPlanUid: workoutPlanUid,
+        if (widget.isEdit == true) {
+          Navigator.pop(context);
+        } else {
+          //this will stop from adding a new workout plan if user presses back button and will update instead
+          isEdit = true;
+          isBackPressed = true;
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PlanWorkouts(
+                workoutPlanUid: workoutPlanUid,
+              ),
             ),
-          ),
-        );
+          );
+        }
       });
     }
   }

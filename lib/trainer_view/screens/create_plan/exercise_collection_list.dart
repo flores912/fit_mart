@@ -5,6 +5,7 @@ import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/home/exercise_details_collection.dart';
+import 'package:fit_mart/trainer_view/screens/home/exercise_name_collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -54,8 +55,8 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
             itemCount: exercisesList.length,
             itemBuilder: (context, index) {
               return Container(
-                width: MediaQuery.of(context).size.width - 24,
-                child: ExerciseCard(
+                  width: MediaQuery.of(context).size.width - 24,
+                  child: ExerciseCard(
                     onTap: () {
                       _bloc
                           .addNewExercise(
@@ -119,8 +120,8 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                             color: CupertinoColors.placeholderText,
                             height: 100,
                             width: 100,
-                          )),
-              );
+                          ),
+                  ));
             },
           );
         } else {

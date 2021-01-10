@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'login_signup/screens/login.dart';
@@ -17,7 +19,15 @@ class Fitpo extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fitpo',
-      theme: ThemeData.light(),
+      theme: ThemeData.dark().copyWith(
+          floatingActionButtonTheme:
+              FloatingActionButtonThemeData(backgroundColor: kAccentColor),
+          accentColor: kAccentColor,
+          primaryColor: kPrimaryColor,
+          appBarTheme: AppBarTheme(
+            color: Colors.black12,
+            brightness: Brightness.dark,
+          )),
       initialRoute:
           FirebaseAuth.instance.currentUser == null ? Login.id : HomeTrainer.id,
       routes: {

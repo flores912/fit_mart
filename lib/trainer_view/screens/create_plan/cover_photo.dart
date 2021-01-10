@@ -48,7 +48,8 @@ class _CoverPhotoState extends State<CoverPhoto> {
       appBar: AppBar(
         actions: [
           FlatButton(
-            child: _croppedImage != null || coverPhotoUrl != null
+            child: _croppedImage != null && widget.isEdit != true ||
+                    coverPhotoUrl != null && widget.isEdit != true
                 ? Text(kNext)
                 : widget.isEdit == true
                     ? Text(kSave)
@@ -60,14 +61,20 @@ class _CoverPhotoState extends State<CoverPhoto> {
                   .then((value) => coverPhotoUrl = value)
                   .whenComplete(() {
                 _bloc.updatePlanCover(widget.workoutPlanUid, coverPhotoUrl);
-              }).whenComplete(() => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PromoVideo(
-                            workoutPlanUid: widget.workoutPlanUid,
-                          ),
-                        ),
-                      ));
+              }).whenComplete(() {
+                if (widget.isEdit != true) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PromoVideo(
+                        workoutPlanUid: widget.workoutPlanUid,
+                      ),
+                    ),
+                  );
+                } else {
+                  Navigator.pop(context);
+                }
+              });
             },
           )
         ],
@@ -98,7 +105,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
                                     )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: RaisedButton(
+                        child: OutlineButton(
                           child: _pickedImage == null && coverPhotoUrl == null
                               ? Text('Add Photo')
                               : Text('Change Photo'),

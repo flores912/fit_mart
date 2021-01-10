@@ -29,38 +29,53 @@ class _PromoVideoState extends State<PromoVideo> {
   File videoFile;
   @override
   void initState() {
+    getVideoUrl();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    getVideoUrl();
     return Scaffold(
       appBar: AppBar(
         actions: [
           FlatButton(
-            child: _controller != null
+            child: _controller != null && widget.isEdit != true
                 ? Text(kNext)
                 : widget.isEdit == true
                     ? Text(kSave)
                     : Text(kSkip),
             onPressed: () async {
-              _bloc
-                  .downloadURL(videoFile, widget.workoutPlanUid + '/promoVideo',
-                      'video/mp4')
-                  .then((value) => videoUrl = value)
-                  .whenComplete(() {
-                _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
-              }).whenComplete(
-                () => Navigator.push(
+              if (videoFile != null) {
+                _bloc
+                    .downloadURL(videoFile,
+                        widget.workoutPlanUid + '/promoVideo', 'video/mp4')
+                    .then((value) => videoUrl = value)
+                    .whenComplete(() {
+                  _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
+                }).whenComplete(() {
+                  if (widget.isEdit == true) {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditPlan(
+                          workoutPlanUid: widget.workoutPlanUid,
+                        ),
+                      ),
+                    );
+                  }
+                });
+              } else {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditPlan(
                       workoutPlanUid: widget.workoutPlanUid,
                     ),
                   ),
-                ),
-              );
+                );
+              }
             },
           )
         ],
@@ -88,7 +103,7 @@ class _PromoVideoState extends State<PromoVideo> {
                     ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
+                child: OutlineButton(
                   child: Text(_controller == null ? kAddVideo : kChangeVideo),
                   onPressed: () {
                     showAddVideoDialog();
@@ -107,9 +122,11 @@ class _PromoVideoState extends State<PromoVideo> {
       videoUrl = await value.get('promoVideoUrl');
     }).whenComplete(() {
       if (videoUrl != null) {
-        setState(() {
-          _controller = VideoPlayerController.network(videoUrl);
-        });
+        if (mounted) {
+          setState(() {
+            _controller = VideoPlayerController.network(videoUrl);
+          });
+        }
       }
     });
   }

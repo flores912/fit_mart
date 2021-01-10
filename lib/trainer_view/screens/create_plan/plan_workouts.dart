@@ -486,7 +486,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             turnWeekCopyModeOff();
           },
         ),
-        backgroundColor: Colors.black87,
       );
     } else if (isWeekSwapMode == true) {
       appBar = AppBar(
@@ -520,7 +519,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             turnWorkoutSwapModeOff();
           },
         ),
-        backgroundColor: Colors.black87,
       );
     }
     return appBar;
@@ -580,7 +578,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       return Visibility(
         visible: newWorkout == null ? false : true,
         child: FloatingActionButton(
-          backgroundColor: Colors.black87,
           onPressed: () {
             swapWorkouts(
               oldWorkout,
@@ -594,7 +591,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       return Visibility(
         visible: newWeek == null ? false : true,
         child: FloatingActionButton(
-          backgroundColor: Colors.black87,
           onPressed: () {
             swapWeeks(
               oldWeek,
@@ -608,7 +604,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       return Visibility(
         visible: copyWeeksList.isEmpty ? false : true,
         child: FloatingActionButton(
-          backgroundColor: Colors.black87,
           onPressed: () {
             copyWeeks();
           },
@@ -619,7 +614,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
       return Visibility(
         visible: copyWorkoutsList.isEmpty ? false : true,
         child: FloatingActionButton(
-          backgroundColor: Colors.black87,
           onPressed: () {
             copyWorkouts();
           },

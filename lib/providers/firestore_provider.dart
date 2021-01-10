@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -31,7 +32,8 @@ class FirestoreProvider {
       'name': name,
       'id': _firebaseAuth.currentUser.uid,
       'photoUrl': null
-    });
+    }).whenComplete(() async =>
+            await _firebaseAuth.currentUser.updateProfile(displayName: name));
   }
 
   //TRAINER VIEW
@@ -85,6 +87,13 @@ class FirestoreProvider {
         .doc(workoutPlanUid)
         .collection('weeks')
         .doc(weekUid)
+        .delete();
+  }
+
+  Future<void> deletePlan(String workoutPlanUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
         .delete();
   }
 
@@ -172,11 +181,13 @@ class FirestoreProvider {
   ) async {
     return await _firestore.collection('workoutPlans').add({
       'userUid': _firebaseAuth.currentUser.uid,
+      'trainerName': _firebaseAuth.currentUser.displayName,
       'title': title,
       'price': price,
       'isFree': isFree,
       'weeks': 0,
       'isPublished': false,
+      'isBeenPaidFor': false,
       //not necessary to create new plan
       'description': description,
       'coverPhotoUrl': null,
@@ -288,6 +299,34 @@ class FirestoreProvider {
         .doc(workoutUid)
         .update({
       'exercises': exercises,
+    });
+  }
+
+  Future<void> updateExerciseName(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid, String exerciseName) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .update({
+      'exerciseName': exerciseName,
+    });
+  }
+
+  Future<void> updateExerciseNameCollection(
+      String exerciseUid, String exerciseName) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .update({
+      'exerciseName': exerciseName,
     });
   }
 
@@ -407,13 +446,17 @@ class FirestoreProvider {
   }
 
   Future<DocumentReference> addNewExerciseToCollection(
-    String exerciseName,
-  ) async {
+      String exerciseName, int sets) async {
     return await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
         .collection('exerciseCollection')
-        .add({'exerciseName': exerciseName, 'videoUrl': null, 'sets': 0});
+        .add({
+      'exerciseName': exerciseName,
+      'videoUrl': null,
+      'sets': sets,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 
   Future<void> updateExerciseDetailsCollection(
@@ -569,6 +612,7 @@ class FirestoreProvider {
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
         .collection('exerciseCollection')
+        .orderBy('createdAt', descending: true)
         .snapshots();
   }
 
@@ -787,5 +831,57 @@ class FirestoreProvider {
         .collection('sets')
         .orderBy('set', descending: false)
         .get();
+  }
+
+  Future<QuerySnapshot> getSetsCollectionFuture(String exerciseUid) {
+    return _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .collection('sets')
+        .orderBy('set', descending: false)
+        .get();
+  }
+
+  Future<void> duplicateExercise(String workoutPlanUid, String weekUid,
+      String workoutUid, Exercise exercise, int exerciseIndex) async {
+    return await addNewExercise(
+            exercise.exerciseName,
+            exerciseIndex,
+            exercise.sets,
+            exercise.videoUrl,
+            workoutPlanUid,
+            weekUid,
+            workoutUid)
+        .then((duplicateExercise) async {
+      await getSetsFuture(
+              workoutPlanUid, weekUid, workoutUid, exercise.exerciseUid)
+          .then((sets) {
+        sets.docs.forEach((set) async {
+          await addNewSet(
+              workoutPlanUid,
+              weekUid,
+              workoutUid,
+              duplicateExercise.id,
+              await set.get('set'),
+              await set.get('reps'),
+              await set.get('rest'));
+        });
+      });
+    });
+  }
+
+  Future<void> duplicateExerciseCollection(Exercise exercise) async {
+    return await addNewExerciseToCollection(
+            exercise.exerciseName, exercise.sets)
+        .then((duplicateExercise) async {
+      await getSetsCollectionFuture(exercise.exerciseUid).then((sets) {
+        sets.docs.forEach((set) async {
+          await addNewSetCollection(duplicateExercise.id, await set.get('set'),
+              await set.get('reps'), await set.get('rest'));
+        });
+      });
+    });
   }
 }

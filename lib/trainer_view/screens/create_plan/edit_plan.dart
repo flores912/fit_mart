@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/edit_plan_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/cover_photo.dart';
@@ -30,6 +31,8 @@ class _EditPlanState extends State<EditPlan> {
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
               workoutPlan = WorkoutPlan(
+                trainerName: snapshot.data.get('trainerName'),
+                isBeenPaidFor: snapshot.data.get('isBeenPaidFor'),
                 weeks: snapshot.data.get('weeks'),
                 description: snapshot.data.get('description'),
                 title: snapshot.data.get('title'),
@@ -52,6 +55,7 @@ class _EditPlanState extends State<EditPlan> {
                             MaterialPageRoute(
                               builder: (context) => PlanDetails(
                                 workoutPlan: workoutPlan,
+                                isEdit: true,
                                 workoutPlanUid: widget.workoutPlanUid,
                               ),
                             ),
@@ -126,19 +130,26 @@ class _EditPlanState extends State<EditPlan> {
                             ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: RaisedButton(
-                                    child: Text('Publish'),
+                                    color: kPrimaryColor,
+                                    child: Text(
+                                      'Publish',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
                                     onPressed: () {
-                                      _bloc
-                                          .updatePublishedStatus(
-                                              widget.workoutPlanUid, true)
-                                          .whenComplete(
-                                            () => Navigator.of(context)
-                                                .popUntil(ModalRoute.withName(
-                                                    HomeTrainer.id)),
-                                          );
+                                      _bloc.updatePublishedStatus(
+                                          widget.workoutPlanUid, true);
                                     }),
                               )
-                            : Container()
+                            : RaisedButton(
+                                color: kPrimaryColor,
+                                child: Text(
+                                  kUnpublish,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  _bloc.updatePublishedStatus(
+                                      widget.workoutPlanUid, false);
+                                }),
                       ],
                     ),
                   )

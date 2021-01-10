@@ -7,6 +7,8 @@ class ExerciseCard extends StatefulWidget {
   final int sets;
   final Widget more;
   final Function onTap;
+  final double elevation;
+  final Color color;
 
   const ExerciseCard(
       {Key key,
@@ -14,7 +16,9 @@ class ExerciseCard extends StatefulWidget {
       this.exerciseName,
       this.sets,
       this.more,
-      this.onTap})
+      this.onTap,
+      this.elevation,
+      this.color})
       : super(key: key);
   @override
   _ExerciseCardState createState() => _ExerciseCardState();
@@ -26,7 +30,8 @@ class _ExerciseCardState extends State<ExerciseCard> {
     return Wrap(
       children: [
         Card(
-          elevation: 2,
+          color: widget.color,
+          elevation: widget.elevation,
           child: ListTile(
             onTap: widget.onTap,
             trailing: widget.more,

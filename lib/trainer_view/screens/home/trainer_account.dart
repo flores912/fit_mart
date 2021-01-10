@@ -47,7 +47,14 @@ class _TrainerAccountState extends State<TrainerAccount> {
                       ),
                     ),
                   ),
-                  Text(name),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      name,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
                   FlatButton(
                     child: Text(kChangeToClientView),
                     onPressed: () {},
