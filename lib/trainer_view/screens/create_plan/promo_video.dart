@@ -27,6 +27,8 @@ class _PromoVideoState extends State<PromoVideo> {
   String videoUrl;
 
   File videoFile;
+
+  int duration;
   @override
   void initState() {
     getVideoUrl();
@@ -47,26 +49,37 @@ class _PromoVideoState extends State<PromoVideo> {
                     : Text(kSkip),
             onPressed: () async {
               if (videoFile != null) {
-                _bloc
-                    .downloadURL(videoFile,
-                        widget.workoutPlanUid + '/promoVideo', 'video/mp4')
-                    .then((value) => videoUrl = value)
-                    .whenComplete(() {
-                  _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
-                }).whenComplete(() {
-                  if (widget.isEdit == true) {
-                    Navigator.pop(context);
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditPlan(
-                          workoutPlanUid: widget.workoutPlanUid,
+                if (duration > 60) {
+                  //dont save
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Video Duration'),
+                      content: Text('Video cannot exceed 60 seconds.'),
+                    ),
+                  );
+                } else {
+                  _bloc
+                      .downloadURL(videoFile,
+                          widget.workoutPlanUid + '/promoVideo', 'video/mp4')
+                      .then((value) => videoUrl = value)
+                      .whenComplete(() {
+                    _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
+                  }).whenComplete(() {
+                    if (widget.isEdit == true) {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditPlan(
+                            workoutPlanUid: widget.workoutPlanUid,
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                });
+                      );
+                    }
+                  });
+                }
               } else {
                 Navigator.push(
                   context,
@@ -176,6 +189,7 @@ class _PromoVideoState extends State<PromoVideo> {
     final picker = ImagePicker();
 
     final pickedVideo = await picker.getVideo(
+        maxDuration: Duration(seconds: 10),
         source: (isCamera == true) ? ImageSource.camera : ImageSource.gallery);
     setState(() {
       videoFile = File(pickedVideo.path);
@@ -186,7 +200,9 @@ class _PromoVideoState extends State<PromoVideo> {
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {
+          duration = _controller.value.duration.inSeconds;
+        });
       });
   }
 

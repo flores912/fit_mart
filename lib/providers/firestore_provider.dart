@@ -446,14 +446,14 @@ class FirestoreProvider {
   }
 
   Future<DocumentReference> addNewExerciseToCollection(
-      String exerciseName, int sets) async {
+      String exerciseName, int sets, String videoUrl) async {
     return await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
         .collection('exerciseCollection')
         .add({
       'exerciseName': exerciseName,
-      'videoUrl': null,
+      'videoUrl': videoUrl,
       'sets': sets,
       'createdAt': FieldValue.serverTimestamp(),
     });
@@ -874,7 +874,7 @@ class FirestoreProvider {
 
   Future<void> duplicateExerciseCollection(Exercise exercise) async {
     return await addNewExerciseToCollection(
-            exercise.exerciseName, exercise.sets)
+            exercise.exerciseName, exercise.sets, exercise.videoUrl)
         .then((duplicateExercise) async {
       await getSetsCollectionFuture(exercise.exerciseUid).then((sets) {
         sets.docs.forEach((set) async {

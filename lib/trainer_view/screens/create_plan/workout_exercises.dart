@@ -153,7 +153,8 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                                       _bloc
                                           .addNewExerciseToCollection(
                                               exercisesList[index].exerciseName,
-                                              1)
+                                              exercisesList[index].sets,
+                                              exercisesList[index].videoUrl)
                                           .whenComplete(() {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(

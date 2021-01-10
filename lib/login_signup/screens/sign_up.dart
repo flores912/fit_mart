@@ -3,6 +3,7 @@ import 'package:fit_mart/login_signup/blocs/sign_up_bloc.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -57,12 +58,20 @@ class _SignUpState extends State<SignUp> {
               child: (Text(
                 kSignUp,
               )),
-              onPressed: () {
-                _bloc.signUp(email, password).whenComplete(
-                      () => _bloc.addUserDetails(name).whenComplete(
-                            () => Navigator.popAndPushNamed(
-                                context, HomeTrainer.id),
-                          ), //go to home page
+              onPressed: () async {
+                await _bloc.signUp(email, password).whenComplete(() async =>
+                        await _bloc.addUserDetails(name).whenComplete(() {
+                          if (FirebaseAuth.instance.currentUser != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeTrainer(),
+                              ),
+                            );
+                          }
+                        })
+
+                    //go to home page
                     );
               },
             ),

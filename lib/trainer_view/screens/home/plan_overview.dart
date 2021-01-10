@@ -27,7 +27,9 @@ class _PlanOverviewState extends State<PlanOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Plan Overview'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -73,10 +75,17 @@ class _PlanOverviewState extends State<PlanOverview> {
               ),
               Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  widget.workoutPlan.description,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
+                child: widget.workoutPlan.description != null
+                    ? Text(
+                        widget.workoutPlan.description,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      )
+                    : Text(
+                        'No description.',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
               ),
             ],
           ),

@@ -30,8 +30,9 @@ class WorkoutExercisesBloc {
       _firestoreProvider.duplicateExerciseCollection(exercise);
 
   Future<DocumentReference> addNewExerciseToCollection(
-          String exerciseName, int sets) =>
-      _firestoreProvider.addNewExerciseToCollection(exerciseName, sets);
+          String exerciseName, int sets, String videoUrl) =>
+      _firestoreProvider.addNewExerciseToCollection(
+          exerciseName, sets, videoUrl);
 
   Future<DocumentReference> addNewExercise(
           String exerciseName,

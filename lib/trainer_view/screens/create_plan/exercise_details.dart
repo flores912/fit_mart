@@ -41,14 +41,16 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   File videoFile;
 
   List<Set> setsList = [];
+
+  int duration;
   @override
   void initState() {
+    getVideoUrl();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    getVideoUrl();
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.exerciseName),
@@ -57,23 +59,35 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
               child: Text(kSave),
               onPressed: () {
                 //TODO handle exception when user doesnt upload a file
-                _bloc
-                    .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
-                    .then((value) {
-                  videoUrl = value;
-                }).whenComplete(
-                  () => _bloc
-                      .updateExerciseDetails(
-                          videoUrl,
-                          setsList.length,
-                          widget.workoutPlanUid,
-                          widget.weekUid,
-                          widget.workoutUid,
-                          widget.exerciseUid)
-                      .whenComplete(
-                        () => Navigator.pop(context),
-                      ),
-                );
+                if (duration > 60) {
+                  //dont save
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Video Duration'),
+                      content: Text('Video cannot exceed 60 seconds.'),
+                    ),
+                  );
+                } else {
+                  //save
+                  _bloc
+                      .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
+                      .then((value) {
+                    videoUrl = value;
+                  }).whenComplete(
+                    () => _bloc
+                        .updateExerciseDetails(
+                            videoUrl,
+                            setsList.length,
+                            widget.workoutPlanUid,
+                            widget.weekUid,
+                            widget.workoutUid,
+                            widget.exerciseUid)
+                        .whenComplete(
+                          () => Navigator.pop(context),
+                        ),
+                  );
+                }
               },
             )
           ],
@@ -153,7 +167,9 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {
+          duration = _controller.value.duration.inSeconds;
+        });
       });
   }
 
@@ -194,9 +210,9 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           children: [
             SimpleDialogOption(
               onPressed: () {
-                getVideo(false).whenComplete(() {
+                getVideo(false).whenComplete(() async {
                   if (videoFile != null) {
-                    _onControllerChange(videoFile);
+                    _onControllerChange(videoFile).whenComplete(() {});
                   }
                 });
                 Navigator.pop(dialogContext);
@@ -226,6 +242,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
     final picker = ImagePicker();
 
     final pickedVideo = await picker.getVideo(
+        maxDuration: Duration(seconds: 60),
         source: (isCamera == true) ? ImageSource.camera : ImageSource.gallery);
     setState(() {
       videoFile = File(pickedVideo.path);

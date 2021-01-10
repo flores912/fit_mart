@@ -88,7 +88,7 @@ class _ExerciseNameCollectionState extends State<ExerciseNameCollection> {
   void addNewExercise() {
     if (_formKey.currentState.validate()) {
       _bloc
-          .addNewExerciseToCollection(exerciseName, 0)
+          .addNewExerciseToCollection(exerciseName, 0, null)
           .then((value) => exerciseUid = value.id)
           .whenComplete(
             () => Navigator.pop(context),

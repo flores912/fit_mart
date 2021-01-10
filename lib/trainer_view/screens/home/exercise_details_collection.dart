@@ -34,9 +34,17 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
   File videoFile;
 
   List<Set> setsList = [];
+
+  int duration;
+
+  @override
+  void initState() {
+    getVideoUrl();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    getVideoUrl();
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.exerciseName),
@@ -44,18 +52,29 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
             FlatButton(
               child: Text(kSave),
               onPressed: () {
-                _bloc
-                    .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
-                    .then((value) {
-                  videoUrl = value;
-                }).whenComplete(
-                  () => _bloc
-                      .updateExerciseDetailsCollection(
-                          videoUrl, setsList.length, widget.exerciseUid)
-                      .whenComplete(
-                        () => Navigator.pop(context),
-                      ),
-                );
+                if (duration > 60) {
+                  //dont save
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text('Video Duration'),
+                      content: Text('Video cannot exceed 60 seconds.'),
+                    ),
+                  );
+                } else {
+                  _bloc
+                      .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
+                      .then((value) {
+                    videoUrl = value;
+                  }).whenComplete(
+                    () => _bloc
+                        .updateExerciseDetailsCollection(
+                            videoUrl, setsList.length, widget.exerciseUid)
+                        .whenComplete(
+                          () => Navigator.pop(context),
+                        ),
+                  );
+                }
               },
             )
           ],
@@ -119,9 +138,11 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
       videoUrl = await value.get('videoUrl');
     }).whenComplete(() {
       if (videoUrl != null) {
-        setState(() {
-          _controller = VideoPlayerController.network(videoUrl);
-        });
+        if (mounted) {
+          setState(() {
+            _controller = VideoPlayerController.network(videoUrl);
+          });
+        }
       }
     });
   }
@@ -129,7 +150,9 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
       ..initialize().then((_) {
-        setState(() {});
+        setState(() {
+          duration = _controller.value.duration.inSeconds;
+        });
       });
   }
 

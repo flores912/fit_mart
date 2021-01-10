@@ -35,18 +35,26 @@ class _TrainerAccountState extends State<TrainerAccount> {
                 children: [
                   //TODO:ADD PLACEHOLDER
                   Center(
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: NetworkImage(photoUrl),
-                        ),
-                      ),
-                    ),
-                  ),
+                      child: photoUrl != null
+                          ? Container(
+                              height: 200,
+                              width: 200,
+                              decoration: new BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(photoUrl),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              height: 200,
+                              width: 200,
+                              decoration: new BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: CupertinoColors.placeholderText,
+                              ),
+                            )),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
