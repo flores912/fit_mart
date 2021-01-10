@@ -16,8 +16,10 @@ import '../../../constants.dart';
 
 class ExerciseDetailsCollection extends StatefulWidget {
   final String exerciseUid;
+  final String exerciseName;
 
-  const ExerciseDetailsCollection({Key key, this.exerciseUid})
+  const ExerciseDetailsCollection(
+      {Key key, this.exerciseUid, this.exerciseName})
       : super(key: key);
   @override
   _ExerciseDetailsCollectionState createState() =>
@@ -37,6 +39,7 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
     getVideoUrl();
     return Scaffold(
         appBar: AppBar(
+          title: Text(widget.exerciseName),
           actions: [
             FlatButton(
               child: Text(kSave),

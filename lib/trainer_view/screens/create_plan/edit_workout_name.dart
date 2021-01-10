@@ -32,6 +32,7 @@ class _EditWorkoutNameState extends State<EditWorkoutName> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Edit Name'),
         actions: [
           FlatButton(
             child: Text(kSave),

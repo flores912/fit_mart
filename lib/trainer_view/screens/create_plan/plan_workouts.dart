@@ -81,6 +81,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
               isWorkoutSwapMode == true
           ? appBarMode()
           : AppBar(
+              title: Text('Workouts'),
               actions: [
                 widget.isEdit == null
                     ? FlatButton(
@@ -329,6 +330,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => WorkoutExercises(
+                                workoutName: workoutsList[index].workoutName,
                                 workoutPlanUid: workoutPlanUid,
                                 weekUid: weekUid,
                                 workoutUid: workoutsList[index].uid,

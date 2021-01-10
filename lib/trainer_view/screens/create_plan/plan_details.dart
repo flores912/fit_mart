@@ -53,6 +53,7 @@ class _PlanDetailsState extends State<PlanDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Plan Details'),
         actions: [
           FlatButton(
             child: Text(isBackPressed == true || workoutPlanUid == null

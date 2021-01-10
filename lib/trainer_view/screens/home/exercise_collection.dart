@@ -59,6 +59,8 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ExerciseDetailsCollection(
+                                  exerciseName:
+                                      exercisesList[index].exerciseName,
                                   exerciseUid: exercisesList[index].exerciseUid,
                                 )),
                       );

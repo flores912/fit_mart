@@ -27,6 +27,7 @@ class _EditSetCollectionState extends State<EditSetCollection> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
+          title: Text('Edit Set'),
           actions: [
             FlatButton(
               child: (Text(kSave)),
@@ -44,38 +45,18 @@ class _EditSetCollectionState extends State<EditSetCollection> {
             ),
           ],
         ),
-        body: Row(
-          children: [
-            Expanded(
-              child: Text(kSet + ' ' + widget.set.toString()),
-            ),
-            Expanded(
-              child: TextFormField(
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                keyboardType: TextInputType.number,
-                initialValue: reps != null ? reps.toString() : '',
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return kRequired;
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  reps = int.parse(value);
-                },
-                decoration: InputDecoration(
-                  labelText: kReps + '*',
-                  alignLabelWithHint: true,
-                ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(kSet + ' ' + widget.set.toString()),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              Expanded(
                 child: TextFormField(
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   keyboardType: TextInputType.number,
-                  initialValue: rest != null ? rest.toString() : '',
+                  initialValue: reps != null ? reps.toString() : '',
                   validator: (value) {
                     if (value.isEmpty) {
                       return kRequired;
@@ -83,16 +64,39 @@ class _EditSetCollectionState extends State<EditSetCollection> {
                     return null;
                   },
                   onChanged: (value) {
-                    rest = int.parse(value);
+                    reps = int.parse(value);
                   },
                   decoration: InputDecoration(
-                    labelText: kRest + ' (s)' + '*',
+                    labelText: kReps + '*',
                     alignLabelWithHint: true,
                   ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    keyboardType: TextInputType.number,
+                    initialValue: rest != null ? rest.toString() : '',
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return kRequired;
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      rest = int.parse(value);
+                    },
+                    decoration: InputDecoration(
+                      labelText: kRest + ' (s)' + '*',
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

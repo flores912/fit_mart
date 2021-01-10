@@ -37,6 +37,7 @@ class _PromoVideoState extends State<PromoVideo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Promo Video'),
         actions: [
           FlatButton(
             child: _controller != null && widget.isEdit != true

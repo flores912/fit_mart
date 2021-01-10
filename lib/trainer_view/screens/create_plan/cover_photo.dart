@@ -46,6 +46,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('CoverPhoto'),
         actions: [
           FlatButton(
             child: _croppedImage != null && widget.isEdit != true ||

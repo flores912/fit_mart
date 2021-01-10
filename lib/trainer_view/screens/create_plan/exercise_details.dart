@@ -18,13 +18,15 @@ class ExerciseDetails extends StatefulWidget {
   final String weekUid;
   final String workoutUid;
   final String exerciseUid;
+  final String exerciseName;
 
   const ExerciseDetails(
       {Key key,
       this.workoutPlanUid,
       this.weekUid,
       this.workoutUid,
-      this.exerciseUid})
+      this.exerciseUid,
+      this.exerciseName})
       : super(key: key);
 
   @override
@@ -49,6 +51,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
     getVideoUrl();
     return Scaffold(
         appBar: AppBar(
+          title: Text(widget.exerciseName),
           actions: [
             FlatButton(
               child: Text(kSave),

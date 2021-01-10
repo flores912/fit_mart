@@ -15,9 +15,14 @@ class WorkoutExercises extends StatefulWidget {
   final String workoutPlanUid;
   final String weekUid;
   final String workoutUid;
+  final String workoutName;
 
   const WorkoutExercises(
-      {Key key, this.workoutPlanUid, this.weekUid, this.workoutUid})
+      {Key key,
+      this.workoutPlanUid,
+      this.weekUid,
+      this.workoutUid,
+      this.workoutName})
       : super(key: key);
   @override
   _WorkoutExercisesState createState() => _WorkoutExercisesState();
@@ -231,6 +236,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
       context,
       MaterialPageRoute(
         builder: (context) => ExerciseDetails(
+          exerciseName: exercisesList[index].exerciseName,
           workoutPlanUid: widget.workoutPlanUid,
           weekUid: widget.weekUid,
           workoutUid: widget.workoutUid,
@@ -390,7 +396,9 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
         ),
       );
     } else {
-      return AppBar();
+      return AppBar(
+        title: Text(widget.workoutName),
+      );
     }
   }
 }

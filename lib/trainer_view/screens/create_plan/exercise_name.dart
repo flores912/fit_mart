@@ -46,6 +46,7 @@ class _ExerciseNameState extends State<ExerciseName> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Edit Name'),
         actions: [
           FlatButton(
             child: Text(exerciseName == null ? kNext : kSave),
@@ -110,6 +111,7 @@ class _ExerciseNameState extends State<ExerciseName> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ExerciseDetails(
+                        exerciseName: exerciseName,
                         workoutPlanUid: widget.workoutPlanUid,
                         weekUid: widget.weekUid,
                         workoutUid: widget.workoutUid,

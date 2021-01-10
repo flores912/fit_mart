@@ -39,6 +39,7 @@ class _ExerciseNameCollectionState extends State<ExerciseNameCollection> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Edit Name'),
         actions: [
           FlatButton(
             child: Text(widget.isEdit == true ? kSave : kNext),
@@ -96,6 +97,7 @@ class _ExerciseNameCollectionState extends State<ExerciseNameCollection> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ExerciseDetailsCollection(
+                          exerciseName: exerciseName,
                           exerciseUid: exerciseUid,
                         )),
               ));
