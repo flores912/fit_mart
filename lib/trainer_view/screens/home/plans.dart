@@ -7,6 +7,7 @@ import 'package:fit_mart/trainer_view/blocs/plans_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/edit_plan.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/plan_details.dart';
 import 'package:fit_mart/trainer_view/screens/home/plan_overview.dart';
+import 'package:fit_mart/trainer_view/screens/home/workout_plan_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -50,10 +51,19 @@ class _PlansState extends State<Plans> {
                       return Center(
                         child: MyCreatedWorkoutPlanCard(
                           onTap: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => PlanOverview(
+                            //       workoutPlan: workoutPlansList[index],
+                            //     ),
+                            //   ),
+                            // );
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PlanOverview(
+                                builder: (context) => WorkoutPlanPreview(
                                   workoutPlan: workoutPlansList[index],
                                 ),
                               ),

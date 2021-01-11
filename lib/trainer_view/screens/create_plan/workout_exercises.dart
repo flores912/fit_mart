@@ -297,6 +297,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
           children: [
             SimpleDialogOption(
               onPressed: () {
+                Navigator.pop(dialogContext);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -307,7 +308,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                       workoutUid: widget.workoutUid,
                     ),
                   ),
-                ).whenComplete(() => Navigator.pop(context));
+                );
               },
               child: const Text(
                 'Add from collection',
@@ -315,6 +316,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
             ),
             SimpleDialogOption(
               onPressed: () {
+                Navigator.pop(dialogContext);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -325,7 +327,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                       workoutUid: widget.workoutUid,
                     ),
                   ),
-                ).whenComplete(() => Navigator.pop(context));
+                );
               },
               child: const Text('Create new exercise'),
             ),

@@ -5,6 +5,7 @@ import 'package:fit_mart/trainer_view/blocs/plan_workouts_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/cover_photo.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/edit_workout_name.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/workout_exercises.dart';
+import 'package:fit_mart/trainer_view/screens/home/workout_plan_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -325,7 +326,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                           }
                         }
                       : () {
-                          //edit exercises screen
                           Navigator.push(
                             context,
                             MaterialPageRoute(

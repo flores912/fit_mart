@@ -225,6 +225,7 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
     final picker = ImagePicker();
 
     final pickedVideo = await picker.getVideo(
+        maxDuration: Duration(seconds: 60),
         source: (isCamera == true) ? ImageSource.camera : ImageSource.gallery);
     setState(() {
       videoFile = File(pickedVideo.path);

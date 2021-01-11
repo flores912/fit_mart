@@ -59,7 +59,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
               child: Text(kSave),
               onPressed: () {
                 //TODO handle exception when user doesnt upload a file
-                if (duration > 60) {
+                if (duration != null && duration > 60) {
                   //dont save
                   showDialog(
                     context: context,
@@ -70,12 +70,29 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                   );
                 } else {
                   //save
-                  _bloc
-                      .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
-                      .then((value) {
-                    videoUrl = value;
-                  }).whenComplete(
-                    () => _bloc
+
+                  if (videoFile != null) {
+                    //video was taken save to db
+                    _bloc
+                        .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
+                        .then((value) {
+                      videoUrl = value;
+                    }).whenComplete(
+                      () => _bloc
+                          .updateExerciseDetails(
+                              videoUrl,
+                              setsList.length,
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              widget.exerciseUid)
+                          .whenComplete(
+                            () => Navigator.pop(context),
+                          ),
+                    );
+                  } else {
+                    //else just save the other details
+                    _bloc
                         .updateExerciseDetails(
                             videoUrl,
                             setsList.length,
@@ -85,8 +102,8 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                             widget.exerciseUid)
                         .whenComplete(
                           () => Navigator.pop(context),
-                        ),
-                  );
+                        );
+                  }
                 }
               },
             )
