@@ -33,6 +33,10 @@ class WorkoutExercisesBloc {
           String exerciseName, int sets, String videoUrl) =>
       _firestoreProvider.addNewExerciseToCollection(
           exerciseName, sets, videoUrl);
+  Future<QuerySnapshot> getExercisesFuture(
+          String workoutPlanUid, String weekUid, String workoutUid) =>
+      _firestoreProvider.getExercisesFuture(
+          workoutPlanUid, weekUid, workoutUid);
 
   Future<DocumentReference> addNewExercise(
           String exerciseName,

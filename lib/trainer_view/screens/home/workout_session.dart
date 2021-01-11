@@ -30,45 +30,79 @@ class _WorkoutSessionState extends State<WorkoutSession> {
 
   ExerciseDetailsBloc _blocSets = ExerciseDetailsBloc();
 
+  String exerciseName = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.workoutName),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: StreamBuilder(
-              stream: _bloc.getExercises(
-                  widget.workoutPlanUid, widget.weekUid, widget.workoutUid),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasData) {
-                  print(snapshot.data.docs.length);
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(widget.workoutName),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: StreamBuilder(
+            stream: _bloc.getExercises(
+                widget.workoutPlanUid, widget.weekUid, widget.workoutUid),
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                List<Exercise> exercisesList =
+                    buildExerciseList(snapshot.data.docs);
 
-                  List<Exercise> exercisesList =
-                      buildExerciseList(snapshot.data.docs);
-                  return ListView.builder(
-                      itemCount: exercisesList.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                          child: WorkoutSessionWidget(
-                            videoUrl: exercisesList[index].videoUrl,
-                            setsList:
-                                setsListView(exercisesList[index].exerciseUid),
+                return ListView.builder(
+                    itemCount: exercisesList.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      exerciseName = exercisesList[index].exerciseName;
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  exerciseName,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('(Exercise ' +
+                                      exercisesList[index]
+                                          .exerciseIndex
+                                          .toString() +
+                                      ' of ' +
+                                      exercisesList.length.toString() +
+                                      ')'),
+                                )
+                              ],
+                            ),
                           ),
-                        );
-                      });
-                }
-                return Text('No Data');
-              },
-            ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width - 16,
+                                child: WorkoutSessionWidget(
+                                  videoUrl: exercisesList[index].videoUrl,
+                                  setsList: setsListView(
+                                      exercisesList[index].exerciseUid),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    });
+              }
+              return Text('No Data');
+            },
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   List<Exercise> buildExerciseList(
@@ -105,7 +139,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
         stream: _blocSets.getSets(widget.workoutPlanUid, widget.weekUid,
             widget.workoutUid, exerciseUid),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data.docs.isNotEmpty) {
             List<Set> setsList = buildSetsList(
               snapshot.data.docs,
             );
@@ -125,7 +159,10 @@ class _WorkoutSessionState extends State<WorkoutSession> {
               },
             );
           } else {
-            return Center(child: Text('No Sets.'));
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(child: Text('No Sets.')),
+            );
           }
         });
   }

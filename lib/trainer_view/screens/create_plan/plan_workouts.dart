@@ -188,7 +188,8 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                             : false,
                         isOnCopyMode: isWeekCopyMode,
                         week: weeksList[index].week,
-                        workoutList: workoutsListView(weeksList[index].uid),
+                        workoutList: workoutsListView(
+                            weeksList[index].uid, weeksList[index].week),
                         more: isWorkoutSwapMode == true ||
                                 isWorkoutCopyMode == true ||
                                 isWeekSwapMode == true ||
@@ -254,7 +255,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
             }));
   }
 
-  Widget workoutsListView(String weekUid) {
+  Widget workoutsListView(String weekUid, int week) {
     return StreamBuilder(
         stream: _bloc.getWorkouts(workoutPlanUid, weekUid),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -373,8 +374,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                                 //swap
                                 setState(() {
                                   oldWorkout = workoutsList[index];
-                                  controller.scrollToIndex(
-                                      workoutsList[index].week - 1);
+                                  controller.scrollToIndex(week - 1);
                                   isWorkoutSwapMode = true;
                                 });
                                 break;
@@ -396,7 +396,6 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     List<Workout> workoutsList = [];
     docList.forEach((element) {
       Workout workout = Workout(
-          week: element.get('week'),
           weekUid: element.get('weekUid'),
           workoutName: element.get('workoutName'),
           exercises: element.get('exercises'),

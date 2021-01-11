@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/custom_widgets/set_card.dart';
-import 'package:fit_mart/custom_widgets/workout_session_set_card.dart';
 import 'package:fit_mart/custom_widgets/workout_session_widget.dart';
 import 'package:fit_mart/trainer_view/blocs/trainer_account_bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,66 +22,56 @@ class _TrainerAccountState extends State<TrainerAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Column(
-      children: [
-        WorkoutSessionWidget(),
-        WorkoutSessionSetCard(),
-      ],
-    )
-
-        //   StreamBuilder(
-        //       stream: _bloc.getUserDetails(),
-        //       builder:
-        //           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        //         if (snapshot.hasData) {
-        //           name = snapshot.data.get('name');
-        //           photoUrl = snapshot.data.get('photoUrl');
-        //         }
-        //         return Padding(
-        //           padding: const EdgeInsets.all(8.0),
-        //           child: Column(
-        //             children: [
-        //               //TODO:ADD PLACEHOLDER
-        //               Center(
-        //                   child: photoUrl != null
-        //                       ? Container(
-        //                           height: 200,
-        //                           width: 200,
-        //                           decoration: new BoxDecoration(
-        //                             shape: BoxShape.circle,
-        //                             image: DecorationImage(
-        //                               fit: BoxFit.fill,
-        //                               image: NetworkImage(photoUrl),
-        //                             ),
-        //                           ),
-        //                         )
-        //                       : Container(
-        //                           height: 200,
-        //                           width: 200,
-        //                           decoration: new BoxDecoration(
-        //                             shape: BoxShape.circle,
-        //                             color: CupertinoColors.placeholderText,
-        //                           ),
-        //                         )),
-        //               Padding(
-        //                 padding: const EdgeInsets.all(8.0),
-        //                 child: Text(
-        //                   name,
-        //                   style:
-        //                       TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        //                 ),
-        //               ),
-        //               FlatButton(
-        //                 child: Text(kChangeToClientView),
-        //                 onPressed: () {},
-        //               ),
-        //               Text(kWorkoutPlans),
-        //               //TODO:insert List here
-        //             ],
-        //           ),
-        //         );
-        //       }),
-        );
+    return StreamBuilder(
+        stream: _bloc.getUserDetails(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasData) {
+            name = snapshot.data.get('name');
+            photoUrl = snapshot.data.get('photoUrl');
+          }
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                //TODO:ADD PLACEHOLDER
+                Center(
+                    child: photoUrl != null
+                        ? Container(
+                            height: 200,
+                            width: 200,
+                            decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: NetworkImage(photoUrl),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 200,
+                            width: 200,
+                            decoration: new BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: CupertinoColors.placeholderText,
+                            ),
+                          )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+                FlatButton(
+                  child: Text(kChangeToClientView),
+                  onPressed: () {},
+                ),
+                Text(kWorkoutPlans),
+                //TODO:insert List here
+              ],
+            ),
+          );
+        });
   }
 }

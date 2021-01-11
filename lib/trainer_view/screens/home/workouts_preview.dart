@@ -76,7 +76,6 @@ class _WorkoutsPreviewState extends State<WorkoutsPreview> {
     List<Workout> workoutsList = [];
     docList.forEach((element) {
       Workout workout = Workout(
-          week: element.get('week'),
           weekUid: element.get('weekUid'),
           workoutName: element.get('workoutName'),
           exercises: element.get('exercises'),

@@ -23,20 +23,37 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
             ? Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.width / 1.78,
-                child: ChewiePlayerWidget(
-                  autoPlay: false,
-                  looping: false,
-                  showControls: true,
-                  videoPlayerController:
-                      VideoPlayerController.network(widget.videoUrl),
+                child: Card(
+                  child: ChewiePlayerWidget(
+                    autoPlay: false,
+                    looping: false,
+                    showControls: true,
+                    videoPlayerController: VideoPlayerController.network(
+                        widget.videoUrl,
+                        videoPlayerOptions:
+                            VideoPlayerOptions(mixWithOthers: true)),
+                  ),
                 ),
               )
             : Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.width / 1.78,
                 color: CupertinoColors.placeholderText,
+                child: Card(),
               ),
-        widget.setsList != null ? widget.setsList : Container(),
+        Card(
+            child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Sets',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+            widget.setsList
+          ],
+        )),
       ],
     );
   }

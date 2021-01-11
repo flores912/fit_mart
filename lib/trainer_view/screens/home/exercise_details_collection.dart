@@ -52,7 +52,7 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
             FlatButton(
               child: Text(kSave),
               onPressed: () {
-                if (duration > 60) {
+                if (duration != null && duration > 60) {
                   //dont save
                   showDialog(
                     context: context,
@@ -62,18 +62,25 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
                     ),
                   );
                 } else {
-                  _bloc
-                      .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
-                      .then((value) {
-                    videoUrl = value;
-                  }).whenComplete(
-                    () => _bloc
+                  if (videoFile != null) {
+                    _bloc
+                        .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
+                        .then((value) {
+                      videoUrl = value;
+                    }).whenComplete(
+                      () => _bloc
+                          .updateExerciseDetailsCollection(
+                              videoUrl, setsList.length, widget.exerciseUid)
+                          .whenComplete(
+                            () => Navigator.pop(context),
+                          ),
+                    );
+                  } else {
+                    _bloc
                         .updateExerciseDetailsCollection(
                             videoUrl, setsList.length, widget.exerciseUid)
-                        .whenComplete(
-                          () => Navigator.pop(context),
-                        ),
-                  );
+                        .whenComplete(() => Navigator.pop(context));
+                  }
                 }
               },
             )
