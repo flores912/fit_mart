@@ -24,10 +24,7 @@ class _WorkoutsPreviewState extends State<WorkoutsPreview> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-            child: Container(
-                height: MediaQuery.of(context).size.height,
-                child: weeksListView())),
+        child: weeksListView(),
       ),
     );
   }
@@ -53,13 +50,15 @@ class _WorkoutsPreviewState extends State<WorkoutsPreview> {
             itemCount: weeksList.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: WeekCard(
-                    week: weeksList[index].week,
-                    workoutList: workoutsListView(weeksList[index].uid),
+              return SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: WeekCard(
+                      week: weeksList[index].week,
+                      workoutList: workoutsListView(weeksList[index].uid),
+                    ),
                   ),
                 ),
               );

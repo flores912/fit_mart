@@ -16,14 +16,14 @@ class WorkoutSessionWidget extends StatefulWidget {
 class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        widget.videoUrl != null
-            ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width / 1.78,
-                child: Card(
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          widget.videoUrl != null
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 1.78,
                   child: ChewiePlayerWidget(
                     autoPlay: false,
                     looping: false,
@@ -33,28 +33,27 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
                         videoPlayerOptions:
                             VideoPlayerOptions(mixWithOthers: true)),
                   ),
+                )
+              : Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 1.78,
+                  color: CupertinoColors.placeholderText,
+                  child: Card(),
                 ),
-              )
-            : Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width / 1.78,
-                color: CupertinoColors.placeholderText,
-                child: Card(),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Sets',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
-        Card(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Sets',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            widget.setsList
-          ],
-        )),
-      ],
+              widget.setsList
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

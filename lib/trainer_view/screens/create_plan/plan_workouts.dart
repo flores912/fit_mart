@@ -102,11 +102,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
               ],
             ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: weeksListView()),
-        ),
+        child: weeksListView(),
       ),
     );
   }
@@ -143,88 +139,95 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                           }
                         : () {},
                     child: Center(
-                      child: WeekCard(
-                        elevation: isWeekSwapMode == true &&
-                                weeksList[index].uid == oldWeek.uid
-                            ? 40
-                            : isWeekSwapMode == true &&
-                                    newWeek != null &&
-                                    weeksList[index].uid == newWeek.uid
-                                ? 0
-                                : 4,
-                        swapMode: isWeekSwapMode == true &&
-                                weeksList[index].uid == oldWeek.uid
-                            ? true
-                            : isWeekSwapMode == true &&
-                                    newWeek != null &&
-                                    weeksList[index].uid == newWeek.uid
+                      child: SingleChildScrollView(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height,
+                          child: WeekCard(
+                            elevation: isWeekSwapMode == true &&
+                                    weeksList[index].uid == oldWeek.uid
+                                ? 40
+                                : isWeekSwapMode == true &&
+                                        newWeek != null &&
+                                        weeksList[index].uid == newWeek.uid
+                                    ? 0
+                                    : 4,
+                            swapMode: isWeekSwapMode == true &&
+                                    weeksList[index].uid == oldWeek.uid
                                 ? true
+                                : isWeekSwapMode == true &&
+                                        newWeek != null &&
+                                        weeksList[index].uid == newWeek.uid
+                                    ? true
+                                    : false,
+                            checkBoxOnChanged: (value) {
+                              if (checkIfWeekIsAddedToCopyList(
+                                      weeksList[index]) ==
+                                  true) {
+                                //remove workout from  copy list
+                                setState(() {
+                                  copyWeeksList.remove(copyWeeksList.firstWhere(
+                                      (weekToCheck) =>
+                                          weekToCheck.uid ==
+                                          weeksList[index].uid));
+                                });
+                              } else {
+                                //add workout to copy list
+                                setState(() {
+                                  copyWeeksList.add(weeksList[index]);
+                                });
+                              }
+                            },
+                            parentCheckBoxOnChanged: (value) {
+                              setState(() {
+                                turnWeekCopyModeOff();
+                              });
+                            },
+                            isSelected:
+                                checkIfWeekIsAddedToCopyList(weeksList[index]),
+                            isParentCheckbox: weekBeingCopied != null
+                                ? weekBeingCopied.uid == weeksList[index].uid
                                 : false,
-                        checkBoxOnChanged: (value) {
-                          if (checkIfWeekIsAddedToCopyList(weeksList[index]) ==
-                              true) {
-                            //remove workout from  copy list
-                            setState(() {
-                              copyWeeksList.remove(copyWeeksList.firstWhere(
-                                  (weekToCheck) =>
-                                      weekToCheck.uid == weeksList[index].uid));
-                            });
-                          } else {
-                            //add workout to copy list
-                            setState(() {
-                              copyWeeksList.add(weeksList[index]);
-                            });
-                          }
-                        },
-                        parentCheckBoxOnChanged: (value) {
-                          setState(() {
-                            turnWeekCopyModeOff();
-                          });
-                        },
-                        isSelected:
-                            checkIfWeekIsAddedToCopyList(weeksList[index]),
-                        isParentCheckbox: weekBeingCopied != null
-                            ? weekBeingCopied.uid == weeksList[index].uid
-                            : false,
-                        isOnCopyMode: isWeekCopyMode,
-                        week: weeksList[index].week,
-                        workoutList: workoutsListView(
-                            weeksList[index].uid, weeksList[index].week),
-                        more: isWorkoutSwapMode == true ||
-                                isWorkoutCopyMode == true ||
-                                isWeekSwapMode == true ||
-                                isWeekCopyMode == true
-                            ? null
-                            : PopupMenuButton(
-                                child: Icon(Icons.more_vert),
-                                onSelected: (value) {
-                                  switch (value) {
-                                    case 1:
-                                      //show copy checkboxes
+                            isOnCopyMode: isWeekCopyMode,
+                            week: weeksList[index].week,
+                            workoutList: workoutsListView(
+                                weeksList[index].uid, weeksList[index].week),
+                            more: isWorkoutSwapMode == true ||
+                                    isWorkoutCopyMode == true ||
+                                    isWeekSwapMode == true ||
+                                    isWeekCopyMode == true
+                                ? null
+                                : PopupMenuButton(
+                                    child: Icon(Icons.more_vert),
+                                    onSelected: (value) {
+                                      switch (value) {
+                                        case 1:
+                                          //show copy checkboxes
 
-                                      setState(() {
-                                        isWeekCopyMode = true;
-                                        weekBeingCopied = weeksList[index];
-                                      });
-                                      break;
-                                    //swap mode
-                                    case 2:
-                                      if (weeksList.length > 1) {
-                                        setState(() {
-                                          isWeekSwapMode = true;
-                                          oldWeek = weeksList[index];
-                                        });
+                                          setState(() {
+                                            isWeekCopyMode = true;
+                                            weekBeingCopied = weeksList[index];
+                                          });
+                                          break;
+                                        //swap mode
+                                        case 2:
+                                          if (weeksList.length > 1) {
+                                            setState(() {
+                                              isWeekSwapMode = true;
+                                              oldWeek = weeksList[index];
+                                            });
+                                          }
+
+                                          break;
+                                        case 3:
+                                          //delete
+                                          deleteWeek(index);
+                                          break;
                                       }
-
-                                      break;
-                                    case 3:
-                                      //delete
-                                      deleteWeek(index);
-                                      break;
-                                  }
-                                },
-                                itemBuilder: (BuildContext context) =>
-                                    kWeekCardPopUpMenuList),
+                                    },
+                                    itemBuilder: (BuildContext context) =>
+                                        kWeekCardPopUpMenuList),
+                          ),
+                        ),
                       ),
                     ),
                   ),

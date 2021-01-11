@@ -220,7 +220,8 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
         .duplicateExercise(workoutPlanUid, weekUid, workoutUid,
             exercisesList[index], exercisesList.length + 1)
         .whenComplete(() {
-      updateIndexes();
+      updateIndexes().whenComplete(() => _bloc.updateNumberOfExercises(
+          workoutPlanUid, weekUid, workoutUid, exercisesList.length));
     });
   }
 
