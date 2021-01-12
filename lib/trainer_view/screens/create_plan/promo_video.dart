@@ -49,37 +49,26 @@ class _PromoVideoState extends State<PromoVideo> {
                     : Text(kSkip),
             onPressed: () async {
               if (videoFile != null) {
-                if (duration > 60) {
-                  //dont save
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text('Video Duration'),
-                      content: Text('Video cannot exceed 60 seconds.'),
-                    ),
-                  );
-                } else {
-                  _bloc
-                      .downloadURL(videoFile,
-                          widget.workoutPlanUid + '/promoVideo', 'video/mp4')
-                      .then((value) => videoUrl = value)
-                      .whenComplete(() {
-                    _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
-                  }).whenComplete(() {
-                    if (widget.isEdit == true) {
-                      Navigator.pop(context);
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditPlan(
-                            workoutPlanUid: widget.workoutPlanUid,
-                          ),
+                _bloc
+                    .downloadURL(videoFile,
+                        widget.workoutPlanUid + '/promoVideo', 'video/mp4')
+                    .then((value) => videoUrl = value)
+                    .whenComplete(() {
+                  _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
+                }).whenComplete(() {
+                  if (widget.isEdit == true) {
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditPlan(
+                          workoutPlanUid: widget.workoutPlanUid,
                         ),
-                      );
-                    }
-                  });
-                }
+                      ),
+                    );
+                  }
+                });
               } else {
                 Navigator.push(
                   context,
@@ -197,11 +186,31 @@ class _PromoVideoState extends State<PromoVideo> {
     //cropImage(pickedFile.path);
   }
 
+  Future validateDurationOfVideo() async {
+    if (duration != null && duration > 60) {
+      //dont save
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+            title: Text('Video Duration'),
+            content: Text('Video cannot exceed 60 seconds.')),
+      ).whenComplete(() {
+        setState(() async {
+          //reset controller to null
+          duration = null;
+          videoFile = null;
+          await _onControllerChange(videoFile);
+        });
+      });
+    }
+  }
+
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
       ..initialize().then((_) {
         setState(() {
           duration = _controller.value.duration.inSeconds;
+          validateDurationOfVideo();
         });
       });
   }

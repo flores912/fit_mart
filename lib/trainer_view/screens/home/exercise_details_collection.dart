@@ -52,16 +52,7 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
             FlatButton(
               child: Text(kSave),
               onPressed: () {
-                if (duration != null && duration > 60) {
-                  //dont save
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text('Video Duration'),
-                      content: Text('Video cannot exceed 60 seconds.'),
-                    ),
-                  );
-                } else {
+                {
                   if (videoFile != null) {
                     _bloc
                         .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
@@ -159,6 +150,7 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
       ..initialize().then((_) {
         setState(() {
           duration = _controller.value.duration.inSeconds;
+          validateDurationOfVideo();
         });
       });
   }
@@ -301,5 +293,24 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
             widget.exerciseUid, setsList[i].setUid, i + 1);
       }
     });
+  }
+
+  Future validateDurationOfVideo() async {
+    if (duration != null && duration > 60) {
+      //dont save
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+            title: Text('Video Duration'),
+            content: Text('Video cannot exceed 60 seconds.')),
+      ).whenComplete(() {
+        setState(() async {
+          //reset controller to null
+          duration = null;
+          videoFile = null;
+          await _onControllerChange(videoFile);
+        });
+      });
+    }
   }
 }

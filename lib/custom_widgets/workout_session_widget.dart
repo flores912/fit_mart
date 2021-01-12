@@ -43,10 +43,10 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(32.0),
                 child: Text(
                   'Sets',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
               widget.setsList

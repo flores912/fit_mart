@@ -56,21 +56,9 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           title: Text(widget.exerciseName),
           actions: [
             FlatButton(
-              child: Text(kSave),
-              onPressed: () {
-                //TODO handle exception when user doesnt upload a file
-                if (duration != null && duration > 60) {
-                  //dont save
-                  showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text('Video Duration'),
-                      content: Text('Video cannot exceed 60 seconds.'),
-                    ),
-                  );
-                } else {
+                child: Text(kSave),
+                onPressed: () {
                   //save
-
                   if (videoFile != null) {
                     //video was taken save to db
                     _bloc
@@ -104,9 +92,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                           () => Navigator.pop(context),
                         );
                   }
-                }
-              },
-            )
+                })
           ],
         ),
         floatingActionButton: FloatingActionButton.extended(
@@ -184,10 +170,32 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
       ..initialize().then((_) {
-        setState(() {
+        setState(() async {
           duration = _controller.value.duration.inSeconds;
+
+          //TODO handle exception when user doesnt upload a file
+          await validateDurationOfVideo();
         });
       });
+  }
+
+  Future validateDurationOfVideo() async {
+    if (duration != null && duration > 60) {
+      //dont save
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+            title: Text('Video Duration'),
+            content: Text('Video cannot exceed 60 seconds.')),
+      ).whenComplete(() {
+        setState(() async {
+          //reset controller to null
+          duration = null;
+          videoFile = null;
+          await _onControllerChange(videoFile);
+        });
+      });
+    }
   }
 
   Future<void> _onControllerChange(File file) async {

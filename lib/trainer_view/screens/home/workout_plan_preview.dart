@@ -21,9 +21,15 @@ class _WorkoutPlanPreviewState extends State<WorkoutPlanPreview>
 
   List<Widget> list = [
     Tab(
-      icon: Icon(Icons.preview),
+      icon: Icon(
+        Icons.preview,
+      ),
+      child: Text('Plan Overview'),
     ),
-    Tab(icon: Icon(Icons.fitness_center)),
+    Tab(
+      icon: Icon(Icons.fitness_center),
+      child: Text('Workouts Preview'),
+    ),
   ];
 
   @override
@@ -38,14 +44,12 @@ class _WorkoutPlanPreviewState extends State<WorkoutPlanPreview>
         length: list.length,
         initialIndex: _selectedIndex,
         child: Scaffold(
-          appBar: PreferredSize(
-              preferredSize: Size.fromHeight(kToolbarHeight),
-              child: Container(
-                height: kToolbarHeight,
-                child: TabBar(
-                  tabs: list,
-                ),
-              )),
+          appBar: AppBar(
+            title: Text('Plan Preview'),
+            bottom: TabBar(
+              tabs: list,
+            ),
+          ),
           body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             children: [

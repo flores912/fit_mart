@@ -64,7 +64,9 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                               children: [
                                 Text(
                                   exerciseName,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
