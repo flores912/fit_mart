@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/workout_session_set_card.dart';
 import 'package:fit_mart/custom_widgets/workout_session_widget.dart';
@@ -6,7 +9,9 @@ import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/trainer_view/blocs/exercise_details_bloc.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
+import 'package:fit_mart/trainer_view/blocs/workout_session_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 class WorkoutSession extends StatefulWidget {
   final String workoutPlanUid;
@@ -26,15 +31,20 @@ class WorkoutSession extends StatefulWidget {
 }
 
 class _WorkoutSessionState extends State<WorkoutSession> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  WorkoutSessionBloc _blocWorkoutSession = WorkoutSessionBloc();
   WorkoutExercisesBloc _bloc = WorkoutExercisesBloc();
 
   ExerciseDetailsBloc _blocSets = ExerciseDetailsBloc();
 
   String exerciseName = '';
 
+  Timer restTimer;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.workoutName),
@@ -145,6 +155,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
             List<Set> setsList = buildSetsList(
               snapshot.data.docs,
             );
+
             return ListView.separated(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -153,11 +164,70 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                 return Divider();
               },
               itemBuilder: (context, index) {
-                return WorkoutSessionSetCard(
-                  set: setsList[index].set,
-                  reps: setsList[index].reps,
-                  rest: setsList[index].rest,
-                );
+                CountDownController _countDownController =
+                    CountDownController();
+                bool isTimerPaused = false;
+                bool showRestTimer = false;
+                return StreamBuilder(
+                    stream: _blocWorkoutSession.getSetIsDone(
+                        widget.workoutPlanUid,
+                        widget.weekUid,
+                        widget.workoutUid,
+                        exerciseUid,
+                        setsList[index].setUid),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      bool isDone = false;
+                      if (snapshot.hasData) {
+                        snapshot.data.docs.forEach((element) {
+                          isDone = element.get('isDone');
+                        });
+                      } else {
+                        isDone = false;
+                      }
+                      return WorkoutSessionSetCard(
+                        onChanged: (isDone) {
+                          _blocWorkoutSession.updateIsDoneSet(
+                              isDone,
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              exerciseUid,
+                              setsList[index].setUid);
+                          if (isDone == true) {
+                            showRestTimer = true;
+                          } else {
+                            showRestTimer = false;
+                          }
+                        },
+                        countDownController: _countDownController,
+                        onTimerPressed: () {
+                          if (isTimerPaused == false) {
+                            isTimerPaused = true;
+                            _countDownController.pause();
+                          } else {
+                            isTimerPaused = false;
+                            _countDownController.restart(
+                                duration: setsList[index].rest);
+                          }
+                        },
+                        onRestTimerComplete: () async {
+                          showSnackBar();
+                          if (await Vibration.hasCustomVibrationsSupport()) {
+                            Vibration.vibrate(duration: 5000);
+                          } else {
+                            Vibration.vibrate();
+                            await Future.delayed(Duration(seconds: 5));
+                            Vibration.vibrate();
+                          }
+                        },
+                        showRestTimer: showRestTimer,
+                        isDone: isDone,
+                        set: setsList[index].set,
+                        reps: setsList[index].reps,
+                        rest: setsList[index].rest,
+                      );
+                    });
               },
             );
           } else {
@@ -167,5 +237,22 @@ class _WorkoutSessionState extends State<WorkoutSession> {
             );
           }
         });
+  }
+
+  void showSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        backgroundColor: Colors.red,
+        content: Text(
+          'Rest Complete!',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),
+        )));
+  }
+
+  @override
+  void dispose() {
+    restTimer.cancel();
+    super.dispose();
   }
 }

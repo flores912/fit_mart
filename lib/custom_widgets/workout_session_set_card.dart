@@ -1,3 +1,5 @@
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:fit_mart/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -5,8 +7,23 @@ class WorkoutSessionSetCard extends StatefulWidget {
   final int set;
   final int reps;
   final int rest;
-
-  const WorkoutSessionSetCard({Key key, this.set, this.reps, this.rest})
+  final bool isDone;
+  final Function onChanged;
+  final bool showRestTimer;
+  final Function onRestTimerComplete;
+  final CountDownController countDownController;
+  final Function onTimerPressed;
+  const WorkoutSessionSetCard(
+      {Key key,
+      this.set,
+      this.reps,
+      this.rest,
+      this.isDone,
+      this.onChanged,
+      this.showRestTimer,
+      this.onRestTimerComplete,
+      this.countDownController,
+      this.onTimerPressed})
       : super(key: key);
 
   @override
@@ -29,9 +46,11 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                   Row(
                     children: [
                       Container(
-                          width: 48,
-                          height: 48,
-                          child: Checkbox(value: true, onChanged: (v) {})),
+                        width: 48,
+                        height: 48,
+                        child: Checkbox(
+                            value: widget.isDone, onChanged: widget.onChanged),
+                      ),
                       Column(
                         children: [
                           Text(widget.set.toString()),
@@ -46,12 +65,30 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                       Text('Reps'),
                     ],
                   ),
-                  Column(
-                    children: [
-                      Text(widget.rest.toString()),
-                      Text('Rest'),
-                    ],
-                  ),
+                  widget.showRestTimer == false
+                      ? Column(
+                          children: [
+                            Text(widget.rest.toString()),
+                            Text('Rest'),
+                          ],
+                        )
+                      : GestureDetector(
+                          onTap: widget.onTimerPressed,
+                          child: CircularCountDownTimer(
+                              controller: widget.countDownController,
+                              onComplete: widget.onRestTimerComplete,
+                              strokeWidth: 10,
+                              width: 72,
+                              height: 72,
+                              duration: widget.rest,
+                              isReverseAnimation: true,
+                              isReverse: true,
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                              fillColor: Colors.white,
+                              color: Colors.red),
+                        )
                 ],
               ),
             ),

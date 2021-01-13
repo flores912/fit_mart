@@ -144,7 +144,7 @@ class _PlanDetailsState extends State<PlanDetails> {
     return items;
   }
   //LOGIC
-  //TODO:PUT ALL THIS LOGIN IN BLOC
+  //TODO:PUT ALL THIS LOGIc IN BLOC
 
   checkIfFree() {
     if (price == kFree) {

@@ -20,12 +20,16 @@ class Fitpo extends StatelessWidget {
     return MaterialApp(
       title: 'Fitpo',
       theme: ThemeData.dark().copyWith(
+          dialogBackgroundColor: Colors.blueGrey.shade900,
           floatingActionButtonTheme:
               FloatingActionButtonThemeData(backgroundColor: kAccentColor),
+          scaffoldBackgroundColor: Colors.blueGrey.shade900,
+          cardColor: Colors.blueGrey.shade900,
           accentColor: kAccentColor,
+          canvasColor: Colors.blueGrey.shade900,
           primaryColor: kPrimaryColor,
           appBarTheme: AppBarTheme(
-            color: Colors.black12,
+            color: Colors.blueGrey.shade900,
             brightness: Brightness.dark,
           )),
       initialRoute:

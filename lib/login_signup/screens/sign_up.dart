@@ -62,12 +62,7 @@ class _SignUpState extends State<SignUp> {
                 await _bloc.signUp(email, password).whenComplete(() async =>
                         await _bloc.addUserDetails(name).whenComplete(() {
                           if (FirebaseAuth.instance.currentUser != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeTrainer(),
-                              ),
-                            );
+                            Navigator.popAndPushNamed(context, HomeTrainer.id);
                           }
                         })
 

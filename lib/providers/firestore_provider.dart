@@ -551,6 +551,50 @@ class FirestoreProvider {
     });
   }
 
+  Future<void> updateIsDoneSet(
+      bool isDone,
+      String workoutPlanUid,
+      String weekUid,
+      String workoutUid,
+      String exerciseUid,
+      String setUid) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .collection('isDone')
+        .doc(_firebaseAuth.currentUser.uid)
+        .set({
+      'userUid': _firebaseAuth.currentUser.uid,
+      'isDone': isDone,
+    });
+  }
+
+  Stream<QuerySnapshot> getSetIsDone(String workoutPlanUid, String weekUid,
+      String workoutUid, String exerciseUid, String setUid) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .collection('isDone')
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
   Future<DocumentReference> addNewSetCollection(
       String exerciseUid, int set, int reps, int rest) async {
     return await _firestore

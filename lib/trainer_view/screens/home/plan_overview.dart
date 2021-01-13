@@ -50,17 +50,17 @@ class _PlanOverviewState extends State<PlanOverview> {
                       color: CupertinoColors.placeholderText,
                     ),
               Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
                   widget.workoutPlan.trainerName + " 's",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(fontSize: 18),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Text(
                   widget.workoutPlan.title,
-                  style: TextStyle(fontWeight: FontWeight.w900, fontSize: 22),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 ),
               ),
               Padding(
@@ -75,13 +75,11 @@ class _PlanOverviewState extends State<PlanOverview> {
                 child: widget.workoutPlan.description != null
                     ? Text(
                         widget.workoutPlan.description,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                        style: TextStyle(fontSize: 18),
                       )
                     : Text(
                         'No description.',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+                        style: TextStyle(fontSize: 18),
                       ),
               ),
             ],
