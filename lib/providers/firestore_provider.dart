@@ -30,10 +30,24 @@ class FirestoreProvider {
         .doc(_firebaseAuth.currentUser.uid)
         .set({
       'name': name,
+      'bio': null,
       'id': _firebaseAuth.currentUser.uid,
       'photoUrl': null
     }).whenComplete(() async =>
             await _firebaseAuth.currentUser.updateProfile(displayName: name));
+  }
+
+  Future<void> updateProfile(
+    String name,
+    String bio,
+    String photoUrl,
+  ) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .update({'name': name, 'bio': bio, 'photoUrl': photoUrl}).whenComplete(
+            () async => await _firebaseAuth.currentUser
+                .updateProfile(displayName: name));
   }
 
   //TRAINER VIEW
@@ -135,6 +149,14 @@ class FirestoreProvider {
     return _firestore
         .collection('workoutPlans')
         .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getPublishedTrainerPlans() {
+    return _firestore
+        .collection('workoutPlans')
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .where('isPublished', isEqualTo: true)
         .snapshots();
   }
 

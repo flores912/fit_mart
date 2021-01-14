@@ -9,9 +9,16 @@ class WorkoutPlanCard extends StatefulWidget {
   final int weeks;
   final double price;
   final Widget more;
+  final Function onTap;
 
   const WorkoutPlanCard(
-      {Key key, this.image, this.title, this.weeks, this.more, this.price})
+      {Key key,
+      this.image,
+      this.title,
+      this.weeks,
+      this.more,
+      this.price,
+      this.onTap})
       : super(key: key);
 
   @override
@@ -24,12 +31,15 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
     return Wrap(
       children: [
         Container(
-          width: 344,
+          width: MediaQuery.of(context).size.width / 2,
           child: Card(
             child: Column(
               children: [
-                Container(height: 194, child: widget.image),
+                Container(
+                    height: MediaQuery.of(context).size.width / 2 * 9 / 16,
+                    child: widget.image),
                 ListTile(
+                  onTap: widget.onTap,
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -40,7 +50,6 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
                     ],
                   ),
                   subtitle: Text(widget.weeks.toString() + ' Week(s)'),
-                  leading: widget.more,
                 )
               ],
             ),

@@ -24,7 +24,7 @@ class Fitpo extends StatelessWidget {
           floatingActionButtonTheme:
               FloatingActionButtonThemeData(backgroundColor: kAccentColor),
           scaffoldBackgroundColor: Colors.blueGrey.shade900,
-          cardColor: Colors.blueGrey.shade900,
+          cardColor: Colors.blueGrey.shade800,
           accentColor: kAccentColor,
           canvasColor: Colors.blueGrey.shade900,
           primaryColor: kPrimaryColor,

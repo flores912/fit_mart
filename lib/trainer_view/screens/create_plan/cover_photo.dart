@@ -90,7 +90,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
               coverPhotoUrl = snapshot.data.get('coverPhotoUrl');
               return Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(32.0),
                   child: Column(
                     children: [
                       WorkoutPlanCard(
