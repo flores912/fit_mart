@@ -7,13 +7,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EditProfile extends StatefulWidget {
   final String photoUrl;
+  final String username;
   final String name;
   final String bio;
 
-  const EditProfile({Key key, this.photoUrl, this.name, this.bio})
+  const EditProfile(
+      {Key key, this.photoUrl, this.name, this.bio, this.username})
       : super(key: key);
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -24,6 +27,7 @@ String photoUrl;
 class _EditProfileState extends State<EditProfile> {
   TrainerAccountBloc _bloc = TrainerAccountBloc();
   String name;
+  String username;
   String photoUrl;
   String bio;
 
@@ -33,11 +37,15 @@ class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
 
   File _croppedImage;
+
+  bool isUsernameTaken;
+
   @override
   void initState() {
     name = widget.name;
     photoUrl = widget.photoUrl;
     bio = widget.bio;
+    username = widget.username;
     super.initState();
   }
 
@@ -52,25 +60,27 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
               child: Text(kSave),
               onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  if (_croppedImage != null) {
-                    _bloc
-                        .downloadURL(
-                            _croppedImage,
-                            FirebaseAuth.instance.currentUser.uid +
-                                '/profilePhoto',
-                            'image/jpeg')
-                        .then((value) => photoUrl = value)
-                        .whenComplete(() => _bloc
-                            .updateProfile(name, bio, photoUrl)
-                            .whenComplete(() => Navigator.pop(context)));
-                    print(photoUrl);
-                  } else {
-                    _bloc
-                        .updateProfile(name, bio, photoUrl)
-                        .whenComplete(() => Navigator.pop(context));
+                checkUsername(username).whenComplete(() {
+                  if (_formKey.currentState.validate()) {
+                    if (_croppedImage != null) {
+                      _bloc
+                          .downloadURL(
+                              _croppedImage,
+                              FirebaseAuth.instance.currentUser.uid +
+                                  '/profilePhoto',
+                              'image/jpeg')
+                          .then((value) => photoUrl = value)
+                          .whenComplete(() => _bloc
+                              .updateProfile(name, username, bio, photoUrl)
+                              .whenComplete(() => Navigator.pop(context)));
+                      print(photoUrl);
+                    } else {
+                      _bloc
+                          .updateProfile(name, username, bio, photoUrl)
+                          .whenComplete(() => Navigator.pop(context));
+                    }
                   }
-                }
+                });
               },
             )
           ],
@@ -116,8 +126,31 @@ class _EditProfileState extends State<EditProfile> {
                   child: Text('Change/Add Photo'),
                 ),
                 TextFormField(
+                  initialValue: username,
+                  maxLines: 1,
+                  maxLength: 30,
+                  validator: (username) {
+                    Pattern pattern = r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
+                    RegExp regex = new RegExp(pattern);
+                    if (!regex.hasMatch(username)) return 'Invalid username';
+                    if (isUsernameTaken == true &&
+                        widget.username != username) {
+                      return 'Username taken';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChanged: (value) {
+                    username = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Username' + '*',
+                    alignLabelWithHint: true,
+                  ),
+                ),
+                TextFormField(
                   initialValue: name,
-                  keyboardType: TextInputType.multiline,
+                  keyboardType: TextInputType.name,
                   maxLines: 1,
                   onChanged: (value) {
                     name = value;
@@ -204,5 +237,15 @@ class _EditProfileState extends State<EditProfile> {
         );
       },
     );
+  }
+
+  Future<bool> checkUsername(String username) async {
+    final result = await FirebaseFirestore.instance
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .get();
+    isUsernameTaken = result.docs.isNotEmpty;
+    print(isUsernameTaken);
+    return isUsernameTaken;
   }
 }

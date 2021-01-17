@@ -8,18 +8,21 @@ class PlanDetailsBloc {
   Future<DocumentReference> createNewPlan(
     String title,
     String description,
-    double price,
-    bool isFree,
+    String category,
+    String location,
+    String level,
   ) =>
-      _firestoreProvider.createNewPlan(title, description, price, isFree);
+      _firestoreProvider.createNewPlan(
+          title, description, category, location, level);
 
   Future<void> updatePlanDetails(
     String workoutPlanUid,
     String title,
     String description,
-    double price,
-    bool isFree,
+    String category,
+    String location,
+    String level,
   ) =>
       _firestoreProvider.updatePlanDetails(
-          workoutPlanUid, title, description, price, isFree);
+          workoutPlanUid, title, description, category, location, level);
 }

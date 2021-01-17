@@ -34,16 +34,16 @@ class _EditPlanState extends State<EditPlan> {
             if (snapshot.hasData) {
               workoutPlan = WorkoutPlan(
                 trainerName: snapshot.data.get('trainerName'),
-                isBeenPaidFor: snapshot.data.get('isBeenPaidFor'),
+                location: snapshot.data.get('location'),
                 weeks: snapshot.data.get('weeks'),
                 description: snapshot.data.get('description'),
                 title: snapshot.data.get('title'),
                 userUid: snapshot.data.get('userUid'),
                 coverPhotoUrl: snapshot.data.get('coverPhotoUrl'),
                 isPublished: snapshot.data.get('isPublished'),
-                isFree: snapshot.data.get('isFree'),
+                type: snapshot.data.get('type'),
                 promoVideoUrl: snapshot.data.get('promoVideoUrl'),
-                price: snapshot.data.get('price'),
+                level: snapshot.data.get('level'),
               );
 
               return Wrap(

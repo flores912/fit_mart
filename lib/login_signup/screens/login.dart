@@ -57,12 +57,19 @@ class _LoginState extends State<Login> {
                   kLogin,
                 )),
                 onPressed: () {
-                  _bloc.login(email, password).whenComplete(() async {
-                    if (FirebaseAuth.instance.currentUser != null) {
-                      // signed in
+                  print(password);
+                  _bloc.login(email, password).then((value) {
+                    if (value.user != null) {
                       Navigator.popAndPushNamed(context, HomeTrainer.id);
-                    } else {}
+                    }
                   });
+
+                  // _bloc.login(email, password).whenComplete(() async {
+                  //   if (FirebaseAuth.instance.currentUser != null) {
+                  //     // signed in
+                  //
+                  //   } else {}
+                  // });
                 },
               ),
               FlatButton(

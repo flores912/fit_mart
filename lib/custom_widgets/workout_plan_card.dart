@@ -7,18 +7,11 @@ class WorkoutPlanCard extends StatefulWidget {
   final Widget image;
   final String title;
   final int weeks;
-  final double price;
   final Widget more;
   final Function onTap;
 
   const WorkoutPlanCard(
-      {Key key,
-      this.image,
-      this.title,
-      this.weeks,
-      this.more,
-      this.price,
-      this.onTap})
+      {Key key, this.image, this.title, this.weeks, this.more, this.onTap})
       : super(key: key);
 
   @override
@@ -42,12 +35,7 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
                   onTap: widget.onTap,
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.title),
-                      widget.price != null
-                          ? Text('\$ ' + widget.price.toString())
-                          : Text(kFree)
-                    ],
+                    children: [],
                   ),
                   subtitle: Text(widget.weeks.toString() + ' Week(s)'),
                 )

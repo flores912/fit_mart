@@ -22,32 +22,36 @@ class FirestoreProvider {
         email: email, password: password);
   }
 
-  Future<void> addUserDetails(
-    String name,
-  ) async {
+  Future<void> addUserDetails(String name, String username) async {
     return await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
         .set({
       'name': name,
+      'username': username,
       'bio': null,
       'id': _firebaseAuth.currentUser.uid,
-      'photoUrl': null
+      'photoUrl': null,
     }).whenComplete(() async =>
             await _firebaseAuth.currentUser.updateProfile(displayName: name));
   }
 
   Future<void> updateProfile(
     String name,
+    String username,
     String bio,
     String photoUrl,
   ) async {
     return await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
-        .update({'name': name, 'bio': bio, 'photoUrl': photoUrl}).whenComplete(
-            () async => await _firebaseAuth.currentUser
-                .updateProfile(displayName: name));
+        .update({
+      'name': name,
+      'username': username,
+      'bio': bio,
+      'photoUrl': photoUrl,
+    }).whenComplete(() async =>
+            await _firebaseAuth.currentUser.updateProfile(displayName: name));
   }
 
   //TRAINER VIEW
@@ -198,15 +202,17 @@ class FirestoreProvider {
   Future<DocumentReference> createNewPlan(
     String title,
     String description,
-    double price,
-    bool isFree,
+    String type,
+    String location,
+    String level,
   ) async {
     return await _firestore.collection('workoutPlans').add({
       'userUid': _firebaseAuth.currentUser.uid,
       'trainerName': _firebaseAuth.currentUser.displayName,
       'title': title,
-      'price': price,
-      'isFree': isFree,
+      'type': type,
+      'level': level,
+      'location': location,
       'weeks': 0,
       'isPublished': false,
       'isBeenPaidFor': false,
@@ -356,8 +362,9 @@ class FirestoreProvider {
     String workoutPlanUid,
     String title,
     String description,
-    double price,
-    bool isFree,
+    String type,
+    String location,
+    String level,
   ) async {
     return await _firestore
         .collection('workoutPlans')
@@ -366,8 +373,9 @@ class FirestoreProvider {
       'userUid': _firebaseAuth.currentUser.uid,
       'title': title,
       'description': description,
-      'price': price,
-      'isFree': isFree,
+      'type': type,
+      'location': location,
+      'level': level,
     });
   }
 

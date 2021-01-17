@@ -26,26 +26,27 @@ class _PlanDetailsState extends State<PlanDetails> {
 
   String description;
 
-  dynamic price;
-
-  bool isFree;
+  //default values
+  String type = kTypes.first;
+  String location = kLocations.first;
+  String level = kLevels.first;
 
   final _formKey = GlobalKey<FormState>();
 
   String workoutPlanUid;
-  bool isEdit;
   bool isBackPressed;
+
   @override
   initState() {
     workoutPlanUid = widget.workoutPlanUid;
     if (workoutPlanUid != null) {
       title = widget.workoutPlan.title;
-      isFree = widget.workoutPlan.isFree;
       description = widget.workoutPlan.description;
-      price = widget.workoutPlan.price;
+      type = widget.workoutPlan.type;
+      level = widget.workoutPlan.level;
+      location = widget.workoutPlan.location;
     }
 
-    checkIfEdit();
     super.initState();
   }
 
@@ -60,18 +61,12 @@ class _PlanDetailsState extends State<PlanDetails> {
                 ? kNext
                 : kSave),
             onPressed: () {
-              //check if its free to add details to DB accordingly
-              checkIfFree();
-
-              if (isEdit == true) {
+              if (isBackPressed == true) {
                 //don't create a new workout and only update fields
                 updateNewPlan();
               } else {
                 //is new so create a new one
                 createNewPlan();
-
-                //validate fields before creating new plan
-
               }
             },
           )
@@ -82,48 +77,111 @@ class _PlanDetailsState extends State<PlanDetails> {
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  initialValue: title,
-                  validator: (value) {
-                    title = value;
-                    if (title.isEmpty) {
-                      return kRequired;
-                    }
-                    return null;
-                  },
-                  maxLines: 1,
-                  onChanged: (value) {
-                    title = value;
-                  },
-                  decoration: InputDecoration(
-                    labelText: kTitle + '*',
-                    alignLabelWithHint: true,
+            child: Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      initialValue: title,
+                      validator: (value) {
+                        title = value;
+                        if (title.isEmpty) {
+                          return kRequired;
+                        }
+                        return null;
+                      },
+                      maxLines: 1,
+                      onChanged: (value) {
+                        title = value;
+                      },
+                      decoration: InputDecoration(
+                        labelText: kTitle + '*',
+                        alignLabelWithHint: true,
+                      ),
+                    ),
                   ),
-                ),
-                TextFormField(
-                  initialValue: description,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  onChanged: (value) {
-                    description = value;
-                  },
-                  decoration: InputDecoration(
-                    labelText: kDescription + kOptional,
-                    alignLabelWithHint: true,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      initialValue: description,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      onChanged: (value) {
+                        description = value;
+                      },
+                      decoration: InputDecoration(
+                        labelText: kDescription + kOptional,
+                        alignLabelWithHint: true,
+                      ),
+                    ),
                   ),
-                ),
-                DropdownButton(
-                  value: price,
-                  onChanged: (value) {
-                    setState(() {
-                      price = value;
-                    });
-                  },
-                  items: dropdownMenuItems(),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Training Type',
+                          style: TextStyle(fontSize: 22),
+                        ),
+                        DropdownButton(
+                          value: type,
+                          onChanged: (value) {
+                            setState(() {
+                              type = value;
+                            });
+                          },
+                          items: dropdownMenuTypes(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Level',
+                          style: TextStyle(fontSize: 22),
+                        ),
+                        DropdownButton(
+                          value: level,
+                          onChanged: (value) {
+                            setState(() {
+                              level = value;
+                            });
+                          },
+                          items: dropdownMenuLevels(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Location',
+                          style: TextStyle(fontSize: 22),
+                        ),
+                        DropdownButton(
+                          value: location,
+                          onChanged: (value) {
+                            setState(() {
+                              location = value;
+                            });
+                          },
+                          items: dropdownMenuLocations(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -131,51 +189,55 @@ class _PlanDetailsState extends State<PlanDetails> {
     );
   }
 
-  List<DropdownMenuItem> dropdownMenuItems() {
-    List<DropdownMenuItem> items = List();
-    for (dynamic price in kPriceList) {
+  List<DropdownMenuItem> dropdownMenuTypes() {
+    List<DropdownMenuItem> items = [];
+    for (String type in kTypes) {
       items.add(
         DropdownMenuItem(
-          value: price,
-          child: Text('\$' + price.toString()),
+          value: type,
+          child: Text(type),
         ),
       );
     }
     return items;
   }
+
+  List<DropdownMenuItem> dropdownMenuLevels() {
+    List<DropdownMenuItem> items = [];
+    for (String level in kLevels) {
+      items.add(
+        DropdownMenuItem(
+          value: level,
+          child: Text(level),
+        ),
+      );
+    }
+    return items;
+  }
+
+  List<DropdownMenuItem> dropdownMenuLocations() {
+    List<DropdownMenuItem> items = [];
+    for (String location in kLocations) {
+      items.add(
+        DropdownMenuItem(
+          value: location,
+          child: Text(location),
+        ),
+      );
+    }
+    return items;
+  }
+
   //LOGIC
   //TODO:PUT ALL THIS LOGIc IN BLOC
-
-  checkIfFree() {
-    if (price == kFree) {
-      isFree = true;
-      price = null;
-    } else {
-      isFree = false;
-    }
-  }
-
-  checkIfEdit() {
-    if (workoutPlanUid != null) {
-      isEdit = true;
-      if (price == null) {
-        price = kFree;
-      }
-    } else {
-      isEdit = false;
-      //set initial price for dropdown menu
-      price = kFree;
-    }
-  }
 
   createNewPlan() {
     if (_formKey.currentState.validate()) {
       _bloc
-          .createNewPlan(title, description, price, isFree)
+          .createNewPlan(title, description, type, location, level)
           .then((value) async {
         //this will stop from adding a new workout plan if user presses back button and will update instead
         workoutPlanUid = value.id;
-        isEdit = true;
         isBackPressed = true;
       }).whenComplete(
         () => Navigator.push(
@@ -193,14 +255,13 @@ class _PlanDetailsState extends State<PlanDetails> {
   updateNewPlan() {
     if (_formKey.currentState.validate()) {
       _bloc
-          .updatePlanDetails(workoutPlanUid, title, description, price, isFree)
+          .updatePlanDetails(
+              workoutPlanUid, title, description, type, location, level)
           .whenComplete(() {
         if (widget.isEdit == true) {
           Navigator.pop(context);
         } else {
           //this will stop from adding a new workout plan if user presses back button and will update instead
-          isEdit = true;
-          isBackPressed = true;
           Navigator.push(
             context,
             MaterialPageRoute(

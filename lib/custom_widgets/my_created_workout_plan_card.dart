@@ -5,7 +5,6 @@ import '../constants.dart';
 class MyCreatedWorkoutPlanCard extends StatefulWidget {
   final String title;
   final bool isLive;
-  final double price;
   final Widget more;
   final Widget coverPhoto;
   final int weeks;
@@ -15,7 +14,6 @@ class MyCreatedWorkoutPlanCard extends StatefulWidget {
       {Key key,
       this.title,
       this.isLive,
-      this.price,
       this.more,
       this.coverPhoto,
       this.weeks,
@@ -41,19 +39,19 @@ class _MyCreatedWorkoutPlanCardState extends State<MyCreatedWorkoutPlanCard> {
             Text(widget.weeks.toString() + ' Week(s)   '),
             widget.isLive == true
                 ? Text(
-                    'LIVE',
-                    style: TextStyle(color: Colors.red),
+                    'PUBLIC',
+                    style: TextStyle(color: Colors.green),
                   )
-                : Text('(DRAFT)'),
+                : Text(
+                    'PRIVATE',
+                    style: TextStyle(color: Colors.yellow),
+                  ),
           ],
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.title),
-            widget.price != null
-                ? Text('\$' + widget.price.toString())
-                : Text(kFree)
           ],
         ),
       ),

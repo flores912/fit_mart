@@ -10,6 +10,7 @@ import 'package:fit_mart/models/workout.dart';
 import 'package:fit_mart/trainer_view/blocs/exercise_details_bloc.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_session_bloc.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
@@ -62,6 +63,9 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                     buildExerciseList(snapshot.data.docs);
 
                 return ListView.builder(
+                    primary: true,
+                    physics: PageScrollPhysics(),
+                    itemExtent: MediaQuery.of(context).size.width,
                     itemCount: exercisesList.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
@@ -96,7 +100,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                               padding: const EdgeInsets.all(1.0),
                               child: Container(
                                 height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width - 16,
+                                width: MediaQuery.of(context).size.width,
                                 child: WorkoutSessionWidget(
                                   videoUrl: exercisesList[index].videoUrl,
                                   setsList: setsListView(

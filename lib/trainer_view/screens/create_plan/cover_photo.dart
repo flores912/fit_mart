@@ -86,7 +86,6 @@ class _CoverPhotoState extends State<CoverPhoto> {
             if (snapshot.hasData) {
               title = snapshot.data.get('title');
               weeks = snapshot.data.get('weeks');
-              price = snapshot.data.get('price');
               coverPhotoUrl = snapshot.data.get('coverPhotoUrl');
               return Center(
                 child: Padding(
@@ -94,7 +93,6 @@ class _CoverPhotoState extends State<CoverPhoto> {
                   child: Column(
                     children: [
                       WorkoutPlanCard(
-                          price: price,
                           weeks: weeks,
                           title: title,
                           image: coverPhotoUrl != null && _croppedImage == null

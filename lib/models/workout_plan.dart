@@ -1,10 +1,10 @@
 class WorkoutPlan {
   final String userUid;
-  final double price;
-  final bool isFree;
   final bool isPublished;
-  final bool isBeenPaidFor;
   final String uid;
+  final String type;
+  final String location;
+  final String level;
   final int weeks;
   final String title;
   final String description;
@@ -14,14 +14,14 @@ class WorkoutPlan {
 
   WorkoutPlan(
       {this.userUid,
+      this.type,
+      this.location,
+      this.level,
       this.trainerName,
       this.uid,
       this.isPublished,
-      this.isBeenPaidFor,
       this.weeks,
       this.title,
-      this.price,
-      this.isFree,
       this.description,
       this.coverPhotoUrl,
       this.promoVideoUrl});

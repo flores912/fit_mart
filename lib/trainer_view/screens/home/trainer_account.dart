@@ -21,7 +21,7 @@ class TrainerAccount extends StatefulWidget {
 
 class _TrainerAccountState extends State<TrainerAccount> {
   String name;
-
+  String username;
   String photoUrl;
   String bio;
 
@@ -37,6 +37,7 @@ class _TrainerAccountState extends State<TrainerAccount> {
                 AsyncSnapshot<DocumentSnapshot> snapshot) {
               if (snapshot.hasData) {
                 name = snapshot.data.get('name');
+                username = snapshot.data.get('username');
                 photoUrl = snapshot.data.get('photoUrl');
                 bio = snapshot.data.get('bio');
               }
@@ -90,22 +91,20 @@ class _TrainerAccountState extends State<TrainerAccount> {
                           MaterialPageRoute(
                             builder: (context) => EditProfile(
                               name: name,
+                              username: username,
                               bio: bio,
                               photoUrl: photoUrl,
                             ),
                           ),
                         );
                       }),
-
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Workout Plans by ' + name),
-                      ),
-                      Container(height: 250, child: plansListView()),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Divider(),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: plansListView(),
                   ),
                 ],
               );
@@ -120,10 +119,10 @@ class _TrainerAccountState extends State<TrainerAccount> {
       WorkoutPlan workoutPlan = WorkoutPlan(
         uid: element.id,
         trainerName: element.get('trainerName'),
-        isBeenPaidFor: element.get('isBeenPaidFor'),
+        location: element.get('location'),
         weeks: element.get('weeks'),
-        price: element.get('price'),
-        isFree: element.get('isFree'),
+        level: element.get('level'),
+        type: element.get('type'),
         description: element.get('description'),
         promoVideoUrl: element.get('promoVideoUrl'),
         isPublished: element.get('isPublished'),
@@ -143,32 +142,46 @@ class _TrainerAccountState extends State<TrainerAccount> {
           if (snapshot.hasData) {
             List<WorkoutPlan> workoutPlansList =
                 buildWorkoutPlansList(snapshot.data.docs);
-            return ListView.builder(
-                primary: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: workoutPlansList.length,
-                itemBuilder: (context, index) {
-                  return WorkoutPlanCard(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WorkoutPlanPreview(
-                            workoutPlan: workoutPlansList[index],
-                          ),
-                        ),
-                      );
-                    },
-                    title: workoutPlansList[index].title,
-                    weeks: workoutPlansList[index].weeks,
-                    price: workoutPlansList[index].price,
-                    image: workoutPlansList[index].coverPhotoUrl != null
-                        ? Image.network(workoutPlansList[index].coverPhotoUrl)
-                        : Container(
-                            color: CupertinoColors.placeholderText,
-                          ),
-                  );
-                });
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                snapshot.data.docs.isNotEmpty == true
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Workout Plans by ' + name),
+                      )
+                    : Container(),
+                Container(
+                  height: 250,
+                  child: ListView.builder(
+                      primary: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: workoutPlansList.length,
+                      itemBuilder: (context, index) {
+                        return WorkoutPlanCard(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WorkoutPlanPreview(
+                                  workoutPlan: workoutPlansList[index],
+                                ),
+                              ),
+                            );
+                          },
+                          title: workoutPlansList[index].title,
+                          weeks: workoutPlansList[index].weeks,
+                          image: workoutPlansList[index].coverPhotoUrl != null
+                              ? Image.network(
+                                  workoutPlansList[index].coverPhotoUrl)
+                              : Container(
+                                  color: CupertinoColors.placeholderText,
+                                ),
+                        );
+                      }),
+                ),
+              ],
+            );
           }
           return Center(child: CircularProgressIndicator());
         });

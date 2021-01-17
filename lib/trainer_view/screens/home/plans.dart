@@ -51,15 +51,6 @@ class _PlansState extends State<Plans> {
                       return Center(
                         child: MyCreatedWorkoutPlanCard(
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => PlanOverview(
-                            //       workoutPlan: workoutPlansList[index],
-                            //     ),
-                            //   ),
-                            // );
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -71,7 +62,6 @@ class _PlansState extends State<Plans> {
                           },
                           title: workoutPlansList[index].title,
                           weeks: workoutPlansList[index].weeks,
-                          price: workoutPlansList[index].price,
                           isLive: workoutPlansList[index].isPublished,
                           coverPhoto:
                               workoutPlansList[index].coverPhotoUrl != null
@@ -96,17 +86,8 @@ class _PlansState extends State<Plans> {
 
                                     break;
                                   case 2:
-                                    if (workoutPlansList[index].isBeenPaidFor !=
-                                        true) {
-                                      _bloc.deletePlan(
-                                          workoutPlansList[index].uid);
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        content: Text(
-                                            'You cannot delete plans that have been paid for!'),
-                                      ));
-                                    }
+                                    _bloc.deletePlan(
+                                        workoutPlansList[index].uid);
 
                                     break;
                                 }
@@ -130,10 +111,10 @@ class _PlansState extends State<Plans> {
       WorkoutPlan workoutPlan = WorkoutPlan(
         uid: element.id,
         trainerName: element.get('trainerName'),
-        isBeenPaidFor: element.get('isBeenPaidFor'),
+        type: element.get('type'),
         weeks: element.get('weeks'),
-        price: element.get('price'),
-        isFree: element.get('isFree'),
+        location: element.get('location'),
+        level: element.get('level'),
         description: element.get('description'),
         promoVideoUrl: element.get('promoVideoUrl'),
         isPublished: element.get('isPublished'),

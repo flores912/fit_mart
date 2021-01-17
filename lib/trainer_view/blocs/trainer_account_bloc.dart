@@ -23,8 +23,9 @@ class TrainerAccountBloc {
       _firebaseProvider.downloadURL(file, path, contentType);
   Future<void> updateProfile(
     String name,
+    String username,
     String bio,
     String photoUrl,
   ) =>
-      _firestoreProvider.updateProfile(name, bio, photoUrl);
+      _firestoreProvider.updateProfile(name, username, bio, photoUrl);
 }

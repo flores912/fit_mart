@@ -45,18 +45,29 @@ const String kDuplicate = 'Duplicate';
 const String kAddToCollection = 'Add to Collection';
 const String kUnpublish = 'Unpublish';
 
-const List<dynamic> kPriceList = [
-  kFree,
-  9.99,
-  19.99,
-  29.99,
-  39.99,
-  49.99,
-  59.99,
-  69.99,
-  79.99,
-  89.99,
-  99.99
+const List<String> kTypes = [
+  'Bodybuilding',
+  'Weightlifting',
+  'StrengthTraining',
+  'Bodyweight',
+  'Prenatal Training',
+  'Postpartum  Training',
+  'HIIT Training',
+  'Sports Training',
+  'Circuit Training',
+  'Yoga',
+];
+const List<String> kLevels = [
+  'Any level',
+  'Beginner',
+  'Intermediate',
+  'Advanced',
+];
+const List<String> kLocations = [
+  'Anywhere',
+  'Home',
+  'Gym',
+  'Outdoors',
 ];
 
 const Color kPrimaryColor = Colors.yellow;
