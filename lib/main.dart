@@ -5,22 +5,25 @@ import 'package:fit_mart/providers/dynamic_link_provider.dart';
 import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'login_signup/screens/login.dart';
 
 void main() async {
-  DynamicLinkProvider dynamicLinkProvider = DynamicLinkProvider();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await dynamicLinkProvider.handleDynamicLinks();
+  await Firebase.initializeApp().whenComplete(() async {
+    DynamicLinkProvider dynamicLinkProvider = DynamicLinkProvider();
+    await dynamicLinkProvider.handleDynamicLinks();
+  });
   runApp(Fitpo());
 }
 
 class Fitpo extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Fitpo',
       theme: ThemeData.dark().copyWith(
           dialogBackgroundColor: Colors.blueGrey.shade900,

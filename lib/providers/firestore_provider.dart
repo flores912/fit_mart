@@ -29,6 +29,7 @@ class FirestoreProvider {
         .set({
       'name': name,
       'username': username,
+      'tipUrl': null,
       'bio': null,
       'id': _firebaseAuth.currentUser.uid,
       'photoUrl': null,
@@ -41,6 +42,7 @@ class FirestoreProvider {
     String username,
     String bio,
     String photoUrl,
+    String tipUrl,
   ) async {
     return await _firestore
         .collection('users')
@@ -50,16 +52,14 @@ class FirestoreProvider {
       'username': username,
       'bio': bio,
       'photoUrl': photoUrl,
+      'tipUrl': tipUrl
     }).whenComplete(() async =>
             await _firebaseAuth.currentUser.updateProfile(displayName: name));
   }
 
   //TRAINER VIEW
-  Stream<DocumentSnapshot> getUserDetails() {
-    return _firestore
-        .collection('users')
-        .doc(_firebaseAuth.currentUser.uid)
-        .snapshots();
+  Stream<DocumentSnapshot> getUserDetails(String userUid) {
+    return _firestore.collection('users').doc(userUid).snapshots();
   }
 
   Future<void> deleteExerciseFromCollection(String exerciseUid) async {

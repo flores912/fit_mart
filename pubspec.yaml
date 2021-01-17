@@ -33,6 +33,11 @@ dependencies:
   firebase_dynamic_links: '^0.7.0+1'
   firebase_analytics: ^7.0.1
   email_validator: '^1.0.5'
+  get: ^3.24.0
+  package_info: ^0.4.3+2
+  share: ^0.6.5+4
+  url_launcher: ^5.7.10
+  readmore: ^1.0.1
 
 
 dev_dependencies:

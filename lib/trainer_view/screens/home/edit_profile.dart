@@ -5,6 +5,7 @@ import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/trainer_view/blocs/trainer_account_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,9 +15,10 @@ class EditProfile extends StatefulWidget {
   final String username;
   final String name;
   final String bio;
+  final String tipUrl;
 
   const EditProfile(
-      {Key key, this.photoUrl, this.name, this.bio, this.username})
+      {Key key, this.photoUrl, this.name, this.bio, this.username, this.tipUrl})
       : super(key: key);
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -40,12 +42,15 @@ class _EditProfileState extends State<EditProfile> {
 
   bool isUsernameTaken;
 
+  String tipUrl;
+
   @override
   void initState() {
     name = widget.name;
     photoUrl = widget.photoUrl;
     bio = widget.bio;
     username = widget.username;
+    tipUrl = widget.tipUrl;
     super.initState();
   }
 
@@ -71,12 +76,13 @@ class _EditProfileState extends State<EditProfile> {
                               'image/jpeg')
                           .then((value) => photoUrl = value)
                           .whenComplete(() => _bloc
-                              .updateProfile(name, username, bio, photoUrl)
+                              .updateProfile(
+                                  name, username, bio, photoUrl, tipUrl)
                               .whenComplete(() => Navigator.pop(context)));
                       print(photoUrl);
                     } else {
                       _bloc
-                          .updateProfile(name, username, bio, photoUrl)
+                          .updateProfile(name, username, bio, photoUrl, tipUrl)
                           .whenComplete(() => Navigator.pop(context));
                     }
                   }
@@ -133,10 +139,11 @@ class _EditProfileState extends State<EditProfile> {
                     Pattern pattern = r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
                     RegExp regex = new RegExp(pattern);
                     if (!regex.hasMatch(username)) return 'Invalid username';
-                    if (isUsernameTaken == true &&
-                        widget.username != username) {
+                    if (isUsernameTaken == true && widget.username != username)
                       return 'Username taken';
-                    } else {
+                    if (username.length > 30 == true)
+                      return 'Username too long';
+                    else {
                       return null;
                     }
                   },
@@ -144,9 +151,9 @@ class _EditProfileState extends State<EditProfile> {
                     username = value;
                   },
                   decoration: InputDecoration(
-                    labelText: 'Username' + '*',
-                    alignLabelWithHint: true,
-                  ),
+                      labelText: 'Username' + '*',
+                      alignLabelWithHint: true,
+                      counterText: ''),
                 ),
                 TextFormField(
                   initialValue: name,
@@ -176,6 +183,18 @@ class _EditProfileState extends State<EditProfile> {
                   },
                   decoration: InputDecoration(
                     labelText: 'Bio ' + kOptional,
+                    alignLabelWithHint: true,
+                  ),
+                ),
+                TextFormField(
+                  initialValue: tipUrl,
+                  keyboardType: TextInputType.url,
+                  maxLines: 1,
+                  onChanged: (value) {
+                    tipUrl = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Tip Url ' + kOptional,
                     alignLabelWithHint: true,
                   ),
                 ),

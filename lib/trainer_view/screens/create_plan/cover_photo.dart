@@ -93,7 +93,6 @@ class _CoverPhotoState extends State<CoverPhoto> {
                   child: Column(
                     children: [
                       WorkoutPlanCard(
-                          weeks: weeks,
                           title: title,
                           image: coverPhotoUrl != null && _croppedImage == null
                               ? Image.network(coverPhotoUrl)

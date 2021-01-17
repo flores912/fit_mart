@@ -3,6 +3,7 @@ import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/plan_overview_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
 
 class PlanOverview extends StatefulWidget {
@@ -29,58 +30,143 @@ class _PlanOverviewState extends State<PlanOverview> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _controller != null
-                  ? Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
-                      child: ChewiePlayerWidget(
-                        autoPlay: false,
-                        looping: false,
-                        showControls: true,
-                        videoPlayerController: _controller,
+              Card(
+                child: _controller != null
+                    ? Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.78,
+                        child: ChewiePlayerWidget(
+                          autoPlay: false,
+                          looping: false,
+                          showControls: true,
+                          videoPlayerController: _controller,
+                        ),
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.78,
+                        color: CupertinoColors.placeholderText,
                       ),
-                    )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
-                      color: CupertinoColors.placeholderText,
-                    ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  widget.workoutPlan.trainerName + " 's",
-                  style: TextStyle(fontSize: 18),
-                ),
               ),
               Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                 child: Text(
                   widget.workoutPlan.title,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 16),
                 child: Text(
-                  widget.workoutPlan.weeks.toString() + ' Weeks',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  'by ' + widget.workoutPlan.trainerName,
+                  style: TextStyle(),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                 child: widget.workoutPlan.description != null
-                    ? Text(
+                    ? ReadMoreText(
                         widget.workoutPlan.description,
+                        trimLines: 6,
+                        trimMode: TrimMode.Line,
+                        trimCollapsedText: 'Show more',
+                        trimExpandedText: 'Show less',
                         style: TextStyle(fontSize: 18),
                       )
                     : Text(
-                        'No description.',
+                        '(No description.)',
                         style: TextStyle(fontSize: 18),
                       ),
+              ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                ' Weeks',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                widget.workoutPlan.weeks.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                'Type',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                widget.workoutPlan.type.toString(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                'Level',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                widget.workoutPlan.level.toString(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                'Location',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                widget.workoutPlan.location.toString(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

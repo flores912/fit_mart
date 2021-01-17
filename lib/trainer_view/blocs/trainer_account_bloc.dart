@@ -8,8 +8,8 @@ class TrainerAccountBloc {
   FirestoreProvider _firestoreProvider = FirestoreProvider();
 
   FirebaseProvider _firebaseProvider = FirebaseProvider();
-  Stream<DocumentSnapshot> getUserDetails() =>
-      _firestoreProvider.getUserDetails();
+  Stream<DocumentSnapshot> getUserDetails(String userUid) =>
+      _firestoreProvider.getUserDetails(userUid);
 
   Stream<QuerySnapshot> getTrainerPlans() =>
       _firestoreProvider.getTrainerPlans();
@@ -21,11 +21,7 @@ class TrainerAccountBloc {
       );
   Future<String> downloadURL(File file, String path, String contentType) =>
       _firebaseProvider.downloadURL(file, path, contentType);
-  Future<void> updateProfile(
-    String name,
-    String username,
-    String bio,
-    String photoUrl,
-  ) =>
-      _firestoreProvider.updateProfile(name, username, bio, photoUrl);
+  Future<void> updateProfile(String name, String username, String bio,
+          String photoUrl, String tipUrl) =>
+      _firestoreProvider.updateProfile(name, username, bio, photoUrl, tipUrl);
 }

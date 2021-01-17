@@ -1,5 +1,6 @@
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/trainer_view/screens/home/plans.dart';
 import 'file:///C:/Users/elhal/AndroidStudioProjects/fit_mart/lib/trainer_view/screens/home/trainer_account.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/trainer_view/screens/home/exercise_collection.dart';
 import 'package:fit_mart/trainer_view/screens/home/sales.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +23,9 @@ class _HomeTrainerState extends State<HomeTrainer> {
     Plans(),
     ExerciseCollection(),
     //Sales(),
-    TrainerAccount(),
+    TrainerAccount(
+      userUid: FirebaseAuth.instance.currentUser.uid,
+    ),
   ];
   String _title;
   int _currentIndex = 0;

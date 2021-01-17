@@ -48,9 +48,10 @@ class _SignUpState extends State<SignUp> {
                   Pattern pattern = r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
                   RegExp regex = new RegExp(pattern);
                   if (!regex.hasMatch(username)) return 'Invalid username';
-                  if (isUsernameTaken == true) {
-                    return 'Username taken';
-                  } else {
+                  if (isUsernameTaken == true) return 'Username taken';
+                  if (username.length > 30 == true)
+                    return 'Username too long';
+                  else {
                     return null;
                   }
                 },
@@ -91,16 +92,14 @@ class _SignUpState extends State<SignUp> {
               ),
               TextFormField(
                 obscureText: true,
-                maxLength: 40,
                 enableSuggestions: false,
                 autocorrect: false,
                 validator: (password) {
                   if (password.isEmpty) {
                     return kRequired;
-                  } else if (password.length < 10) {
-                    return 'Password needs to be at least 10 characters long';
+                  } else {
+                    return null;
                   }
-                  return null;
                 },
                 onChanged: (value) {
                   password = value;

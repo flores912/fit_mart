@@ -1,7 +1,10 @@
 import 'package:fit_mart/models/workout_plan.dart';
+import 'package:fit_mart/providers/dynamic_link_provider.dart';
 import 'package:fit_mart/trainer_view/screens/home/plan_overview.dart';
+import 'package:fit_mart/trainer_view/screens/home/trainer_account.dart';
 import 'package:fit_mart/trainer_view/screens/home/workouts_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class WorkoutPlanPreview extends StatefulWidget {
   final WorkoutPlan workoutPlan;
@@ -24,11 +27,15 @@ class _WorkoutPlanPreviewState extends State<WorkoutPlanPreview>
       icon: Icon(
         Icons.preview,
       ),
-      child: Text('Plan Overview'),
+      child: Text('Overview'),
     ),
     Tab(
       icon: Icon(Icons.fitness_center),
-      child: Text('Workouts Preview'),
+      child: Text('Workouts'),
+    ),
+    Tab(
+      icon: Icon(Icons.account_circle),
+      child: Text('Trainer'),
     ),
   ];
 
@@ -46,6 +53,20 @@ class _WorkoutPlanPreviewState extends State<WorkoutPlanPreview>
         child: Scaffold(
           appBar: AppBar(
             title: Text('Plan Preview'),
+            actions: [
+              GestureDetector(
+                  onTap: () {
+                    DynamicLinkProvider dynamicLinkProvider =
+                        DynamicLinkProvider();
+                    dynamicLinkProvider
+                        .createWorkoutPlanLink(widget.workoutPlan.uid)
+                        .then((link) => Share.share(link));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.share),
+                  ))
+            ],
             bottom: TabBar(
               tabs: list,
             ),
@@ -58,6 +79,9 @@ class _WorkoutPlanPreviewState extends State<WorkoutPlanPreview>
               ),
               WorkoutsPreview(
                 workoutPlan: widget.workoutPlan,
+              ),
+              TrainerAccount(
+                userUid: widget.workoutPlan.userUid,
               )
             ],
           ),
