@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/exercise_card.dart';
 import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
-import 'package:fit_mart/trainer_view/screens/create_plan/exercise_collection_list.dart';
-import 'package:fit_mart/trainer_view/screens/create_plan/exercise_name.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
+import 'exercise_collection_list.dart';
 import 'exercise_details.dart';
+import 'exercise_name.dart';
 
 class WorkoutExercises extends StatefulWidget {
   final String workoutPlanUid;
@@ -156,7 +156,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                                               exercisesList[index].sets,
                                               exercisesList[index].videoUrl)
                                           .whenComplete(() {
-                                        ScaffoldMessenger.of(context)
+                                        Scaffold.of(context)
                                             .showSnackBar(SnackBar(
                                           content: Text(
                                               'Exercise added to collection.'),

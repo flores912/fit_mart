@@ -244,7 +244,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
   }
 
   void showSnackBar() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    Scaffold.of(context).showSnackBar(SnackBar(
         duration: Duration(seconds: 5),
         backgroundColor: Colors.red,
         content: Text(

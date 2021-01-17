@@ -14,7 +14,6 @@ dependencies:
     # Add the dependency for the Firebase Core Flutter SDK
   firebase_core: ^0.7.0
     # Add the dependency for the FlutterFire plugin for Google Analytics
-  firebase_analytics: ^5.0.2
     # Add the dependencies for any other Firebase products you want to use in your app
     # For example, to use Firebase Authentication and Cloud Firestore
   firebase_auth: ^0.20.0+1
@@ -31,8 +30,9 @@ dependencies:
   circular_countdown_timer: ^0.0.8
   vibration: ^1.7.3
   expansion_card: ^0.1.0
+  firebase_dynamic_links: '^0.7.0+1'
+  firebase_analytics: ^7.0.1
   email_validator: '^1.0.5'
-  firebase_dynamic_links: ^0.7.0+1
 
 
 dev_dependencies:
