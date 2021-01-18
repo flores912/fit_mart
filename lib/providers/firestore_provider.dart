@@ -160,6 +160,7 @@ class FirestoreProvider {
     return _firestore
         .collection('workoutPlans')
         .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .orderBy('createdAt', descending: false)
         .snapshots();
   }
 
@@ -194,6 +195,7 @@ class FirestoreProvider {
         .collection('workoutPlans')
         .where('userUid', isEqualTo: userUid)
         .where('isPublished', isEqualTo: true)
+        .orderBy('createdAt', descending: false)
         .snapshots();
   }
 
@@ -248,7 +250,7 @@ class FirestoreProvider {
       'location': location,
       'weeks': 0,
       'isPublished': false,
-      'isBeenPaidFor': false,
+      'createdAt': FieldValue.serverTimestamp(),
       //not necessary to create new plan
       'description': description,
       'coverPhotoUrl': null,

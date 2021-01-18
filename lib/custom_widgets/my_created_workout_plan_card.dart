@@ -28,33 +28,31 @@ class MyCreatedWorkoutPlanCard extends StatefulWidget {
 class _MyCreatedWorkoutPlanCardState extends State<MyCreatedWorkoutPlanCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: widget.onTap,
-        trailing: widget.more,
-        leading: Container(height: 100, width: 100, child: widget.coverPhoto),
-        subtitle: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.weeks.toString() + ' Week(s)   '),
-            widget.isLive == true
-                ? Text(
-                    'PUBLIC',
-                    style: TextStyle(color: kPrimaryColor),
-                  )
-                : Text(
-                    '(PRIVATE)',
-                  ),
-          ],
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.title,
-            ),
-          ],
-        ),
+    return ListTile(
+      onTap: widget.onTap,
+      trailing: widget.more,
+      leading: Container(height: 100, width: 100, child: widget.coverPhoto),
+      subtitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.weeks.toString() + ' Week(s)   '),
+          widget.isLive == true
+              ? Text(
+                  'PUBLIC',
+                  style: TextStyle(color: kPrimaryColor),
+                )
+              : Text(
+                  '(PRIVATE)',
+                ),
+        ],
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.title,
+          ),
+        ],
       ),
     );
   }

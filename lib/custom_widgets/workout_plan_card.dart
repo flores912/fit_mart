@@ -26,17 +26,16 @@ class _WorkoutPlanCardState extends State<WorkoutPlanCard> {
           width: MediaQuery.of(context).size.width / 2,
           child: GestureDetector(
             onTap: widget.onTap,
-            child: Card(
-              child: Column(
-                children: [
-                  Container(
-                      height: MediaQuery.of(context).size.width / 2 * 9 / 16,
-                      child: widget.image),
-                  ListTile(
-                    title: Text(widget.title),
-                  )
-                ],
-              ),
+            child: Column(
+              children: [
+                Container(
+                    height: MediaQuery.of(context).size.width / 2 * 9 / 16,
+                    child: widget.image),
+                ListTile(
+                  tileColor: Colors.white10,
+                  title: Text(widget.title),
+                )
+              ],
             ),
           ),
         ),

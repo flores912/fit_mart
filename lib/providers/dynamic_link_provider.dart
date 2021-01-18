@@ -59,9 +59,15 @@ class DynamicLinkProvider {
             );
 
             //then send user to the workout plan preview screen
-          }).whenComplete(() async => await Get.to(WorkoutPlanPreview(
+          }).whenComplete(() async {
+            if (workoutPlan.uid != null) {
+              await Get.to(WorkoutPlanPreview(
                 workoutPlan: workoutPlan,
-              )));
+              ));
+            } else {
+              //todo: do nothing or go to another screen?
+            }
+          });
         }
       }
     }

@@ -131,71 +131,83 @@ class _EditProfileState extends State<EditProfile> {
                   },
                   child: Text('Change/Add Photo'),
                 ),
-                TextFormField(
-                  initialValue: username,
-                  maxLines: 1,
-                  maxLength: 30,
-                  validator: (username) {
-                    Pattern pattern = r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
-                    RegExp regex = new RegExp(pattern);
-                    if (!regex.hasMatch(username)) return 'Invalid username';
-                    if (isUsernameTaken == true && widget.username != username)
-                      return 'Username taken';
-                    if (username.length > 30 == true)
-                      return 'Username too long';
-                    else {
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    initialValue: username,
+                    maxLines: 1,
+                    maxLength: 30,
+                    validator: (username) {
+                      Pattern pattern = r'^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$';
+                      RegExp regex = new RegExp(pattern);
+                      if (!regex.hasMatch(username)) return 'Invalid username';
+                      if (isUsernameTaken == true &&
+                          widget.username != username) return 'Username taken';
+                      if (username.length > 30 == true)
+                        return 'Username too long';
+                      else {
+                        return null;
+                      }
+                    },
+                    onChanged: (value) {
+                      username = value;
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'Username' + '*',
+                        alignLabelWithHint: true,
+                        counterText: ''),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    initialValue: name,
+                    keyboardType: TextInputType.name,
+                    maxLines: 1,
+                    onChanged: (value) {
+                      name = value;
+                    },
+                    validator: (value) {
+                      name = value;
+                      if (name.isEmpty) {
+                        return kRequired;
+                      }
                       return null;
-                    }
-                  },
-                  onChanged: (value) {
-                    username = value;
-                  },
-                  decoration: InputDecoration(
-                      labelText: 'Username' + '*',
+                    },
+                    decoration: InputDecoration(
+                      labelText: kName + '*',
                       alignLabelWithHint: true,
-                      counterText: ''),
-                ),
-                TextFormField(
-                  initialValue: name,
-                  keyboardType: TextInputType.name,
-                  maxLines: 1,
-                  onChanged: (value) {
-                    name = value;
-                  },
-                  validator: (value) {
-                    name = value;
-                    if (name.isEmpty) {
-                      return kRequired;
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: kName + '*',
-                    alignLabelWithHint: true,
+                    ),
                   ),
                 ),
-                TextFormField(
-                  initialValue: bio,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  onChanged: (value) {
-                    bio = value;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Bio ' + kOptional,
-                    alignLabelWithHint: true,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    initialValue: tipUrl,
+                    keyboardType: TextInputType.url,
+                    maxLines: 1,
+                    onChanged: (value) {
+                      tipUrl = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Tip Url ' + kOptional,
+                      alignLabelWithHint: true,
+                    ),
                   ),
                 ),
-                TextFormField(
-                  initialValue: tipUrl,
-                  keyboardType: TextInputType.url,
-                  maxLines: 1,
-                  onChanged: (value) {
-                    tipUrl = value;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Tip Url ' + kOptional,
-                    alignLabelWithHint: true,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    initialValue: bio,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    onChanged: (value) {
+                      bio = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Bio ' + kOptional,
+                      alignLabelWithHint: true,
+                    ),
                   ),
                 ),
               ],
@@ -215,11 +227,12 @@ class _EditProfileState extends State<EditProfile> {
   Future cropImage(String imagePath) async {
     _pickedImage = await ImageCropper.cropImage(
         sourcePath: imagePath,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
         aspectRatioPresets: [CropAspectRatioPreset.square],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
+            lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
         ));

@@ -132,11 +132,12 @@ class _CoverPhotoState extends State<CoverPhoto> {
   Future cropImage(String imagePath) async {
     _pickedImage = await ImageCropper.cropImage(
         sourcePath: imagePath,
+        aspectRatio: CropAspectRatio(ratioX: 16, ratioY: 9),
         aspectRatioPresets: [CropAspectRatioPreset.ratio16x9],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
+            lockAspectRatio: true),
         iosUiSettings: IOSUiSettings(
           minimumAspectRatio: 1.0,
         ));

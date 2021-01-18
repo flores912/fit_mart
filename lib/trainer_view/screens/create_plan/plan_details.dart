@@ -61,7 +61,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                 ? kNext
                 : kSave),
             onPressed: () {
-              if (isBackPressed == true) {
+              if (isBackPressed == true || widget.isEdit == true) {
                 //don't create a new workout and only update fields
                 updateNewPlan();
               } else {
@@ -77,111 +77,109 @@ class _PlanDetailsState extends State<PlanDetails> {
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
-            child: Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      initialValue: title,
-                      validator: (value) {
-                        title = value;
-                        if (title.isEmpty) {
-                          return kRequired;
-                        }
-                        return null;
-                      },
-                      maxLines: 1,
-                      onChanged: (value) {
-                        title = value;
-                      },
-                      decoration: InputDecoration(
-                        labelText: kTitle + '*',
-                        alignLabelWithHint: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    initialValue: title,
+                    validator: (value) {
+                      title = value;
+                      if (title.isEmpty) {
+                        return kRequired;
+                      }
+                      return null;
+                    },
+                    maxLines: 1,
+                    onChanged: (value) {
+                      title = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: kTitle + '*',
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    initialValue: description,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    onChanged: (value) {
+                      description = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: kDescription + kOptional,
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Training Type',
+                        style: TextStyle(fontSize: 22),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      initialValue: description,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      onChanged: (value) {
-                        description = value;
-                      },
-                      decoration: InputDecoration(
-                        labelText: kDescription + kOptional,
-                        alignLabelWithHint: true,
+                      DropdownButton(
+                        value: type,
+                        onChanged: (value) {
+                          setState(() {
+                            type = value;
+                          });
+                        },
+                        items: dropdownMenuTypes(),
                       ),
-                    ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Training Type',
-                          style: TextStyle(fontSize: 22),
-                        ),
-                        DropdownButton(
-                          value: type,
-                          onChanged: (value) {
-                            setState(() {
-                              type = value;
-                            });
-                          },
-                          items: dropdownMenuTypes(),
-                        ),
-                      ],
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Level',
+                        style: TextStyle(fontSize: 22),
+                      ),
+                      DropdownButton(
+                        value: level,
+                        onChanged: (value) {
+                          setState(() {
+                            level = value;
+                          });
+                        },
+                        items: dropdownMenuLevels(),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Level',
-                          style: TextStyle(fontSize: 22),
-                        ),
-                        DropdownButton(
-                          value: level,
-                          onChanged: (value) {
-                            setState(() {
-                              level = value;
-                            });
-                          },
-                          items: dropdownMenuLevels(),
-                        ),
-                      ],
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Location',
+                        style: TextStyle(fontSize: 22),
+                      ),
+                      DropdownButton(
+                        value: location,
+                        onChanged: (value) {
+                          setState(() {
+                            location = value;
+                          });
+                        },
+                        items: dropdownMenuLocations(),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Location',
-                          style: TextStyle(fontSize: 22),
-                        ),
-                        DropdownButton(
-                          value: location,
-                          onChanged: (value) {
-                            setState(() {
-                              location = value;
-                            });
-                          },
-                          items: dropdownMenuLocations(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

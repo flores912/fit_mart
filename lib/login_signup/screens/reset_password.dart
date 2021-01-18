@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 class ResetPassword extends StatefulWidget {
@@ -31,7 +33,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                 validator: (email) {
                   if (isUserExistent == false) return "User doesn't exist";
                   if (email.isEmpty) return 'Required';
-                  return null;
+                  if (EmailValidator.validate(email))
+                    return null;
+                  else
+                    return "Invalid email address";
                 },
                 keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
@@ -70,11 +75,11 @@ class _ResetPasswordState extends State<ResetPassword> {
   sendPasswordReset() async {
     await checkIfUserExists(email).whenComplete(() async {
       if (_formKey.currentState.validate()) {
+        EasyLoading.show();
         await FirebaseAuth.instance
             .sendPasswordResetEmail(email: email)
-            .whenComplete(() => Get.snackbar(
-                'Password reset link sent to: ', email,
-                snackPosition: SnackPosition.BOTTOM));
+            .whenComplete(() =>
+                EasyLoading.showSuccess('Password reset link sent to:$email'));
       }
     });
   }
