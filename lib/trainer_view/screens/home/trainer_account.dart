@@ -94,13 +94,14 @@ class _TrainerAccountState extends State<TrainerAccount> {
                             ),
                           ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        name,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                    ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: name != null
+                            ? Text(
+                                name,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              )
+                            : Container()),
                     Padding(
                       padding: const EdgeInsets.all(1.0),
                       child: Text(
@@ -108,7 +109,7 @@ class _TrainerAccountState extends State<TrainerAccount> {
                         style: TextStyle(color: kPrimaryColor, fontSize: 14),
                       ),
                     ),
-                    bio != null || bio.trim().length != 0
+                    bio != null
                         ? Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ReadMoreText(
@@ -180,7 +181,7 @@ class _TrainerAccountState extends State<TrainerAccount> {
 
   Widget plansListView() {
     return StreamBuilder(
-        stream: _bloc.getPublishedTrainerPlans(),
+        stream: _bloc.getPublishedTrainerPlans(id),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
             List<WorkoutPlan> workoutPlansList =

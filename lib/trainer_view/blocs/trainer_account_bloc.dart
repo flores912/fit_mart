@@ -13,8 +13,8 @@ class TrainerAccountBloc {
 
   Stream<QuerySnapshot> getTrainerPlans() =>
       _firestoreProvider.getTrainerPlans();
-  Stream<QuerySnapshot> getPublishedTrainerPlans() =>
-      _firestoreProvider.getPublishedTrainerPlans();
+  Stream<QuerySnapshot> getPublishedTrainerPlans(String userUid) =>
+      _firestoreProvider.getPublishedTrainerPlans(userUid);
   Future<void> deletePlan(String workoutPlanUid) =>
       _firestoreProvider.deletePlan(
         workoutPlanUid,

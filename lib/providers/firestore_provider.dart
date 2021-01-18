@@ -190,10 +190,10 @@ class FirestoreProvider {
         .update({'users': FieldValue.arrayRemove(uidAsList)});
   }
 
-  Stream<QuerySnapshot> getPublishedTrainerPlans() {
+  Stream<QuerySnapshot> getPublishedTrainerPlans(String userUid) {
     return _firestore
         .collection('workoutPlans')
-        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .where('userUid', isEqualTo: userUid)
         .where('isPublished', isEqualTo: true)
         .snapshots();
   }
