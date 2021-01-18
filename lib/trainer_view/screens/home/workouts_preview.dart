@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/custom_widgets/week_card.dart';
 import 'package:fit_mart/custom_widgets/workout_card.dart';
 import 'package:fit_mart/models/week.dart';
@@ -8,6 +9,7 @@ import 'package:fit_mart/trainer_view/blocs/plan_workouts_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/home/workout_session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WorkoutsPreview extends StatefulWidget {
   final WorkoutPlan workoutPlan;
@@ -102,16 +104,22 @@ class _WorkoutsPreviewState extends State<WorkoutsPreview> {
               itemBuilder: (context, index) {
                 return WorkoutCard(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => WorkoutSession(
-                                workoutName: workoutsList[index].workoutName,
-                                workoutUid: workoutsList[index].uid,
-                                weekUid: workoutsList[index].weekUid,
-                                workoutPlanUid: widget.workoutPlan.uid,
-                              )),
-                    );
+                    if (FirebaseAuth.instance.currentUser != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WorkoutSession(
+                                  workoutName: workoutsList[index].workoutName,
+                                  workoutUid: workoutsList[index].uid,
+                                  weekUid: workoutsList[index].weekUid,
+                                  workoutPlanUid: widget.workoutPlan.uid,
+                                )),
+                      );
+                    } else {
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content:
+                              Text('You need an account to open workouts.')));
+                    }
                   },
                   day: workoutsList[index].day,
                   workoutName: workoutsList[index].workoutName,

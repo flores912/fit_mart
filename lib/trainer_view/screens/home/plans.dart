@@ -10,7 +10,7 @@ class Plans extends StatefulWidget {
 
 class _PlansState extends State<Plans> {
   TabController _controller;
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   List<Widget> list = [
     Tab(

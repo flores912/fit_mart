@@ -170,7 +170,6 @@ class FirestoreProvider {
           'users',
           arrayContains: _firebaseAuth.currentUser.uid,
         )
-        .where('userId', isNotEqualTo: _firebaseAuth.currentUser.uid)
         .snapshots();
   }
 

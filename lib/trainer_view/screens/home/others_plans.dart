@@ -59,13 +59,15 @@ class _OthersPlansState extends State<OthersPlans> {
                                                   workoutPlansList[index].uid)
                                               .whenComplete(
                                                 () => Scaffold.of(context)
-                                                  ..showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                          'Workout Plan Removed.'),
-                                                    ),
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Workout Plan Removed.'),
                                                   ),
-                                              );
+                                                ),
+                                              )
+                                              .whenComplete(
+                                                  () => Navigator.pop(context));
                                         },
                                         child: Text('YES'))
                                   ],

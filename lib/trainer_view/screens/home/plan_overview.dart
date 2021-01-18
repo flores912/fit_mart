@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/custom_widgets/chewie_player_widget.dart';
+import 'package:fit_mart/login_signup/screens/login.dart';
 import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/plan_overview_bloc.dart';
+import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:fit_mart/trainer_view/screens/home/workout_session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,18 +34,26 @@ class _PlanOverviewState extends State<PlanOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: widget.workoutPlan.users
-                      .contains(FirebaseAuth.instance.currentUser.uid) ==
-                  false &&
-              widget.workoutPlan.userUid !=
-                  FirebaseAuth.instance.currentUser.uid
+      floatingActionButton: FirebaseAuth.instance.currentUser == null ||
+              widget.workoutPlan.users
+                          .contains(FirebaseAuth.instance.currentUser.uid) ==
+                      false &&
+                  widget.workoutPlan.userUid !=
+                      FirebaseAuth.instance.currentUser.uid
           ? FloatingActionButton.extended(
               heroTag: 'Add Workout Plan',
               icon: Icon(Icons.add),
               onPressed: () {
-                _bloc.addPlanToMyList(widget.workoutPlan.uid).whenComplete(() {
-                  setState(() {});
-                });
+                if (FirebaseAuth.instance.currentUser == null) {
+                  Get.to(Login());
+                } else {
+                  _bloc
+                      .addPlanToMyList(widget.workoutPlan.uid)
+                      .whenComplete(() {
+                    Scaffold.of(context).showSnackBar(
+                        SnackBar(content: Text('Workout Plan Added.')));
+                  }).whenComplete(() => Get.offAll((HomeTrainer())));
+                }
               },
               label: Text('Add Plan'),
             )

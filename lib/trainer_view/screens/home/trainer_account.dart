@@ -122,7 +122,8 @@ class _TrainerAccountState extends State<TrainerAccount> {
                             ),
                           )
                         : Container(),
-                    id == FirebaseAuth.instance.currentUser.uid
+                    FirebaseAuth.instance.currentUser != null &&
+                            id == FirebaseAuth.instance.currentUser.uid
                         ? OutlineButton(
                             child: Text('Edit Profile'),
                             onPressed: () {
