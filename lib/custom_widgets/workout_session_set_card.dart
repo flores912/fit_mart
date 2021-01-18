@@ -53,23 +53,50 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                       ),
                       Column(
                         children: [
-                          Text(widget.set.toString()),
-                          Text('Set'),
+                          Text(
+                            widget.set.toString(),
+                            style: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Set',
+                            style: TextStyle(fontWeight: FontWeight.w300),
+                          ),
                         ],
                       ),
                     ],
                   ),
                   Column(
                     children: [
-                      Text(widget.reps.toString()),
-                      Text('Reps'),
+                      Text(
+                        widget.reps.toString(),
+                        style: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Reps',
+                        style: TextStyle(fontWeight: FontWeight.w300),
+                      ),
                     ],
                   ),
                   widget.showRestTimer == false
                       ? Column(
                           children: [
-                            Text(widget.rest.toString()),
-                            Text('Rest'),
+                            Text(
+                              widget.rest.toString(),
+                              style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Rest',
+                              style: TextStyle(fontWeight: FontWeight.w300),
+                            ),
                           ],
                         )
                       : GestureDetector(
@@ -87,7 +114,7 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                               fillColor: Colors.white,
-                              color: Colors.red),
+                              color: kPrimaryColor),
                         )
                 ],
               ),

@@ -11,9 +11,11 @@ class WorkoutPlan {
   final String coverPhotoUrl;
   final String promoVideoUrl;
   final String trainerName;
+  final List users;
 
   WorkoutPlan(
       {this.userUid,
+      this.users,
       this.type,
       this.location,
       this.level,

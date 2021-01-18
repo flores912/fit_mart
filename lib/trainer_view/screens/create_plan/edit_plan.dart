@@ -33,6 +33,7 @@ class _EditPlanState extends State<EditPlan> {
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData) {
               workoutPlan = WorkoutPlan(
+                users: snapshot.data.get('users'),
                 trainerName: snapshot.data.get('trainerName'),
                 location: snapshot.data.get('location'),
                 weeks: snapshot.data.get('weeks'),

@@ -115,6 +115,13 @@ class FirestoreProvider {
         .delete();
   }
 
+  Future<void> deleteUser() async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .delete();
+  }
+
   Future<void> deleteExerciseFromWorkout(String workoutPlanUid, String weekUid,
       String workoutUid, String exerciseUid) async {
     return await _firestore
@@ -154,6 +161,33 @@ class FirestoreProvider {
         .collection('workoutPlans')
         .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
         .snapshots();
+  }
+
+  Stream<QuerySnapshot> getOthersTrainerPlans() {
+    return _firestore
+        .collection('workoutPlans')
+        .where(
+          'users',
+          arrayContains: _firebaseAuth.currentUser.uid,
+        )
+        .where('userId', isNotEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
+  Future<void> addPlanToMyList(String workoutPlanUid) async {
+    var uidAsList = [_firebaseAuth.currentUser.uid];
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .update({'users': FieldValue.arrayUnion(uidAsList)});
+  }
+
+  Future<void> removePlanFromList(String workoutPlanUid) async {
+    var uidAsList = [_firebaseAuth.currentUser.uid];
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .update({'users': FieldValue.arrayRemove(uidAsList)});
   }
 
   Stream<QuerySnapshot> getPublishedTrainerPlans() {
@@ -220,6 +254,7 @@ class FirestoreProvider {
       'description': description,
       'coverPhotoUrl': null,
       'promoVideoUrl': null,
+      'users': [],
     });
   }
 

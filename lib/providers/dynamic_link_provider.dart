@@ -29,12 +29,12 @@ class DynamicLinkProvider {
   }
 
   Future<void> _handleDeepLink(PendingDynamicLinkData data) async {
+    WorkoutPlan workoutPlan;
     final Uri deepLink = data?.link;
     if (deepLink != null) {
       print('_handleDeepLink | deeplink: $deepLink');
 
       var isWorkoutPlan = deepLink.pathSegments.contains('workoutplan');
-      WorkoutPlan workoutPlan;
       if (isWorkoutPlan) {
         //get the uid of the workout plan
         var workoutPlanUid = deepLink.queryParameters['uid'];
@@ -44,6 +44,7 @@ class DynamicLinkProvider {
           await _bloc.getPlanDetails(workoutPlanUid).then((element) async {
             workoutPlan = WorkoutPlan(
               uid: element.id,
+              users: element.get('users'),
               trainerName: await element.get('trainerName'),
               type: await element.get('type'),
               weeks: await element.get('weeks'),
@@ -66,7 +67,8 @@ class DynamicLinkProvider {
     }
   }
 
-  Future<String> createWorkoutPlanLink(String workoutPlanUid) async {
+  Future<String> createWorkoutPlanLink(WorkoutPlan workoutPlan) async {
+    String workoutPlanUid = workoutPlan.uid;
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     final DynamicLinkParameters parameters = DynamicLinkParameters(
@@ -84,17 +86,18 @@ class DynamicLinkProvider {
         appStoreId: '123456789',
       ),
       googleAnalyticsParameters: GoogleAnalyticsParameters(
-        campaign: 'example-promo',
+        campaign: 'promo',
         medium: 'social',
         source: 'orkut',
       ),
       itunesConnectAnalyticsParameters: ItunesConnectAnalyticsParameters(
         providerToken: '123456',
-        campaignToken: 'example-promo',
+        campaignToken: 'promo',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-        title: 'Example of a Dynamic Link',
-        description: 'This link works whether app is installed or not!',
+        title: workoutPlan.title,
+        description:
+            'Check out this workout plan by ' + workoutPlan.trainerName,
       ),
     );
 

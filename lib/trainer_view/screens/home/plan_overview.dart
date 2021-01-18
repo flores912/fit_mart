@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/custom_widgets/chewie_player_widget.dart';
 import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/plan_overview_bloc.dart';
+import 'package:fit_mart/trainer_view/screens/home/workout_session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
 
@@ -20,7 +23,7 @@ class _PlanOverviewState extends State<PlanOverview> {
   String videoUrl;
 
   @override
-  void initState() {
+  initState() {
     getVideoUrl();
     super.initState();
   }
@@ -28,6 +31,23 @@ class _PlanOverviewState extends State<PlanOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: widget.workoutPlan.users
+                      .contains(FirebaseAuth.instance.currentUser.uid) ==
+                  false &&
+              widget.workoutPlan.userUid !=
+                  FirebaseAuth.instance.currentUser.uid
+          ? FloatingActionButton.extended(
+              heroTag: 'Add Workout Plan',
+              icon: Icon(Icons.add),
+              onPressed: () {
+                _bloc.addPlanToMyList(widget.workoutPlan.uid).whenComplete(() {
+                  setState(() {});
+                });
+              },
+              label: Text('Add Plan'),
+            )
+          : Container(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

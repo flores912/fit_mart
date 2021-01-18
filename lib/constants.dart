@@ -70,8 +70,8 @@ const List<String> kLocations = [
   'Outdoors',
 ];
 
-const Color kPrimaryColor = Colors.yellow;
-const Color kAccentColor = Colors.yellowAccent;
+const Color kPrimaryColor = Colors.lightBlue;
+const Color kAccentColor = Colors.lightBlueAccent;
 
 const List<PopupMenuEntry> kWorkoutCardPopUpMenuList = [
   const PopupMenuItem(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/custom_widgets/set_card.dart';
 import 'package:fit_mart/custom_widgets/workout_plan_card.dart';
@@ -34,6 +35,8 @@ class _TrainerAccountState extends State<TrainerAccount> {
 
   TrainerAccountBloc _bloc = TrainerAccountBloc();
 
+  String id;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +55,7 @@ class _TrainerAccountState extends State<TrainerAccount> {
               builder: (BuildContext context,
                   AsyncSnapshot<DocumentSnapshot> snapshot) {
                 if (snapshot.hasData) {
+                  id = snapshot.data.get('id');
                   name = snapshot.data.get('name');
                   username = snapshot.data.get('username');
                   photoUrl = snapshot.data.get('photoUrl');
@@ -117,22 +121,24 @@ class _TrainerAccountState extends State<TrainerAccount> {
                             ),
                           )
                         : Container(),
-                    OutlineButton(
-                        child: Text('Edit Profile'),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditProfile(
-                                name: name,
-                                tipUrl: tipUrl,
-                                username: username,
-                                bio: bio,
-                                photoUrl: photoUrl,
-                              ),
-                            ),
-                          );
-                        }),
+                    id == FirebaseAuth.instance.currentUser.uid
+                        ? OutlineButton(
+                            child: Text('Edit Profile'),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfile(
+                                    name: name,
+                                    tipUrl: tipUrl,
+                                    username: username,
+                                    bio: bio,
+                                    photoUrl: photoUrl,
+                                  ),
+                                ),
+                              );
+                            })
+                        : Container(),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Divider(),
@@ -153,6 +159,7 @@ class _TrainerAccountState extends State<TrainerAccount> {
     List<WorkoutPlan> workoutsList = [];
     docList.forEach((element) {
       WorkoutPlan workoutPlan = WorkoutPlan(
+        users: element.get('users'),
         uid: element.id,
         trainerName: element.get('trainerName'),
         location: element.get('location'),

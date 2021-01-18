@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/login_signup/blocs/login_bloc.dart';
+import 'package:fit_mart/login_signup/screens/reset_password.dart';
 import 'package:fit_mart/login_signup/screens/sign_up.dart';
 import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../constants.dart';
 
@@ -31,6 +33,7 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextField(
+                keyboardType: TextInputType.emailAddress,
                 onChanged: (value) {
                   email = value;
                 },
@@ -40,6 +43,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
               TextField(
+                obscureText: true,
                 onChanged: (value) {
                   password = value;
                 },
@@ -49,7 +53,9 @@ class _LoginState extends State<Login> {
                 ),
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(ResetPassword());
+                },
                 child: Text(kForgotPassword),
               ),
               RaisedButton(

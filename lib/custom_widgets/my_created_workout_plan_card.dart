@@ -40,18 +40,19 @@ class _MyCreatedWorkoutPlanCardState extends State<MyCreatedWorkoutPlanCard> {
             widget.isLive == true
                 ? Text(
                     'PUBLIC',
-                    style: TextStyle(color: Colors.green),
+                    style: TextStyle(color: kPrimaryColor),
                   )
                 : Text(
-                    'PRIVATE',
-                    style: TextStyle(color: Colors.yellow),
+                    '(PRIVATE)',
                   ),
           ],
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.title),
+            Text(
+              widget.title,
+            ),
           ],
         ),
       ),

@@ -20,26 +20,31 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          widget.videoUrl != null
-              ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width / 1.78,
-                  child: ChewiePlayerWidget(
-                    autoPlay: false,
-                    looping: false,
-                    showControls: true,
-                    videoPlayerController: VideoPlayerController.network(
-                        widget.videoUrl,
-                        videoPlayerOptions:
-                            VideoPlayerOptions(mixWithOthers: true)),
-                  ),
-                )
-              : Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width / 1.78,
-                  color: CupertinoColors.placeholderText,
-                  child: Card(),
-                ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: widget.videoUrl != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      child: ChewiePlayerWidget(
+                        autoPlay: false,
+                        looping: false,
+                        showControls: true,
+                        videoPlayerController: VideoPlayerController.network(
+                            widget.videoUrl,
+                            videoPlayerOptions:
+                                VideoPlayerOptions(mixWithOthers: true)),
+                      ),
+                    )
+                  : Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.78,
+                      color: CupertinoColors.placeholderText,
+                      child: Card(),
+                    ),
+            ),
+          ),
           Column(
             children: [
               Padding(

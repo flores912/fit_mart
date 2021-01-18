@@ -59,7 +59,7 @@ class _WorkoutPlanPreviewState extends State<WorkoutPlanPreview>
                     DynamicLinkProvider dynamicLinkProvider =
                         DynamicLinkProvider();
                     dynamicLinkProvider
-                        .createWorkoutPlanLink(widget.workoutPlan.uid)
+                        .createWorkoutPlanLink(widget.workoutPlan)
                         .then((link) => Share.share(link));
                   },
                   child: Padding(
