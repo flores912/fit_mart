@@ -82,6 +82,10 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                                 int set = await element.get('set');
                                 int reps = await element.get('reps');
                                 int rest = await element.get('rest');
+                                bool isSetInMin =
+                                    await element.get('isSetInMin');
+                                bool isRestInMin =
+                                    await element.get('isRestInMin');
 
                                 _bloc.addNewSet(
                                     widget.workoutPlanUid,
@@ -92,7 +96,9 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                                     reps,
                                     rest,
                                     isTimed,
-                                    isFailure);
+                                    isFailure,
+                                    isSetInMin,
+                                    isRestInMin);
                               });
                             });
                           })

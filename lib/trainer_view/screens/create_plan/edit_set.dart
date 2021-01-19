@@ -1,27 +1,32 @@
+import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/trainer_view/blocs/edit_set_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../constants.dart';
 
 class EditSet extends StatefulWidget {
-  final int set;
+  final int numberOfSet;
   final String workoutPlanUid;
   final String weekUid;
   final String workoutUid;
   final String exerciseUid;
-
+  final bool isEdit;
+  final Set set;
   final String setUid;
 
   const EditSet(
       {Key key,
-      this.set,
+      this.numberOfSet,
       this.workoutPlanUid,
       this.weekUid,
       this.workoutUid,
       this.exerciseUid,
-      this.setUid})
+      this.setUid,
+      this.isEdit,
+      this.set})
       : super(key: key);
 
   @override
@@ -43,6 +48,37 @@ class _EditSetState extends State<EditSet> {
 
   bool isFailure;
 
+  bool isSetInMin;
+  bool isRestInMin;
+  @override
+  void initState() {
+    getEditSetValues();
+    super.initState();
+  }
+
+  void getEditSetValues() {
+    if (widget.isEdit == true) {
+      reps = widget.set.reps;
+      rest = widget.set.rest;
+      isTimed = widget.set.isTimed;
+      isFailure = widget.set.isFailure;
+      if (widget.set.isRestInMin == true) {
+        restUnit = 'min';
+        rest = rest ~/ 60;
+      }
+      if (widget.set.isSetInMin == true) {
+        typeOfReps = 'min';
+        reps = reps ~/ 60;
+      } else if (widget.set.isSetInMin == false && widget.set.isTimed == true) {
+        typeOfReps = 'secs';
+      } else if (widget.set.isFailure) {
+        typeOfReps = 'failure';
+      } else {
+        typeOfReps = 'reps';
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -55,27 +91,13 @@ class _EditSetState extends State<EditSet> {
               child: (Text(kSave)),
               onPressed: () {
                 if (_formKey.currentState.validate()) {
+                  EasyLoading.show();
                   checkTypesOfValues();
-
-                  _bloc
-                      .addNewSet(
-                          widget.workoutPlanUid,
-                          widget.weekUid,
-                          widget.workoutUid,
-                          widget.exerciseUid,
-                          widget.set,
-                          reps,
-                          rest,
-                          isTimed,
-                          isFailure)
-                      .whenComplete(() =>
-                          _bloc.updateExerciseDetailsNumberOfSets(
-                              widget.set,
-                              widget.workoutPlanUid,
-                              widget.weekUid,
-                              widget.workoutUid,
-                              widget.exerciseUid))
-                      .whenComplete(() => Navigator.pop(context));
+                  if (widget.isEdit == true) {
+                    updateSet();
+                  } else {
+                    addNewSet();
+                  }
                 }
               },
             ),
@@ -93,7 +115,7 @@ class _EditSetState extends State<EditSet> {
                       flex: 1,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(kSet + ' ' + widget.set.toString()),
+                        child: Text(kSet + ' ' + widget.numberOfSet.toString()),
                       ),
                     ),
                     Expanded(
@@ -208,6 +230,50 @@ class _EditSetState extends State<EditSet> {
     );
   }
 
+  void updateSet() {
+    print(widget.exerciseUid);
+    _bloc
+        .updateSet(
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid,
+            widget.exerciseUid,
+            widget.set.setUid,
+            widget.set.set,
+            reps,
+            rest,
+            isTimed,
+            isFailure,
+            isSetInMin,
+            isRestInMin)
+        .whenComplete(() => EasyLoading.dismiss())
+        .whenComplete(() => Navigator.pop(context));
+  }
+
+  void addNewSet() {
+    _bloc
+        .addNewSet(
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid,
+            widget.exerciseUid,
+            widget.numberOfSet,
+            reps,
+            rest,
+            isTimed,
+            isFailure,
+            isSetInMin,
+            isRestInMin)
+        .whenComplete(() => _bloc.updateExerciseDetailsNumberOfSets(
+            widget.numberOfSet,
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid,
+            widget.exerciseUid))
+        .whenComplete(() => EasyLoading.dismiss())
+        .whenComplete(() => Navigator.pop(context));
+  }
+
   void checkTypesOfValues() {
     if (typeOfReps == 'secs' || typeOfReps == 'min') {
       isTimed = true;
@@ -216,14 +282,21 @@ class _EditSetState extends State<EditSet> {
     }
     if (typeOfReps == 'failure') {
       isFailure = true;
+      reps = null;
     } else {
       isFailure = false;
     }
     if (typeOfReps == 'min') {
+      isSetInMin = true;
       reps = reps * 60;
+    } else {
+      isSetInMin = false;
     }
     if (restUnit == 'min') {
+      isRestInMin = true;
       rest = rest * 60;
+    } else {
+      isRestInMin = false;
     }
   }
 

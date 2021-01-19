@@ -61,9 +61,21 @@ class WorkoutExercisesBloc {
           int reps,
           int rest,
           bool isTimed,
-          bool isFailure) =>
-      _firestoreProvider.addNewSet(workoutPlanUid, weekUid, workoutUid,
-          exerciseUid, set, reps, rest, isTimed, isFailure);
+          bool isFailure,
+          bool isSetInMin,
+          bool isRestInMin) =>
+      _firestoreProvider.addNewSet(
+          workoutPlanUid,
+          weekUid,
+          workoutUid,
+          exerciseUid,
+          set,
+          reps,
+          rest,
+          isTimed,
+          isFailure,
+          isSetInMin,
+          isRestInMin);
 
   Future<void> updateExerciseIndex(String workoutPlanUid, String weekUid,
           String workoutUid, String exerciseUid, int exercise) =>

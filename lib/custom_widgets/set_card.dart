@@ -30,30 +30,85 @@ class _SetCardState extends State<SetCard> {
         Expanded(
             child: Column(
           children: [
-            Text(widget.set.toString()),
-            Text(kSet),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.set.toString(),
+                style: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            Text(
+              kSet,
+              style: TextStyle(fontWeight: FontWeight.w300),
+            ),
           ],
         )),
         Expanded(
             child: Column(
           children: [
-            widget.isFailure == true
-                ? Text('FAILURE')
-                : Text(widget.reps.toString()),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: widget.isFailure == true
+                  ? Text(
+                      'FAILURE',
+                      style: TextStyle(
+                          color: kPrimaryColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
+                    )
+                  : widget.isTimed == true
+                      ? Text(
+                          (widget.reps / 60).truncate().toString() +
+                              ':' +
+                              (widget.reps % 60).toString(),
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : Text(
+                          widget.reps.toString(),
+                          style: TextStyle(
+                              color: kPrimaryColor,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold),
+                        ),
+            ),
             widget.isTimed == true
-                ? Text(widget.reps >= 60
-                    ? (widget.reps / 60).truncate().toString() + 'min'
-                    : widget.rest.toString() + 'secs')
-                : Text(kReps),
+                ? Text(
+                    widget.reps >= 60 ? 'min' : 'secs',
+                    style: TextStyle(fontWeight: FontWeight.w300),
+                  )
+                : Text(
+                    kReps,
+                    style: TextStyle(fontWeight: FontWeight.w300),
+                  ),
           ],
         )),
         Expanded(
           child: Column(
             children: [
-              Text(widget.rest >= 60
-                  ? (widget.rest / 60).truncate().toString() + 'min'
-                  : widget.rest.toString() + 'secs'),
-              Text(kRest),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.rest >= 60
+                      ? (widget.rest / 60).truncate().toString() +
+                          ':' +
+                          (widget.rest % 60).toString()
+                      : widget.rest.toString(),
+                  style: TextStyle(
+                      color: kPrimaryColor,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              Text(
+                widget.rest >= 60 ? 'Rest(min)' : 'Rest(secs)',
+                style: TextStyle(fontWeight: FontWeight.w300),
+              ),
             ],
           ),
         ),

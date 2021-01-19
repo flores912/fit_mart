@@ -5,8 +5,12 @@ class Set {
   final String setUid;
   final bool isTimed;
   final bool isFailure;
+  final bool isSetInMin;
+  final bool isRestInMin;
 
   Set({
+    this.isSetInMin,
+    this.isRestInMin,
     this.isTimed,
     this.isFailure,
     this.set,

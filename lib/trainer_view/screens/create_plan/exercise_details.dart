@@ -9,6 +9,7 @@ import 'package:fit_mart/trainer_view/screens/create_plan/edit_set.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
@@ -112,7 +113,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                   weekUid: widget.weekUid,
                   workoutUid: widget.workoutUid,
                   exerciseUid: widget.exerciseUid,
-                  set: setsList.length + 1,
+                  numberOfSet: setsList.length + 1,
                 ),
               ),
             );
@@ -120,37 +121,50 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _controller != null
-                  ? Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
-                      child: ChewiePlayerWidget(
-                        autoPlay: false,
-                        looping: false,
-                        showControls: true,
-                        videoPlayerController: _controller,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                _controller != null
+                    ? Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.78,
+                        child: ChewiePlayerWidget(
+                          autoPlay: false,
+                          looping: false,
+                          showControls: true,
+                          videoPlayerController: _controller,
+                        ),
+                      )
+                    : Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 1.78,
+                        color: CupertinoColors.placeholderText,
                       ),
-                    )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
-                      color: CupertinoColors.placeholderText,
-                    ),
-              OutlineButton(
-                child: Text(_controller == null ? kAddVideo : kChangeVideo),
-                onPressed: () {
-                  showAddVideoDialog();
-                },
-              ),
-              Card(
-                child: ListTile(
-                  title: Text(kSets),
-                  subtitle: setsListView(),
+                OutlineButton(
+                  child: Text(_controller == null ? kAddVideo : kChangeVideo),
+                  onPressed: () {
+                    showAddVideoDialog();
+                  },
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Sets',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22),
+                        ),
+                      ),
+                      setsListView(),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }
@@ -286,6 +300,8 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
     List<Set> setsList = [];
     docList.forEach((element) {
       Set set = Set(
+          isSetInMin: element.get('isSetInMin'),
+          isRestInMin: element.get('isRestInMin'),
           isTimed: element.get('isTimed'),
           isFailure: element.get('isFailure'),
           reps: element.get('reps'),
@@ -320,12 +336,30 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                   set: setsList[index].set,
                   reps: setsList[index].reps,
                   rest: setsList[index].rest,
-                  more: GestureDetector(
-                    child: Icon(Icons.delete),
-                    onTap: () {
-                      deleteSet(index);
-                    },
-                  ),
+                  more: PopupMenuButton(
+                      onSelected: (value) {
+                        switch (value) {
+                          case 1:
+                            Get.to(EditSet(
+                              exerciseUid: widget.exerciseUid,
+                              workoutPlanUid: widget.workoutPlanUid,
+                              weekUid: widget.weekUid,
+                              workoutUid: widget.workoutUid,
+                              set: setsList[index],
+                              isEdit: true,
+                              numberOfSet: setsList[index].set,
+                            ));
+
+                            break;
+                          case 2:
+                            deleteSet(index);
+
+                            break;
+                        }
+                      },
+                      icon: Icon(Icons.more_vert),
+                      itemBuilder: (BuildContext context) =>
+                          kMyCreatedWorkoutPlanCardPopUpMenuList),
                 );
               },
             );

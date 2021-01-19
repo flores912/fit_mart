@@ -601,7 +601,9 @@ class FirestoreProvider {
       int reps,
       int rest,
       bool isTimed,
-      bool isFailure) async {
+      bool isFailure,
+      bool isSetInMin,
+      bool isRestInMin) async {
     return await _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
@@ -613,6 +615,43 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets')
         .add({
+      'isSetInMin': isSetInMin,
+      'isRestInMin': isRestInMin,
+      'isTimed': isTimed,
+      'isFailure': isFailure,
+      'set': set,
+      'reps': reps,
+      'rest': rest,
+    });
+  }
+
+  Future<void> updateSet(
+      String workoutPlanUid,
+      String weekUid,
+      String workoutUid,
+      String exerciseUid,
+      String setUid,
+      int set,
+      int reps,
+      int rest,
+      bool isTimed,
+      bool isFailure,
+      bool isSetInMin,
+      bool isRestInMin) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .update({
+      'isSetInMin': isSetInMin,
+      'isRestInMin': isRestInMin,
       'isTimed': isTimed,
       'isFailure': isFailure,
       'set': set,
@@ -665,8 +704,15 @@ class FirestoreProvider {
         .snapshots();
   }
 
-  Future<DocumentReference> addNewSetCollection(String exerciseUid, int set,
-      int reps, int rest, bool isTimed, bool isFailure) async {
+  Future<DocumentReference> addNewSetCollection(
+      String exerciseUid,
+      int set,
+      int reps,
+      int rest,
+      bool isTimed,
+      bool isFailure,
+      bool isSetInMin,
+      bool isRestInMin) async {
     return await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
@@ -674,6 +720,36 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets')
         .add({
+      'isSetInMin': isSetInMin,
+      'isRestInMin': isRestInMin,
+      'isTimed': isTimed,
+      'isFailure': isFailure,
+      'set': set,
+      'reps': reps,
+      'rest': rest,
+    });
+  }
+
+  Future<void> updateSetCollection(
+      String exerciseUid,
+      String setUid,
+      int set,
+      int reps,
+      int rest,
+      bool isTimed,
+      bool isFailure,
+      bool isSetInMin,
+      bool isRestInMin) async {
+    return await _firestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser.uid)
+        .collection('exerciseCollection')
+        .doc(exerciseUid)
+        .collection('sets')
+        .doc(setUid)
+        .update({
+      'isSetInMin': isSetInMin,
+      'isRestInMin': isRestInMin,
       'isTimed': isTimed,
       'isFailure': isFailure,
       'set': set,
@@ -875,6 +951,8 @@ class FirestoreProvider {
                                                   await set.get('rest'),
                                                   await set.get('isTimed'),
                                                   await set.get('isFailure'),
+                                                  await set.get('isSetInMin'),
+                                                  await set.get('isRestInMin'),
                                                 );
                                               });
                                             })
@@ -988,6 +1066,8 @@ class FirestoreProvider {
             await set.get('rest'),
             await set.get('isTimed'),
             await set.get('isFailure'),
+            await set.get('isSetInMin'),
+            await set.get('isRestInMin'),
           );
         });
       });
@@ -1007,6 +1087,8 @@ class FirestoreProvider {
             await set.get('rest'),
             await set.get('isTimed'),
             await set.get('isFailure'),
+            await set.get('isSetInMin'),
+            await set.get('isRestInMin'),
           );
         });
       });

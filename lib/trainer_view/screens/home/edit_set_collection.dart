@@ -1,14 +1,25 @@
+import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/trainer_view/blocs/edit_set_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../constants.dart';
 
 class EditSetCollection extends StatefulWidget {
   final String exerciseUid;
-  final int set;
+  final int numberOfSet;
+  final bool isEdit;
+  final Set set;
+  final String setUid;
 
-  const EditSetCollection({Key key, this.exerciseUid, this.set})
+  const EditSetCollection(
+      {Key key,
+      this.exerciseUid,
+      this.numberOfSet,
+      this.isEdit,
+      this.set,
+      this.setUid})
       : super(key: key);
   @override
   _EditSetCollectionState createState() => _EditSetCollectionState();
@@ -26,6 +37,15 @@ class _EditSetCollectionState extends State<EditSetCollection> {
 
   String restUnit = kRestUnits.first;
 
+  bool isSetInMin;
+
+  bool isRestInMin;
+  @override
+  void initState() {
+    getEditSetValues();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -38,14 +58,13 @@ class _EditSetCollectionState extends State<EditSetCollection> {
               child: (Text(kSave)),
               onPressed: () {
                 if (_formKey.currentState.validate()) {
+                  EasyLoading.show();
                   checkTypesOfValues();
-                  _bloc
-                      .addNewSetCollection(widget.exerciseUid, widget.set, reps,
-                          rest, isTimed, isFailure)
-                      .whenComplete(() =>
-                          _bloc.updateExerciseDetailsNumberOfSetsCollection(
-                              widget.set, widget.exerciseUid))
-                      .whenComplete(() => Navigator.pop(context));
+                  if (widget.isEdit == true) {
+                    updateSet();
+                  } else {
+                    addNewSet();
+                  }
                 }
               },
             ),
@@ -63,7 +82,7 @@ class _EditSetCollectionState extends State<EditSetCollection> {
                       flex: 1,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(kSet + ' ' + widget.set.toString()),
+                        child: Text(kSet + ' ' + widget.numberOfSet.toString()),
                       ),
                     ),
                     Expanded(
@@ -178,6 +197,33 @@ class _EditSetCollectionState extends State<EditSetCollection> {
     );
   }
 
+  void updateSet() {
+    print(widget.setUid);
+    _bloc
+        .updateSetCollection(
+            widget.exerciseUid,
+            widget.set.setUid,
+            widget.set.set,
+            reps,
+            rest,
+            isTimed,
+            isFailure,
+            isSetInMin,
+            isRestInMin)
+        .whenComplete(() => EasyLoading.dismiss())
+        .whenComplete(() => Navigator.pop(context));
+  }
+
+  void addNewSet() {
+    _bloc
+        .addNewSetCollection(widget.exerciseUid, widget.numberOfSet, reps, rest,
+            isTimed, isFailure, isSetInMin, isRestInMin)
+        .whenComplete(() => _bloc.updateExerciseDetailsNumberOfSetsCollection(
+            widget.numberOfSet, widget.exerciseUid))
+        .whenComplete(() => EasyLoading.dismiss())
+        .whenComplete(() => Navigator.pop(context));
+  }
+
   List<DropdownMenuItem> dropdownMenuTypeOfSets() {
     List<DropdownMenuItem> items = [];
     for (String typeOfReps in kTypesOfReps) {
@@ -199,14 +245,21 @@ class _EditSetCollectionState extends State<EditSetCollection> {
     }
     if (typeOfReps == 'failure') {
       isFailure = true;
+      reps = null;
     } else {
       isFailure = false;
     }
     if (typeOfReps == 'min') {
+      isSetInMin = true;
       reps = reps * 60;
+    } else {
+      isSetInMin = false;
     }
     if (restUnit == 'min') {
+      isRestInMin = true;
       rest = rest * 60;
+    } else {
+      isRestInMin = false;
     }
   }
 
@@ -221,5 +274,28 @@ class _EditSetCollectionState extends State<EditSetCollection> {
       );
     }
     return items;
+  }
+
+  void getEditSetValues() {
+    if (widget.isEdit == true) {
+      reps = widget.set.reps;
+      rest = widget.set.rest;
+      isTimed = widget.set.isTimed;
+      isFailure = widget.set.isFailure;
+      if (widget.set.isRestInMin == true) {
+        restUnit = 'min';
+        rest = rest ~/ 60;
+      }
+      if (widget.set.isSetInMin == true) {
+        typeOfReps = 'min';
+        reps = reps ~/ 60;
+      } else if (widget.set.isSetInMin == false && widget.set.isTimed == true) {
+        typeOfReps = 'secs';
+      } else if (widget.set.isFailure) {
+        typeOfReps = 'failure';
+      } else {
+        typeOfReps = 'reps';
+      }
+    }
   }
 }
