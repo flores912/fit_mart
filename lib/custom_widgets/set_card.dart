@@ -6,6 +6,8 @@ class SetCard extends StatefulWidget {
   final int set;
   final int reps;
   final int rest;
+  final bool isTimed;
+  final bool isFailure;
   final Widget more;
   const SetCard({
     Key key,
@@ -13,6 +15,8 @@ class SetCard extends StatefulWidget {
     this.reps,
     this.rest,
     this.more,
+    this.isTimed,
+    this.isFailure,
   }) : super(key: key);
   @override
   _SetCardState createState() => _SetCardState();
@@ -21,35 +25,40 @@ class SetCard extends StatefulWidget {
 class _SetCardState extends State<SetCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      child: Row(
-        children: [
-          Expanded(
-              child: Column(
-            children: [
-              Text(widget.set.toString()),
-              Text(kSet),
-            ],
-          )),
-          Expanded(
-              child: Column(
-            children: [
-              Text(widget.reps.toString()),
-              Text(kReps),
-            ],
-          )),
-          Expanded(
+    return Row(
+      children: [
+        Expanded(
             child: Column(
-              children: [
-                Text(widget.rest.toString() + 's'),
-                Text(kRest),
-              ],
-            ),
+          children: [
+            Text(widget.set.toString()),
+            Text(kSet),
+          ],
+        )),
+        Expanded(
+            child: Column(
+          children: [
+            widget.isFailure == true
+                ? Text('FAILURE')
+                : Text(widget.reps.toString()),
+            widget.isTimed == true
+                ? Text(widget.reps >= 60
+                    ? (widget.reps / 60).truncate().toString() + 'min'
+                    : widget.rest.toString() + 'secs')
+                : Text(kReps),
+          ],
+        )),
+        Expanded(
+          child: Column(
+            children: [
+              Text(widget.rest >= 60
+                  ? (widget.rest / 60).truncate().toString() + 'min'
+                  : widget.rest.toString() + 'secs'),
+              Text(kRest),
+            ],
           ),
-          widget.more
-        ],
-      ),
+        ),
+        widget.more
+      ],
     );
   }
 }

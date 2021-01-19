@@ -5,6 +5,7 @@ import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../constants.dart';
 import 'exercise_collection_list.dart';
@@ -150,6 +151,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
 
                                     case 4:
                                       //save to collection
+                                      EasyLoading.show();
                                       _bloc
                                           .addNewExerciseToCollection(
                                               exercisesList[index].exerciseName,
@@ -161,7 +163,8 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                                           content: Text(
                                               'Exercise added to collection.'),
                                         ));
-                                      });
+                                      }).whenComplete(
+                                              () => EasyLoading.dismiss());
                                       break;
                                     case 5:
                                       //delete
@@ -216,13 +219,14 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
   }
 
   Future<void> duplicate(int index) async {
+    EasyLoading.show();
     await _bloc
         .duplicateExercise(workoutPlanUid, weekUid, workoutUid,
             exercisesList[index], exercisesList.length + 1)
         .whenComplete(() {
       updateIndexes().whenComplete(() => _bloc.updateNumberOfExercises(
           workoutPlanUid, weekUid, workoutUid, exercisesList.length));
-    });
+    }).whenComplete(() => EasyLoading.dismiss());
   }
 
   void newSwapItem(int index) {
@@ -249,6 +253,8 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
   }
 
   Future deleteExercise(int index) async {
+    EasyLoading.show();
+
     await _bloc
         .deleteExerciseFromWorkout(widget.workoutPlanUid, widget.weekUid,
             widget.workoutUid, exercisesList[index].exerciseUid)
@@ -259,7 +265,7 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
             exercisesList.length))
         .whenComplete(() async {
       await updateIndexes();
-    });
+    }).whenComplete(() => EasyLoading.dismiss());
   }
 
   Future<void> updateIndexes() async {

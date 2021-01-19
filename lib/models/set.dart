@@ -3,8 +3,12 @@ class Set {
   final int reps;
   final int rest;
   final String setUid;
+  final bool isTimed;
+  final bool isFailure;
 
   Set({
+    this.isTimed,
+    this.isFailure,
     this.set,
     this.reps,
     this.rest,

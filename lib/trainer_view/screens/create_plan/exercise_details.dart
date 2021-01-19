@@ -8,6 +8,7 @@ import 'package:fit_mart/trainer_view/blocs/exercise_details_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/edit_set.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
@@ -61,6 +62,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                   //save
                   if (videoFile != null) {
                     //video was taken save to db
+                    EasyLoading.show();
                     _bloc
                         .downloadURL(videoFile, widget.exerciseUid, 'video/mp4')
                         .then((value) {
@@ -74,12 +76,14 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                               widget.weekUid,
                               widget.workoutUid,
                               widget.exerciseUid)
+                          .whenComplete(() => EasyLoading.dismiss())
                           .whenComplete(
                             () => Navigator.pop(context),
                           ),
                     );
                   } else {
                     //else just save the other details
+                    EasyLoading.show();
                     _bloc
                         .updateExerciseDetails(
                             videoUrl,
@@ -88,6 +92,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                             widget.weekUid,
                             widget.workoutUid,
                             widget.exerciseUid)
+                        .whenComplete(() => EasyLoading.dismiss())
                         .whenComplete(
                           () => Navigator.pop(context),
                         );
@@ -151,6 +156,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   }
 
   Future getVideoUrl() async {
+    EasyLoading.show();
     await _bloc
         .getExerciseDetails(widget.workoutPlanUid, widget.weekUid,
             widget.workoutUid, widget.exerciseUid)
@@ -164,7 +170,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           });
         }
       }
-    });
+    }).whenComplete(() => EasyLoading.dismiss());
   }
 
   void _initController(File file) {
@@ -180,6 +186,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   }
 
   Future validateDurationOfVideo() async {
+    EasyLoading.show();
     if (duration != null && duration > 60) {
       //dont save
       showDialog(
@@ -194,7 +201,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           videoFile = null;
           await _onControllerChange(videoFile);
         });
-      });
+      }).whenComplete(() => EasyLoading.dismiss());
     }
   }
 
@@ -279,6 +286,8 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
     List<Set> setsList = [];
     docList.forEach((element) {
       Set set = Set(
+          isTimed: element.get('isTimed'),
+          isFailure: element.get('isFailure'),
           reps: element.get('reps'),
           rest: element.get('rest'),
           set: element.get('set'),
@@ -306,6 +315,8 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
               },
               itemBuilder: (context, index) {
                 return SetCard(
+                  isFailure: setsList[index].isFailure,
+                  isTimed: setsList[index].isTimed,
                   set: setsList[index].set,
                   reps: setsList[index].reps,
                   rest: setsList[index].rest,
@@ -325,6 +336,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   }
 
   Future<void> deleteSet(int index) async {
+    EasyLoading.show();
     await _bloc
         .deleteSetFromExercise(widget.workoutPlanUid, widget.weekUid,
             widget.workoutUid, widget.exerciseUid, setsList[index].setUid)
@@ -339,6 +351,6 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
         await _bloc.updateSetIndex(widget.workoutPlanUid, widget.weekUid,
             widget.workoutUid, widget.exerciseUid, setsList[i].setUid, i + 1);
       }
-    });
+    }).whenComplete(() => EasyLoading.dismiss());
   }
 }

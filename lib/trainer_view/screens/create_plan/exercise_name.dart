@@ -3,6 +3,7 @@ import 'package:fit_mart/trainer_view/blocs/exercise_name_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/exercise_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../constants.dart';
 
@@ -98,6 +99,7 @@ class _ExerciseNameState extends State<ExerciseName> {
 
   void addNewExercise() {
     if (_formKey.currentState.validate()) {
+      EasyLoading.show();
       _bloc
           .addNewExercise(exerciseName, widget.exerciseIndex, 0, null,
               widget.workoutPlanUid, widget.weekUid, widget.workoutUid)
@@ -122,7 +124,8 @@ class _ExerciseNameState extends State<ExerciseName> {
                     (value) => Navigator.pop(context),
                   ),
                 ),
-          );
+          )
+          .whenComplete(() => EasyLoading.dismiss());
     }
   }
 }

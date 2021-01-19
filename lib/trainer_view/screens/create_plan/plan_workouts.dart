@@ -5,9 +5,8 @@ import 'package:fit_mart/trainer_view/blocs/plan_workouts_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/cover_photo.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/edit_workout_name.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/workout_exercises.dart';
-import 'package:fit_mart/trainer_view/screens/home/workout_plan_preview.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../constants.dart';
@@ -75,7 +74,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
         padding: const EdgeInsets.all(8.0),
         child: floatingActionButton(),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: isWorkoutCopyMode == true ||
               isWeekCopyMode == true ||
               isWeekSwapMode == true ||
@@ -244,8 +243,10 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
 
   Future<void> deleteWeek(int index) async {
     //delete
-    await _bloc.deleteWeek(workoutPlanUid, weeksList[index].uid).whenComplete(
-        () async =>
+    EasyLoading.show();
+    await _bloc
+        .deleteWeek(workoutPlanUid, weeksList[index].uid)
+        .whenComplete(() async =>
             //update number of total weeks
             await _bloc
                 .updateNumberOfWeeks(workoutPlanUid, weeksList.length)
@@ -255,7 +256,8 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                 await _bloc.updateWeekIndex(
                     workoutPlanUid, weeksList[i].uid, i + 1);
               }
-            }));
+            }))
+        .whenComplete(() => EasyLoading.dismiss());
   }
 
   Widget workoutsListView(String weekUid, int week) {
@@ -421,17 +423,21 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
   }
 
   void copyWorkouts() {
+    EasyLoading.show();
     copyWorkoutsList.forEach((workout) async {
       _bloc
           .copyWorkout(workoutPlanUid, workoutBeingCopied, workout)
+          .whenComplete(() => EasyLoading.dismiss())
           .whenComplete(() => turnWorkoutCopyModeOff());
     });
   }
 
   void copyWeeks() {
+    EasyLoading.show();
     copyWeeksList.forEach((week) async {
       await _bloc
           .copyWeek(workoutPlanUid, weekBeingCopied, week)
+          .whenComplete(() => EasyLoading.dismiss())
           .whenComplete(() => turnWeekCopyModeOff());
     });
   }
@@ -529,19 +535,23 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
   }
 
   swapWeeks(Week oldWeek, Week newWeek) async {
+    EasyLoading.show();
     await _bloc
         .updateWeekIndex(workoutPlanUid, oldWeek.uid, newWeek.week)
         .whenComplete(() async => await _bloc.updateWeekIndex(
             workoutPlanUid, newWeek.uid, oldWeek.week))
+        .whenComplete(() => EasyLoading.dismiss())
         .whenComplete(() => turnWeekSwapModeOff());
   }
 
   swapWorkouts(Workout oldWorkout, Workout newWorkout) async {
+    EasyLoading.show();
     await _bloc
         .updateWorkoutIndex(
             workoutPlanUid, oldWorkout.weekUid, oldWorkout.uid, newWorkout.day)
         .whenComplete(() => _bloc.updateWorkoutIndex(
             workoutPlanUid, newWorkout.weekUid, newWorkout.uid, oldWorkout.day))
+        .whenComplete(() => EasyLoading.dismiss())
         .whenComplete(() => turnWorkoutSwapModeOff());
   }
 
@@ -627,6 +637,7 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
     } else {
       return FloatingActionButton.extended(
         onPressed: () {
+          EasyLoading.show();
           _bloc
               .createNewWeek(workoutPlanUid, weeksList.length + 1)
               .whenComplete(
@@ -637,7 +648,8 @@ class _PlanWorkoutsState extends State<PlanWorkouts> {
                 ),
               )
               .whenComplete(() =>
-                  _bloc.updateNumberOfWeeks(workoutPlanUid, weeksList.length));
+                  _bloc.updateNumberOfWeeks(workoutPlanUid, weeksList.length))
+              .whenComplete(() => EasyLoading.dismiss());
         },
         label: Text(kAddWeek),
         icon: Icon(Icons.add),

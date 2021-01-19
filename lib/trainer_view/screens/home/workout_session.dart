@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/custom_widgets/workout_session_set_card.dart';
 import 'package:fit_mart/custom_widgets/workout_session_widget.dart';
 import 'package:fit_mart/models/exercise.dart';
@@ -40,7 +41,11 @@ class _WorkoutSessionState extends State<WorkoutSession> {
 
   String exerciseName = '';
 
-  Timer restTimer;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +146,8 @@ class _WorkoutSessionState extends State<WorkoutSession> {
     List<Set> setsList = [];
     docList.forEach((element) {
       Set set = Set(
+          isTimed: element.get('isTimed'),
+          isFailure: element.get('isFailure'),
           reps: element.get('reps'),
           rest: element.get('rest'),
           set: element.get('set'),
@@ -168,10 +175,14 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                 return Divider();
               },
               itemBuilder: (context, index) {
-                CountDownController _countDownController =
+                CountDownController _restCountDownController =
                     CountDownController();
-                bool isTimerPaused = false;
+                CountDownController _setCountDownController =
+                    CountDownController();
+                bool isRestTimerPaused = false;
+                bool isSetTimerPaused = false;
                 bool showRestTimer = false;
+                if (setsList[index].isTimed == true) {}
                 return StreamBuilder(
                     stream: _blocWorkoutSession.getSetIsDone(
                         widget.workoutPlanUid,
@@ -189,6 +200,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                       } else {
                         isDone = false;
                       }
+
                       return WorkoutSessionSetCard(
                         onChanged: (isDone) {
                           _blocWorkoutSession.updateIsDoneSet(
@@ -204,19 +216,53 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                             showRestTimer = false;
                           }
                         },
-                        countDownController: _countDownController,
-                        onTimerPressed: () {
-                          if (isTimerPaused == false) {
-                            isTimerPaused = true;
-                            _countDownController.pause();
+                        setCountDownController: _setCountDownController,
+                        restCountDownController: _restCountDownController,
+                        onSetTimerPressed: () {
+                          if (isSetTimerPaused == false &&
+                              setsList[index].isTimed) {
+                            isSetTimerPaused = true;
+                            _setCountDownController.pause();
+                          } else if (isSetTimerPaused == true &&
+                              setsList[index].isTimed) {
+                            isSetTimerPaused = false;
+                            _setCountDownController.restart(
+                                duration: setsList[index].reps);
+                          }
+                        },
+                        onRestTimerPressed: () {
+                          if (isRestTimerPaused == false) {
+                            isRestTimerPaused = true;
+                            _restCountDownController.pause();
                           } else {
-                            isTimerPaused = false;
-                            _countDownController.restart(
+                            isRestTimerPaused = false;
+                            _restCountDownController.restart(
                                 duration: setsList[index].rest);
                           }
                         },
+                        onTimedSetTimerComplete: () async {
+                          isDone = true;
+
+                          showRestTimer = true;
+
+                          _blocWorkoutSession.updateIsDoneSet(
+                              isDone,
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              exerciseUid,
+                              setsList[index].setUid);
+                          showRepsCompleteSnackBar();
+                          if (await Vibration.hasCustomVibrationsSupport()) {
+                            Vibration.vibrate(duration: 5000);
+                          } else {
+                            Vibration.vibrate();
+                            await Future.delayed(Duration(seconds: 5));
+                            Vibration.vibrate();
+                          }
+                        },
                         onRestTimerComplete: () async {
-                          showSnackBar();
+                          showRestCompleteSnackBar();
                           if (await Vibration.hasCustomVibrationsSupport()) {
                             Vibration.vibrate(duration: 5000);
                           } else {
@@ -227,6 +273,8 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                         },
                         showRestTimer: showRestTimer,
                         isDone: isDone,
+                        isFailure: setsList[index].isFailure,
+                        isTimed: setsList[index].isTimed,
                         set: setsList[index].set,
                         reps: setsList[index].reps,
                         rest: setsList[index].rest,
@@ -243,10 +291,10 @@ class _WorkoutSessionState extends State<WorkoutSession> {
         });
   }
 
-  void showSnackBar() {
-    Scaffold.of(context).showSnackBar(SnackBar(
+  void showRestCompleteSnackBar() {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
         duration: Duration(seconds: 5),
-        backgroundColor: Colors.red,
+        backgroundColor: kAccentColor,
         content: Text(
           'Rest Complete!',
           style: TextStyle(
@@ -254,9 +302,14 @@ class _WorkoutSessionState extends State<WorkoutSession> {
         )));
   }
 
-  @override
-  void dispose() {
-    restTimer.cancel();
-    super.dispose();
+  void showRepsCompleteSnackBar() {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+        duration: Duration(seconds: 5),
+        backgroundColor: kAccentColor,
+        content: Text(
+          'Set Complete! Time to Rest!',
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),
+        )));
   }
 }

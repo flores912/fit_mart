@@ -4,6 +4,8 @@ import 'package:fit_mart/trainer_view/screens/create_plan/plan_workouts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fit_mart/constants.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 
 class PlanDetails extends StatefulWidget {
   final String workoutPlanUid;
@@ -231,43 +233,36 @@ class _PlanDetailsState extends State<PlanDetails> {
 
   createNewPlan() {
     if (_formKey.currentState.validate()) {
+      EasyLoading.show();
       _bloc
           .createNewPlan(title, description, type, location, level)
           .then((value) async {
         //this will stop from adding a new workout plan if user presses back button and will update instead
         workoutPlanUid = value.id;
         isBackPressed = true;
-      }).whenComplete(
-        () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PlanWorkouts(
-              workoutPlanUid: workoutPlanUid,
-            ),
-          ),
-        ),
-      );
+      }).whenComplete(() => EasyLoading.dismiss().whenComplete(() => Get.to(
+                PlanWorkouts(
+                  workoutPlanUid: workoutPlanUid,
+                ),
+              )));
     }
   }
 
   updateNewPlan() {
     if (_formKey.currentState.validate()) {
+      EasyLoading.show();
       _bloc
           .updatePlanDetails(
               workoutPlanUid, title, description, type, location, level)
           .whenComplete(() {
         if (widget.isEdit == true) {
-          Navigator.pop(context);
+          EasyLoading.dismiss().whenComplete(() => Navigator.pop(context));
         } else {
           //this will stop from adding a new workout plan if user presses back button and will update instead
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PlanWorkouts(
+
+          EasyLoading.dismiss().whenComplete(() => Get.to(PlanWorkouts(
                 workoutPlanUid: workoutPlanUid,
-              ),
-            ),
-          );
+              )));
         }
       });
     }

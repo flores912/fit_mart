@@ -37,6 +37,10 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
   BetterPlayerConfiguration betterPlayerConfiguration =
       BetterPlayerConfiguration(autoPlay: false);
   List<Exercise> exercisesList = [];
+
+  bool isTimed;
+
+  bool isFailure;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +90,9 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                                     value.id,
                                     set,
                                     reps,
-                                    rest);
+                                    rest,
+                                    isTimed,
+                                    isFailure);
                               });
                             });
                           })

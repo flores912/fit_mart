@@ -69,6 +69,16 @@ const List<String> kLocations = [
   'Gym',
   'Outdoors',
 ];
+const List<String> kTypesOfReps = [
+  'reps',
+  'min',
+  'secs',
+  'failure',
+];
+const List<String> kRestUnits = [
+  'secs',
+  'min',
+];
 
 const Color kPrimaryColor = Colors.lightBlue;
 const Color kAccentColor = Colors.lightBlueAccent;

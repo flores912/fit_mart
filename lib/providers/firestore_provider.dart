@@ -599,7 +599,9 @@ class FirestoreProvider {
       String exerciseUid,
       int set,
       int reps,
-      int rest) async {
+      int rest,
+      bool isTimed,
+      bool isFailure) async {
     return await _firestore
         .collection('workoutPlans')
         .doc(workoutPlanUid)
@@ -611,6 +613,8 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets')
         .add({
+      'isTimed': isTimed,
+      'isFailure': isFailure,
       'set': set,
       'reps': reps,
       'rest': rest,
@@ -661,8 +665,8 @@ class FirestoreProvider {
         .snapshots();
   }
 
-  Future<DocumentReference> addNewSetCollection(
-      String exerciseUid, int set, int reps, int rest) async {
+  Future<DocumentReference> addNewSetCollection(String exerciseUid, int set,
+      int reps, int rest, bool isTimed, bool isFailure) async {
     return await _firestore
         .collection('users')
         .doc(_firebaseAuth.currentUser.uid)
@@ -670,6 +674,8 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets')
         .add({
+      'isTimed': isTimed,
+      'isFailure': isFailure,
       'set': set,
       'reps': reps,
       'rest': rest,
@@ -860,13 +866,16 @@ class FirestoreProvider {
                                               value.docs.forEach((set) async {
                                                 //add sets to the new exercise
                                                 await addNewSet(
-                                                    workoutPlanUid,
-                                                    newWeekUid,
-                                                    newWorkout.id,
-                                                    newExercise.id,
-                                                    await set.get('set'),
-                                                    await set.get('reps'),
-                                                    await set.get('rest'));
+                                                  workoutPlanUid,
+                                                  newWeekUid,
+                                                  newWorkout.id,
+                                                  newExercise.id,
+                                                  await set.get('set'),
+                                                  await set.get('reps'),
+                                                  await set.get('rest'),
+                                                  await set.get('isTimed'),
+                                                  await set.get('isFailure'),
+                                                );
                                               });
                                             })
                                           });
@@ -970,13 +979,16 @@ class FirestoreProvider {
           .then((sets) {
         sets.docs.forEach((set) async {
           await addNewSet(
-              workoutPlanUid,
-              weekUid,
-              workoutUid,
-              duplicateExercise.id,
-              await set.get('set'),
-              await set.get('reps'),
-              await set.get('rest'));
+            workoutPlanUid,
+            weekUid,
+            workoutUid,
+            duplicateExercise.id,
+            await set.get('set'),
+            await set.get('reps'),
+            await set.get('rest'),
+            await set.get('isTimed'),
+            await set.get('isFailure'),
+          );
         });
       });
     });
@@ -988,8 +1000,14 @@ class FirestoreProvider {
         .then((duplicateExercise) async {
       await getSetsCollectionFuture(exercise.exerciseUid).then((sets) {
         sets.docs.forEach((set) async {
-          await addNewSetCollection(duplicateExercise.id, await set.get('set'),
-              await set.get('reps'), await set.get('rest'));
+          await addNewSetCollection(
+            duplicateExercise.id,
+            await set.get('set'),
+            await set.get('reps'),
+            await set.get('rest'),
+            await set.get('isTimed'),
+            await set.get('isFailure'),
+          );
         });
       });
     });

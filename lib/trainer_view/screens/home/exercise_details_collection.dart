@@ -236,6 +236,8 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
     List<Set> setsList = [];
     docList.forEach((element) {
       Set set = Set(
+          isTimed: element.get('isTimed'),
+          isFailure: element.get('isFailure'),
           reps: element.get('reps'),
           rest: element.get('rest'),
           set: element.get('set'),
@@ -262,6 +264,8 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
               },
               itemBuilder: (context, index) {
                 return SetCard(
+                  isFailure: setsList[index].isFailure,
+                  isTimed: setsList[index].isTimed,
                   set: setsList[index].set,
                   reps: setsList[index].reps,
                   rest: setsList[index].rest,

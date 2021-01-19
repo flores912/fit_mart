@@ -4,10 +4,18 @@ import 'package:fit_mart/providers/firestore_provider.dart';
 class EditSetBloc {
   FirestoreProvider _firestoreProvider = FirestoreProvider();
 
-  Future<DocumentReference> addNewSet(String workoutPlanUid, String weekUid,
-          String workoutUid, String exerciseUid, int set, int reps, int rest) =>
-      _firestoreProvider.addNewSet(
-          workoutPlanUid, weekUid, workoutUid, exerciseUid, set, reps, rest);
+  Future<DocumentReference> addNewSet(
+          String workoutPlanUid,
+          String weekUid,
+          String workoutUid,
+          String exerciseUid,
+          int set,
+          int reps,
+          int rest,
+          bool isTimed,
+          bool isFailure) =>
+      _firestoreProvider.addNewSet(workoutPlanUid, weekUid, workoutUid,
+          exerciseUid, set, reps, rest, isTimed, isFailure);
 
   Future<void> updateExerciseDetailsNumberOfSets(
           int sets,
@@ -22,7 +30,8 @@ class EditSetBloc {
       _firestoreProvider.updateExerciseDetailsNumberOfSetsCollection(
           sets, exerciseUid);
 
-  Future<DocumentReference> addNewSetCollection(
-          String exerciseUid, int set, int reps, int rest) =>
-      _firestoreProvider.addNewSetCollection(exerciseUid, set, reps, rest);
+  Future<DocumentReference> addNewSetCollection(String exerciseUid, int set,
+          int reps, int rest, bool isTimed, bool isFailure) =>
+      _firestoreProvider.addNewSetCollection(
+          exerciseUid, set, reps, rest, isTimed, isFailure);
 }
