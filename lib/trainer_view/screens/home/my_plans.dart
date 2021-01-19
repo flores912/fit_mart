@@ -10,6 +10,7 @@ import 'package:fit_mart/trainer_view/screens/home/plan_overview.dart';
 import 'package:fit_mart/trainer_view/screens/home/workout_plan_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class MyPlans extends StatefulWidget {
   static const String title = kWorkoutPlans;
@@ -86,8 +87,11 @@ class _MyPlansState extends State<MyPlans> {
 
                                     break;
                                   case 2:
-                                    _bloc.deletePlan(
-                                        workoutPlansList[index].uid);
+                                    EasyLoading.show();
+                                    _bloc
+                                        .deletePlan(workoutPlansList[index].uid)
+                                        .whenComplete(
+                                            () => EasyLoading.dismiss());
 
                                     break;
                                 }

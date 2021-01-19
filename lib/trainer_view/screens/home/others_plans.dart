@@ -7,6 +7,7 @@ import 'package:fit_mart/trainer_view/screens/create_plan/plan_details.dart';
 import 'package:fit_mart/trainer_view/screens/home/workout_plan_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 import '../../../constants.dart';
@@ -54,6 +55,7 @@ class _OthersPlansState extends State<OthersPlans> {
                                         child: Text('No')),
                                     TextButton(
                                         onPressed: () {
+                                          EasyLoading.show();
                                           _bloc
                                               .removePlanFromList(
                                                   workoutPlansList[index].uid)
@@ -66,6 +68,8 @@ class _OthersPlansState extends State<OthersPlans> {
                                                   ),
                                                 ),
                                               )
+                                              .whenComplete(
+                                                  () => EasyLoading.dismiss())
                                               .whenComplete(
                                                   () => Navigator.pop(context));
                                         },

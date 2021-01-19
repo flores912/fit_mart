@@ -6,6 +6,7 @@ import 'package:fit_mart/trainer_view/blocs/trainer_account_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -65,6 +66,7 @@ class _EditProfileState extends State<EditProfile> {
             TextButton(
               child: Text(kSave),
               onPressed: () {
+                EasyLoading.show();
                 checkUsername(username).whenComplete(() {
                   if (_formKey.currentState.validate()) {
                     if (_croppedImage != null) {
@@ -78,11 +80,12 @@ class _EditProfileState extends State<EditProfile> {
                           .whenComplete(() => _bloc
                               .updateProfile(
                                   name, username, bio, photoUrl, tipUrl)
+                              .whenComplete(() => EasyLoading.dismiss())
                               .whenComplete(() => Navigator.pop(context)));
-                      print(photoUrl);
                     } else {
                       _bloc
                           .updateProfile(name, username, bio, photoUrl, tipUrl)
+                          .whenComplete(() => EasyLoading.dismiss())
                           .whenComplete(() => Navigator.pop(context));
                     }
                   }

@@ -7,6 +7,7 @@ import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:fit_mart/trainer_view/screens/home/workout_session.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
@@ -47,12 +48,15 @@ class _PlanOverviewState extends State<PlanOverview> {
                 if (FirebaseAuth.instance.currentUser == null) {
                   Get.to(Login());
                 } else {
+                  EasyLoading.show();
                   _bloc
                       .addPlanToMyList(widget.workoutPlan.uid)
                       .whenComplete(() {
-                    Scaffold.of(context).showSnackBar(
-                        SnackBar(content: Text('Workout Plan Added.')));
-                  }).whenComplete(() => Get.offAll((HomeTrainer())));
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text('Workout Plan Added.')));
+                      })
+                      .whenComplete(() => EasyLoading.dismiss())
+                      .whenComplete(() => Get.offAll((HomeTrainer())));
                 }
               },
               label: Text('Add Plan'),

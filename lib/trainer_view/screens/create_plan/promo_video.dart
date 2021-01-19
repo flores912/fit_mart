@@ -6,6 +6,8 @@ import 'package:fit_mart/trainer_view/blocs/promo_video_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/edit_plan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
@@ -48,6 +50,7 @@ class _PromoVideoState extends State<PromoVideo> {
                     ? Text(kSave)
                     : Text(kSkip),
             onPressed: () async {
+              EasyLoading.show();
               if (videoFile != null) {
                 _bloc
                     .downloadURL(videoFile,
@@ -57,12 +60,12 @@ class _PromoVideoState extends State<PromoVideo> {
                   _bloc.updatePlanPromo(widget.workoutPlanUid, videoUrl);
                 }).whenComplete(() {
                   if (widget.isEdit == true) {
-                    Navigator.pop(context);
+                    EasyLoading.dismiss()
+                        .whenComplete(() => Navigator.pop(context));
                   } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditPlan(
+                    EasyLoading.dismiss().whenComplete(
+                      () => Get.to(
+                        EditPlan(
                           workoutPlanUid: widget.workoutPlanUid,
                         ),
                       ),
@@ -70,10 +73,9 @@ class _PromoVideoState extends State<PromoVideo> {
                   }
                 });
               } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditPlan(
+                EasyLoading.dismiss().whenComplete(
+                  () => Get.to(
+                    EditPlan(
                       workoutPlanUid: widget.workoutPlanUid,
                     ),
                   ),
@@ -178,7 +180,7 @@ class _PromoVideoState extends State<PromoVideo> {
     final picker = ImagePicker();
 
     final pickedVideo = await picker.getVideo(
-        maxDuration: Duration(seconds: 10),
+        maxDuration: Duration(seconds: 60),
         source: (isCamera == true) ? ImageSource.camera : ImageSource.gallery);
     setState(() {
       videoFile = File(pickedVideo.path);

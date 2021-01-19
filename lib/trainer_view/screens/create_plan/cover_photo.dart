@@ -8,6 +8,8 @@ import 'package:fit_mart/trainer_view/blocs/cover_photo_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/promo_video.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -56,6 +58,7 @@ class _CoverPhotoState extends State<CoverPhoto> {
                     ? Text(kSave)
                     : Text(kSkip),
             onPressed: () async {
+              EasyLoading.show();
               _bloc
                   .downloadURL(_croppedImage,
                       widget.workoutPlanUid + '/coverPhoto', 'image/jpeg')
@@ -64,16 +67,14 @@ class _CoverPhotoState extends State<CoverPhoto> {
                 _bloc.updatePlanCover(widget.workoutPlanUid, coverPhotoUrl);
               }).whenComplete(() {
                 if (widget.isEdit != true) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PromoVideo(
-                        workoutPlanUid: widget.workoutPlanUid,
-                      ),
-                    ),
-                  );
+                  EasyLoading.dismiss().whenComplete(() => Get.to(
+                        PromoVideo(
+                          workoutPlanUid: widget.workoutPlanUid,
+                        ),
+                      ));
                 } else {
-                  Navigator.pop(context);
+                  EasyLoading.dismiss()
+                      .whenComplete(() => Navigator.pop(context));
                 }
               });
             },
