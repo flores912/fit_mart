@@ -45,6 +45,8 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   List<Set> setsList = [];
 
   int duration;
+
+  bool isVideoRemoved;
   @override
   void initState() {
     getVideoUrl();
@@ -126,21 +128,26 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
             child: Column(
               children: [
                 _controller != null
-                    ? Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width / 1.78,
-                        child: ChewiePlayerWidget(
-                          autoPlay: false,
-                          looping: false,
-                          showControls: true,
-                          videoPlayerController: _controller,
-                        ),
+                    ? Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Recommended Aspect Ratio : 16:9'),
+                          ),
+                          Container(
+                            color: Colors.black,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width * 9 / 16,
+                            child: ChewiePlayerWidget(
+                              autoPlay: false,
+                              looping: false,
+                              showControls: true,
+                              videoPlayerController: _controller,
+                            ),
+                          ),
+                        ],
                       )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width / 1.78,
-                        color: CupertinoColors.placeholderText,
-                      ),
+                    : Container(),
                 OutlineButton(
                   child: Text(_controller == null ? kAddVideo : kChangeVideo),
                   onPressed: () {
@@ -200,7 +207,6 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   }
 
   Future validateDurationOfVideo() async {
-    EasyLoading.show();
     if (duration != null && duration > 60) {
       //dont save
       showDialog(
@@ -215,7 +221,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
           videoFile = null;
           await _onControllerChange(videoFile);
         });
-      }).whenComplete(() => EasyLoading.dismiss());
+      });
     }
   }
 
@@ -277,6 +283,21 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                 Navigator.pop(dialogContext);
               },
               child: const Text('Record from camera'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  isVideoRemoved = true;
+                  videoUrl = null;
+                  videoFile = null;
+                  _onControllerChange(videoFile);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Remove Video',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );

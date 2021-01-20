@@ -94,6 +94,7 @@ class _PlanDetailsState extends State<PlanDetails> {
                       return null;
                     },
                     maxLines: 1,
+                    maxLength: 70,
                     onChanged: (value) {
                       title = value;
                     },

@@ -87,6 +87,10 @@ class _TrainerAccountState extends State<TrainerAccount> {
                             child: Container(
                               height: 150,
                               width: 150,
+                              child: Icon(
+                                Icons.person_outline_rounded,
+                                size: 150,
+                              ),
                               decoration: new BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: CupertinoColors.placeholderText,

@@ -31,6 +31,8 @@ class _PromoVideoState extends State<PromoVideo> {
   File videoFile;
 
   int duration;
+
+  bool isVideoRemoved;
   @override
   void initState() {
     getVideoUrl();
@@ -72,6 +74,11 @@ class _PromoVideoState extends State<PromoVideo> {
                     );
                   }
                 });
+              } else if (isVideoRemoved == true && widget.isEdit == true) {
+                _bloc
+                    .updatePlanPromo(widget.workoutPlanUid, videoUrl)
+                    .whenComplete(() => EasyLoading.dismiss()
+                        .whenComplete(() => Navigator.pop(context)));
               } else {
                 EasyLoading.dismiss().whenComplete(
                   () => Get.to(
@@ -90,10 +97,15 @@ class _PromoVideoState extends State<PromoVideo> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Recommended Aspect Ratio : 16:9'),
+              ),
               _controller != null
                   ? Container(
+                      color: Colors.black,
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
+                      height: MediaQuery.of(context).size.width * 9 / 16,
                       child: ChewiePlayerWidget(
                         autoPlay: false,
                         looping: false,
@@ -101,11 +113,7 @@ class _PromoVideoState extends State<PromoVideo> {
                         videoPlayerController: _controller,
                       ),
                     )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
-                      color: CupertinoColors.placeholderText,
-                    ),
+                  : Container(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: OutlineButton(
@@ -169,6 +177,21 @@ class _PromoVideoState extends State<PromoVideo> {
                 Navigator.pop(dialogContext);
               },
               child: const Text('Camera'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  isVideoRemoved = true;
+                  videoUrl = null;
+                  videoFile = null;
+                  _onControllerChange(videoFile);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Remove Video',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );

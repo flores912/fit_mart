@@ -52,8 +52,8 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
             itemCount: exercisesList.length,
             itemBuilder: (context, index) {
               return Container(
-                width: MediaQuery.of(context).size.width - 24,
-                child: ExerciseCard(
+                  width: MediaQuery.of(context).size.width - 24,
+                  child: ExerciseCard(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -99,31 +99,9 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
                             kExerciseCardCollectionPopUpMenuList),
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
-                    thumbnail: exercisesList[index].videoUrl != null
-                        ? Container(
-                            height: 100,
-                            width: 100,
-                            child: BetterPlayerListVideoPlayer(
-                              BetterPlayerDataSource(
-                                  BetterPlayerDataSourceType.network,
-                                  exercisesList[index].videoUrl),
-                              configuration: BetterPlayerConfiguration(
-                                controlsConfiguration:
-                                    BetterPlayerControlsConfiguration(
-                                  showControls: false,
-                                ),
-                                aspectRatio: 1,
-                              ),
-                              betterPlayerListVideoPlayerController: controller,
-                              autoPlay: false,
-                            ),
-                          )
-                        : Container(
-                            color: CupertinoColors.placeholderText,
-                            height: 100,
-                            width: 100,
-                          )),
-              );
+                    controller: controller,
+                    url: exercisesList[index].videoUrl,
+                  ));
             },
           );
         } else {

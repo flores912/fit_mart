@@ -25,8 +25,9 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
             child: Card(
               child: widget.videoUrl != null
                   ? Container(
+                      color: Colors.black,
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
+                      height: MediaQuery.of(context).size.width * 9 / 16,
                       child: ChewiePlayerWidget(
                         autoPlay: false,
                         looping: false,
@@ -37,12 +38,7 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
                                 VideoPlayerOptions(mixWithOthers: true)),
                       ),
                     )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width / 1.78,
-                      color: CupertinoColors.placeholderText,
-                      child: Card(),
-                    ),
+                  : Container(),
             ),
           ),
           Column(

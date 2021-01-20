@@ -27,6 +27,18 @@ class _EditPlanState extends State<EditPlan> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Plan'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextButton(
+              child: Text('Exit'),
+              onPressed: () {
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName(HomeTrainer.id));
+              },
+            ),
+          ),
+        ],
       ),
       body: StreamBuilder(
           stream: _bloc.getPlanDetailsStream(widget.workoutPlanUid),
@@ -114,46 +126,33 @@ class _EditPlanState extends State<EditPlan> {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: OutlineButton(
-                            child: Text('Exit'),
-                            onPressed: () {
-                              Navigator.of(context).popUntil(
-                                  ModalRoute.withName(HomeTrainer.id));
-                            },
-                          ),
-                        ),
-                        workoutPlan.isPublished == false
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: RaisedButton(
-                                    color: kPrimaryColor,
-                                    child: Text(
-                                      'Publish',
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    onPressed: () {
-                                      _bloc.updatePublishedStatus(
-                                          widget.workoutPlanUid, true);
-                                    }),
-                              )
-                            : RaisedButton(
-                                color: kPrimaryColor,
-                                child: Text(
-                                  kUnpublish,
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                onPressed: () {
-                                  _bloc.updatePublishedStatus(
-                                      widget.workoutPlanUid, false);
-                                }),
-                      ],
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: workoutPlan.isPublished == false
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                  color: kPrimaryColor,
+                                  child: Text(
+                                    'Publish',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  onPressed: () {
+                                    _bloc.updatePublishedStatus(
+                                        widget.workoutPlanUid, true);
+                                  }),
+                            )
+                          : RaisedButton(
+                              color: kPrimaryColor,
+                              child: Text(
+                                kUnpublish,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              onPressed: () {
+                                _bloc.updatePublishedStatus(
+                                    widget.workoutPlanUid, false);
+                              }),
                     ),
                   )
                 ],

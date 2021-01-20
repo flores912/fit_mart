@@ -61,9 +61,7 @@ class _SetCardState extends State<SetCard> {
                     )
                   : widget.isTimed == true
                       ? Text(
-                          (widget.reps / 60).truncate().toString() +
-                              ':' +
-                              (widget.reps % 60).toString(),
+                          _printDuration(Duration(seconds: widget.reps)),
                           style: TextStyle(
                               color: kPrimaryColor,
                               fontSize: 22,
@@ -79,7 +77,7 @@ class _SetCardState extends State<SetCard> {
             ),
             widget.isTimed == true
                 ? Text(
-                    widget.reps >= 60 ? 'min' : 'secs',
+                    'Time',
                     style: TextStyle(fontWeight: FontWeight.w300),
                   )
                 : Text(
@@ -94,11 +92,7 @@ class _SetCardState extends State<SetCard> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  widget.rest >= 60
-                      ? (widget.rest / 60).truncate().toString() +
-                          ':' +
-                          (widget.rest % 60).toString()
-                      : widget.rest.toString(),
+                  _printDuration(Duration(seconds: widget.rest)),
                   style: TextStyle(
                       color: kPrimaryColor,
                       fontSize: 22,
@@ -106,7 +100,7 @@ class _SetCardState extends State<SetCard> {
                 ),
               ),
               Text(
-                widget.rest >= 60 ? 'Rest(min)' : 'Rest(secs)',
+                'Rest',
                 style: TextStyle(fontWeight: FontWeight.w300),
               ),
             ],
@@ -115,5 +109,12 @@ class _SetCardState extends State<SetCard> {
         widget.more
       ],
     );
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

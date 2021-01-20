@@ -39,6 +39,8 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
 
   int duration;
 
+  bool isVideoRemoved;
+
   @override
   void initState() {
     getVideoUrl();
@@ -101,21 +103,26 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
             child: Column(
               children: [
                 _controller != null
-                    ? Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width / 1.78,
-                        child: ChewiePlayerWidget(
-                          autoPlay: false,
-                          looping: false,
-                          showControls: true,
-                          videoPlayerController: _controller,
-                        ),
+                    ? Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Recommended Aspect Ratio : 16:9'),
+                          ),
+                          Container(
+                            color: Colors.black,
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.width * 9 / 16,
+                            child: ChewiePlayerWidget(
+                              autoPlay: false,
+                              looping: false,
+                              showControls: true,
+                              videoPlayerController: _controller,
+                            ),
+                          ),
+                        ],
                       )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width / 1.78,
-                        color: CupertinoColors.placeholderText,
-                      ),
+                    : Container(),
                 OutlineButton(
                   child: Text(_controller == null ? kAddVideo : kChangeVideo),
                   onPressed: () {
@@ -227,6 +234,21 @@ class _ExerciseDetailsCollectionState extends State<ExerciseDetailsCollection> {
                 Navigator.pop(dialogContext);
               },
               child: const Text('Record from camera'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  isVideoRemoved = true;
+                  videoUrl = null;
+                  videoFile = null;
+                  _onControllerChange(videoFile);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Remove Video',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );

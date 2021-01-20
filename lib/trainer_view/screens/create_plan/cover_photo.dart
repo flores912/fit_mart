@@ -39,6 +39,8 @@ class _CoverPhotoState extends State<CoverPhoto> {
 
   double price;
 
+  bool isPhotoRemoved;
+
   @override
   void initState() {
     super.initState();
@@ -87,7 +89,13 @@ class _CoverPhotoState extends State<CoverPhoto> {
             if (snapshot.hasData) {
               title = snapshot.data.get('title');
               weeks = snapshot.data.get('weeks');
-              coverPhotoUrl = snapshot.data.get('coverPhotoUrl');
+
+              if (isPhotoRemoved == true) {
+                coverPhotoUrl = null;
+              } else {
+                coverPhotoUrl = snapshot.data.get('coverPhotoUrl');
+              }
+
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(32.0),
@@ -170,6 +178,20 @@ class _CoverPhotoState extends State<CoverPhoto> {
                 getImage(true).whenComplete(() => Navigator.pop(context));
               },
               child: const Text('Camera'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  isPhotoRemoved = true;
+                  coverPhotoUrl = null;
+                  _croppedImage = null;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Remove Photo',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );

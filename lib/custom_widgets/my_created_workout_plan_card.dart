@@ -6,18 +6,18 @@ class MyCreatedWorkoutPlanCard extends StatefulWidget {
   final String title;
   final bool isLive;
   final Widget more;
-  final Widget coverPhoto;
   final int weeks;
   final Function onTap;
+  final String url;
 
   const MyCreatedWorkoutPlanCard(
       {Key key,
       this.title,
       this.isLive,
       this.more,
-      this.coverPhoto,
       this.weeks,
-      this.onTap})
+      this.onTap,
+      this.url})
       : super(key: key);
 
   @override
@@ -31,7 +31,13 @@ class _MyCreatedWorkoutPlanCardState extends State<MyCreatedWorkoutPlanCard> {
     return ListTile(
       onTap: widget.onTap,
       trailing: widget.more,
-      leading: Container(height: 100, width: 100, child: widget.coverPhoto),
+      leading: widget.url != null
+          ? Container(
+              height: 56,
+              width: 100,
+              child: Image.network(widget.url),
+            )
+          : null,
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

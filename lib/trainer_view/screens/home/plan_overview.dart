@@ -64,13 +64,14 @@ class _PlanOverviewState extends State<PlanOverview> {
           : Container(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Card(
                 child: _controller != null
                     ? Container(
+                        color: Colors.black,
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width / 1.78,
                         child: ChewiePlayerWidget(
@@ -80,11 +81,7 @@ class _PlanOverviewState extends State<PlanOverview> {
                           videoPlayerController: _controller,
                         ),
                       )
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width / 1.78,
-                        color: CupertinoColors.placeholderText,
-                      ),
+                    : Container(),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
@@ -111,10 +108,7 @@ class _PlanOverviewState extends State<PlanOverview> {
                         trimExpandedText: 'Show less',
                         style: TextStyle(fontSize: 18),
                       )
-                    : Text(
-                        '(No description.)',
-                        style: TextStyle(fontSize: 18),
-                      ),
+                    : Container(),
               ),
               Card(
                 child: Padding(

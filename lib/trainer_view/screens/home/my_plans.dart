@@ -64,13 +64,7 @@ class _MyPlansState extends State<MyPlans> {
                           title: workoutPlansList[index].title,
                           weeks: workoutPlansList[index].weeks,
                           isLive: workoutPlansList[index].isPublished,
-                          coverPhoto:
-                              workoutPlansList[index].coverPhotoUrl != null
-                                  ? Image.network(
-                                      workoutPlansList[index].coverPhotoUrl)
-                                  : Container(
-                                      color: CupertinoColors.placeholderText,
-                                    ),
+                          url: workoutPlansList[index].coverPhotoUrl,
                           more: PopupMenuButton(
                               onSelected: (value) {
                                 switch (value) {

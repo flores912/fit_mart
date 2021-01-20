@@ -110,12 +110,9 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                                       color: kPrimaryColor),
                                 )
                               : Text(
-                                  widget.isTimed && widget.reps >= 60
-                                      ? (widget.reps / 60)
-                                              .truncate()
-                                              .toString() +
-                                          ':' +
-                                          (widget.reps % 60).toString()
+                                  widget.isTimed == true
+                                      ? _printDuration(
+                                          Duration(seconds: widget.reps))
                                       : widget.reps.toString(),
                                   style: TextStyle(
                                       color: kPrimaryColor,
@@ -123,30 +120,16 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                                       fontWeight: FontWeight.bold),
                                 ),
                       widget.isTimed == true
-                          ? Column(
-                              children: [
-                                Text(
-                                  widget.reps >= 60 &&
-                                          showTimedSetTimer == false
-                                      ? 'min'
-                                      : widget.reps < 60 &&
-                                              showTimedSetTimer == false
-                                          ? 'secs'
-                                          : '',
-                                  style: TextStyle(fontWeight: FontWeight.w300),
-                                ),
-                                showTimedSetTimer == false
-                                    ? RaisedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            showTimedSetTimer = true;
-                                          });
-                                        },
-                                        child: Text('START TIMER'),
-                                      )
-                                    : Container()
-                              ],
-                            )
+                          ? showTimedSetTimer == false
+                              ? RaisedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      showTimedSetTimer = true;
+                                    });
+                                  },
+                                  child: Text('START TIMER'),
+                                )
+                              : Container()
                           : Text(
                               'Reps',
                               style: TextStyle(fontWeight: FontWeight.w300),
@@ -157,18 +140,14 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                       ? Column(
                           children: [
                             Text(
-                              widget.rest >= 60
-                                  ? (widget.rest / 60).truncate().toString() +
-                                      ':' +
-                                      (widget.rest % 60).toString()
-                                  : widget.rest.toString(),
+                              _printDuration(Duration(seconds: widget.rest)),
                               style: TextStyle(
                                   color: kPrimaryColor,
                                   fontSize: 22,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              widget.rest >= 60 ? 'Rest(min)' : 'Rest(secs)',
+                              'Rest',
                               style: TextStyle(fontWeight: FontWeight.w300),
                             ),
                           ],
@@ -197,5 +176,12 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
         ),
       ],
     );
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

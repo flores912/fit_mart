@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,6 +46,8 @@ class _EditProfileState extends State<EditProfile> {
 
   String tipUrl;
 
+  bool isPhotoRemoved;
+
   @override
   void initState() {
     name = widget.name;
@@ -61,6 +64,10 @@ class _EditProfileState extends State<EditProfile> {
       key: _formKey,
       child: Scaffold(
         appBar: AppBar(
+          leading: GestureDetector(
+            child: Icon(Icons.close),
+            onTap: () => Navigator.pop(context),
+          ),
           title: Text('Edit Profile'),
           actions: [
             TextButton(
@@ -82,6 +89,11 @@ class _EditProfileState extends State<EditProfile> {
                                   name, username, bio, photoUrl, tipUrl)
                               .whenComplete(() => EasyLoading.dismiss())
                               .whenComplete(() => Navigator.pop(context)));
+                    } else if (isPhotoRemoved == true) {
+                      _bloc
+                          .updateProfile(name, username, bio, photoUrl, tipUrl)
+                          .whenComplete(() => EasyLoading.dismiss())
+                          .whenComplete(() => Navigator.pop(context));
                     } else {
                       _bloc
                           .updateProfile(name, username, bio, photoUrl, tipUrl)
@@ -120,6 +132,10 @@ class _EditProfileState extends State<EditProfile> {
                     : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
+                          child: Icon(
+                            Icons.person_outline_rounded,
+                            size: 200,
+                          ),
                           height: 200,
                           width: 200,
                           decoration: new BoxDecoration(
@@ -267,6 +283,20 @@ class _EditProfileState extends State<EditProfile> {
                 getImage(true).whenComplete(() => Navigator.pop(context));
               },
               child: const Text('Camera'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  isPhotoRemoved = true;
+                  photoUrl = null;
+                  _croppedImage = null;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Remove Photo',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );

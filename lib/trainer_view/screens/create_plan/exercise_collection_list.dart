@@ -111,30 +111,8 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
                     },
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
-                    thumbnail: exercisesList[index].videoUrl != null
-                        ? Container(
-                            height: 100,
-                            width: 100,
-                            child: BetterPlayerListVideoPlayer(
-                              BetterPlayerDataSource(
-                                  BetterPlayerDataSourceType.network,
-                                  exercisesList[index].videoUrl),
-                              configuration: BetterPlayerConfiguration(
-                                controlsConfiguration:
-                                    BetterPlayerControlsConfiguration(
-                                  showControls: false,
-                                ),
-                                aspectRatio: 1,
-                              ),
-                              betterPlayerListVideoPlayerController: controller,
-                              autoPlay: false,
-                            ),
-                          )
-                        : Container(
-                            color: CupertinoColors.placeholderText,
-                            height: 100,
-                            width: 100,
-                          ),
+                    controller: controller,
+                    url: exercisesList[index].videoUrl,
                   ));
             },
           );

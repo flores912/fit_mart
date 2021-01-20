@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 class ChewiePlayerWidget extends StatefulWidget {
@@ -28,6 +29,19 @@ class _ChewiePlayerWidgetState extends State<ChewiePlayerWidget> {
     _chewieController = ChewieController(
         showControlsOnInitialize: false,
         showControls: widget.showControls,
+        allowFullScreen: true,
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ],
+        deviceOrientationsOnEnterFullScreen: [
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ],
         autoPlay: widget.autoPlay,
         videoPlayerController: widget.videoPlayerController,
         aspectRatio: widget.videoPlayerController.value.aspectRatio,
@@ -36,7 +50,7 @@ class _ChewiePlayerWidgetState extends State<ChewiePlayerWidget> {
         errorBuilder: (context, errorMessage) {
           return Center(
             child: Text(
-              errorMessage,
+              'Video not available.',
               style: TextStyle(
                 color: Colors.white,
               ),
