@@ -32,10 +32,10 @@ class _HomeTrainerState extends State<HomeTrainer> {
     ),
   ];
   String _title;
-  int _currentIndex = 0;
+  int _currentIndex = 1;
   @override
   void initState() {
-    _title = MyPlans.title;
+    _title = 'Workout Plans';
     super.initState();
   }
 
@@ -43,6 +43,7 @@ class _HomeTrainerState extends State<HomeTrainer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, //prevent users to go back
         title: Text(_title),
         actions: [
           _currentIndex == 2
@@ -58,20 +59,19 @@ class _HomeTrainerState extends State<HomeTrainer> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            label: kExerciseCollection,
+            label: 'Exercise Collection',
             icon: Icon(Icons.collections_bookmark),
           ),
           BottomNavigationBarItem(
-            label: kWorkoutPlans,
-            icon: Icon(Icons.list_alt),
+            label: 'Workout Plans',
+            icon: Icon(Icons.fitness_center),
           ),
-
           BottomNavigationBarItem(
             label: kAccount,
             icon: Icon(Icons.person),
@@ -94,8 +94,7 @@ class _HomeTrainerState extends State<HomeTrainer> {
       switch (index) {
         case 0:
           {
-            _title = ExerciseCollection.title;
-
+            _title = 'Exercise Collection';
           }
           break;
         case 1:

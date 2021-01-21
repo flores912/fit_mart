@@ -9,6 +9,7 @@ import 'package:fit_mart/trainer_view/screens/create_plan/promo_video.dart';
 import 'package:fit_mart/trainer_view/screens/home/home_trainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EditPlan extends StatefulWidget {
   final String workoutPlanUid;
@@ -33,8 +34,8 @@ class _EditPlanState extends State<EditPlan> {
             child: TextButton(
               child: Text('Exit'),
               onPressed: () {
-                Navigator.of(context)
-                    .popUntil(ModalRoute.withName(HomeTrainer.id));
+                Navigator.pushNamedAndRemoveUntil(
+                    context, HomeTrainer.id, (_) => false);
               },
             ),
           ),

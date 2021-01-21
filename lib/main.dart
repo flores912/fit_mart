@@ -25,8 +25,7 @@ void main() async {
     await dynamicLinkProvider.handleDynamicLinks();
   });
 
-
- runApp(Fitpo());
+  runApp(Fitpo());
 }
 
 void configLoading() {
