@@ -1,10 +1,3 @@
-import 'package:catcher/core/catcher.dart';
-import 'package:catcher/handlers/console_handler.dart';
-import 'package:catcher/handlers/email_auto_handler.dart';
-import 'package:catcher/handlers/email_manual_handler.dart';
-import 'package:catcher/mode/dialog_report_mode.dart';
-import 'package:catcher/mode/page_report_mode.dart';
-import 'package:catcher/model/catcher_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/providers/dynamic_link_provider.dart';
@@ -52,7 +45,6 @@ class Fitpo extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: Catcher.navigatorKey,
       builder: EasyLoading.init(),
       title: 'Fitpo',
       theme: ThemeData.dark().copyWith(
