@@ -24,8 +24,8 @@ class HomeTrainer extends StatefulWidget {
 class _HomeTrainerState extends State<HomeTrainer> {
   final _tabs = [
     //ADD SCREENS FOR TABS HERE
-    Plans(),
     ExerciseCollection(),
+    Plans(),
     //Sales(),
     TrainerAccount(
       userUid: FirebaseAuth.instance.currentUser.uid,
@@ -58,23 +58,20 @@ class _HomeTrainerState extends State<HomeTrainer> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: true,
+        showSelectedLabels: false,
         showUnselectedLabels: false,
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            label: kWorkoutPlans,
-            icon: Icon(Icons.list_alt),
-          ),
-          BottomNavigationBarItem(
             label: kExerciseCollection,
             icon: Icon(Icons.collections_bookmark),
           ),
-          // BottomNavigationBarItem(
-          //   label: 'Sales',
-          //   icon: Icon(Icons.monetization_on),
-          // ),
+          BottomNavigationBarItem(
+            label: kWorkoutPlans,
+            icon: Icon(Icons.list_alt),
+          ),
+
           BottomNavigationBarItem(
             label: kAccount,
             icon: Icon(Icons.person),
@@ -97,12 +94,13 @@ class _HomeTrainerState extends State<HomeTrainer> {
       switch (index) {
         case 0:
           {
-            _title = 'Workout Plans';
+            _title = ExerciseCollection.title;
+
           }
           break;
         case 1:
           {
-            _title = ExerciseCollection.title;
+            _title = 'Workout Plans';
           }
           break;
 
