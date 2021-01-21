@@ -197,11 +197,11 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   void _initController(File file) {
     _controller = VideoPlayerController.file(file)
       ..initialize().then((_) {
-        setState(() async {
+        setState(() {
           duration = _controller.value.duration.inSeconds;
 
           //TODO handle exception when user doesnt upload a file
-          await validateDurationOfVideo();
+          validateDurationOfVideo();
         });
       });
   }
