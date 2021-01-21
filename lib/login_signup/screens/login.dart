@@ -40,85 +40,94 @@ class _LoginState extends State<Login> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0, 16, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  validator: (email) => EmailValidator.validate(email)
-                      ? null
-                      : "Invalid email address",
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) {
-                    email = value;
-                  },
-                  decoration: InputDecoration(
-                    labelText: kEmail,
-                    alignLabelWithHint: true,
-                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                      width: 250,
+                      height: 250,
+                      child: Image.asset('assets/icon/icon_login.png')),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  validator: (password) {
-                    if (password.isEmpty) {
-                      return kRequired;
-                    } else {
-                      return null;
-                    }
-                  },
-                  obscureText: true,
-                  onChanged: (value) {
-                    password = value;
-                  },
-                  decoration: InputDecoration(
-                    labelText: kPassword,
-                    alignLabelWithHint: true,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FlatButton(
-                  onPressed: () {
-                    Get.to(ResetPassword());
-                  },
-                  child: Text(kForgotPassword),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: (Text(
-                    kLogin,
-                  )),
-                  onPressed: () async {
-                    if (_formKey.currentState.validate())
-                      return await signInUser();
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('New User?'),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUp()),
-                        );
-                      },
-                      child: Text('Sign Up.'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    validator: (email) => EmailValidator.validate(email)
+                        ? null
+                        : "Invalid email address",
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) {
+                      email = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: kEmail,
+                      alignLabelWithHint: true,
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    validator: (password) {
+                      if (password.isEmpty) {
+                        return kRequired;
+                      } else {
+                        return null;
+                      }
+                    },
+                    obscureText: true,
+                    onChanged: (value) {
+                      password = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: kPassword,
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FlatButton(
+                    onPressed: () {
+                      Get.to(ResetPassword());
+                    },
+                    child: Text(kForgotPassword),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: (Text(
+                      kLogin,
+                    )),
+                    onPressed: () async {
+                      if (_formKey.currentState.validate())
+                        return await signInUser();
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('New User?'),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignUp()),
+                          );
+                        },
+                        child: Text('Sign Up.'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
