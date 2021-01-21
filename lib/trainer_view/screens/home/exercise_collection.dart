@@ -1,4 +1,3 @@
-import 'package:better_player/better_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/exercise_card.dart';
 import 'package:fit_mart/models/exercise.dart';
@@ -19,10 +18,6 @@ class ExerciseCollection extends StatefulWidget {
 
 class _ExerciseCollectionState extends State<ExerciseCollection> {
   WorkoutExercisesBloc _bloc = WorkoutExercisesBloc();
-  BetterPlayerListVideoPlayerController controller =
-      BetterPlayerListVideoPlayerController();
-  BetterPlayerConfiguration betterPlayerConfiguration =
-      BetterPlayerConfiguration(autoPlay: false);
   List<Exercise> exercisesList = [];
 
   @override
@@ -99,7 +94,6 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
                             kExerciseCardCollectionPopUpMenuList),
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
-                    controller: controller,
                     url: exercisesList[index].videoUrl,
                   ));
             },

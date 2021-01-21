@@ -22,7 +22,6 @@ dependencies:
   scroll_to_index: ^1.0.6
   firebase_storage: ^7.0.0
   image_picker: ^0.6.7+21
-  better_player: ^0.0.36
   chewie: ^0.12.0
   video_player: ^1.0.1
   rxdart: ^0.24.1

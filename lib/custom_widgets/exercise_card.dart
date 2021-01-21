@@ -1,7 +1,8 @@
-import 'package:better_player/better_player.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import 'chewie_player_widget.dart';
 
 class ExerciseCard extends StatefulWidget {
   final String exerciseName;
@@ -11,7 +12,6 @@ class ExerciseCard extends StatefulWidget {
   final double elevation;
   final Color color;
   final String url;
-  final BetterPlayerListVideoPlayerController controller;
 
   const ExerciseCard(
       {Key key,
@@ -22,7 +22,7 @@ class ExerciseCard extends StatefulWidget {
       this.elevation,
       this.color,
       this.url,
-      this.controller})
+      })
       : super(key: key);
   @override
   _ExerciseCardState createState() => _ExerciseCardState();
@@ -43,18 +43,14 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 ? Container(
                     height: 100,
                     width: 56,
-                    child: BetterPlayerListVideoPlayer(
-                      BetterPlayerDataSource(
-                          BetterPlayerDataSourceType.network, widget.url),
-                      configuration: BetterPlayerConfiguration(
-                        controlsConfiguration:
-                            BetterPlayerControlsConfiguration(
-                          showControls: false,
-                        ),
-                        aspectRatio: 1,
-                      ),
-                      betterPlayerListVideoPlayerController: widget.controller,
+                    child: ChewiePlayerWidget(
                       autoPlay: false,
+                      looping: false,
+                      showControls: false,
+                      videoPlayerController: VideoPlayerController.network(
+                          widget.url,
+                          videoPlayerOptions:
+                          VideoPlayerOptions(mixWithOthers: true)),
                     ),
                   )
                 : null,
