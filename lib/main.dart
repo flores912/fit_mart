@@ -63,6 +63,7 @@ class Fitpo extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: Catcher.navigatorKey,
       builder: EasyLoading.init(),
       title: 'Fitpo',
       theme: ThemeData.dark().copyWith(
