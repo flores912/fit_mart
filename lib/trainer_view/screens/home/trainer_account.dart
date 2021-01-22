@@ -207,24 +207,27 @@ class _TrainerAccountState extends State<TrainerAccount> {
                       scrollDirection: Axis.horizontal,
                       itemCount: workoutPlansList.length,
                       itemBuilder: (context, index) {
-                        return WorkoutPlanCard(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => WorkoutPlanPreview(
-                                  workoutPlan: workoutPlansList[index],
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: WorkoutPlanCard(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WorkoutPlanPreview(
+                                    workoutPlan: workoutPlansList[index],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          title: workoutPlansList[index].title,
-                          image: workoutPlansList[index].coverPhotoUrl != null
-                              ? Image.network(
-                                  workoutPlansList[index].coverPhotoUrl)
-                              : Container(
-                                  color: CupertinoColors.placeholderText,
-                                ),
+                              );
+                            },
+                            title: workoutPlansList[index].title,
+                            image: workoutPlansList[index].coverPhotoUrl != null
+                                ? Image.network(
+                                    workoutPlansList[index].coverPhotoUrl)
+                                : Container(
+                                    color: CupertinoColors.placeholderText,
+                                  ),
+                          ),
                         );
                       }),
                 ),
