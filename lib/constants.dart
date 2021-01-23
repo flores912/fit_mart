@@ -48,10 +48,10 @@ const String kUnpublish = 'Unpublish';
 const List<String> kTypes = [
   'Bodybuilding',
   'Weightlifting',
-  'StrengthTraining',
+  'Strength Training',
   'Bodyweight',
   'Prenatal Training',
-  'Postpartum  Training',
+  'Postpartum Training',
   'HIIT Training',
   'Sports Training',
   'Circuit Training',
