@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/constants.dart';
 import 'package:fit_mart/custom_widgets/my_created_workout_plan_card.dart';
 import 'package:fit_mart/custom_widgets/workout_plan_card.dart';
+import 'package:fit_mart/models/week.dart';
 import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/plans_bloc.dart';
 import 'package:fit_mart/trainer_view/screens/create_plan/edit_plan.dart';
@@ -61,6 +62,7 @@ class _MyPlansState extends State<MyPlans> {
                               ),
                             );
                           },
+                          trainerName: workoutPlansList[index].trainerName,
                           title: workoutPlansList[index].title,
                           weeks: workoutPlansList[index].weeks,
                           isLive: workoutPlansList[index].isPublished,

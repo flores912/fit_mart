@@ -3,10 +3,9 @@ import 'package:fit_mart/custom_widgets/exercise_card.dart';
 import 'package:fit_mart/models/exercise.dart';
 import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
-import 'package:fit_mart/trainer_view/screens/home/exercise_details_collection.dart';
-import 'package:fit_mart/trainer_view/screens/home/exercise_name_collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../constants.dart';
 
@@ -16,6 +15,7 @@ class ExerciseCollectionList extends StatefulWidget {
   final String workoutUid;
   final int exercise;
   final int numberOfExercises;
+  final bool isEdit;
 
   const ExerciseCollectionList(
       {Key key,
@@ -23,7 +23,8 @@ class ExerciseCollectionList extends StatefulWidget {
       this.weekUid,
       this.workoutUid,
       this.exercise,
-      this.numberOfExercises})
+      this.numberOfExercises,
+      this.isEdit})
       : super(key: key);
   @override
   _ExerciseCollectionListState createState() => _ExerciseCollectionListState();
@@ -59,55 +60,29 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
               return Container(
                   width: MediaQuery.of(context).size.width - 24,
                   child: ExerciseCard(
-                    onTap: () {
-                      _bloc
-                          .addNewExercise(
-                              exercisesList[index].exerciseName,
-                              widget.exercise,
-                              exercisesList[index].sets,
-                              exercisesList[index].videoUrl,
-                              widget.workoutPlanUid,
-                              widget.weekUid,
-                              widget.workoutUid)
-                          .then((value) {
-                            _bloc
-                                .getSetsCollection(
-                                    exercisesList[index].exerciseUid)
-                                .forEach((element) {
-                              element.docs.forEach((element) async {
-                                int set = await element.get('set');
-                                int reps = await element.get('reps');
-                                int rest = await element.get('rest');
-                                bool isSetInMin =
-                                    await element.get('isSetInMin');
-                                bool isRestInMin =
-                                    await element.get('isRestInMin');
-
-                                _bloc.addNewSet(
-                                    widget.workoutPlanUid,
-                                    widget.weekUid,
-                                    widget.workoutUid,
-                                    value.id,
-                                    set,
-                                    reps,
-                                    rest,
-                                    isTimed,
-                                    isFailure,
-                                    isSetInMin,
-                                    isRestInMin);
-                              });
-                            });
-                          })
-                          .whenComplete(() => _bloc.updateNumberOfExercises(
-                              widget.workoutPlanUid,
-                              widget.weekUid,
-                              widget.workoutUid,
-                              widget.exercise))
-                          .whenComplete(() => Navigator.pop(context));
+                    onTap: () async {
+                      await addExerciseToWorkout(index);
                     },
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
                     url: exercisesList[index].videoUrl,
+                    more: widget.isEdit == true
+                        ? PopupMenuButton(
+                            onSelected: (value) async {
+                              switch (value) {
+                                case 1:
+                                  addExerciseToWorkout(index);
+                                  break;
+
+                                case 2:
+                                  deleteExercise(index);
+                                  break;
+                              }
+                            },
+                            icon: Icon(Icons.more_vert),
+                            itemBuilder: (BuildContext context) =>
+                                kExerciseCardCollectionPopUpMenuList)
+                        : null,
                   ));
             },
           );
@@ -116,6 +91,58 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
         }
       },
     );
+  }
+
+  void deleteExercise(int index) {
+    EasyLoading.show();
+    _bloc
+        .deleteExerciseFromCollection(exercisesList[index].exerciseUid)
+        .whenComplete(() => EasyLoading.dismiss());
+  }
+
+  Future addExerciseToWorkout(
+    int index,
+  ) async {
+    EasyLoading.show();
+    _bloc
+        .addNewExercise(
+            exercisesList[index].exerciseName,
+            widget.exercise,
+            exercisesList[index].sets,
+            exercisesList[index].videoUrl,
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid)
+        .then((value) {
+          _bloc
+              .getSetsCollection(exercisesList[index].exerciseUid)
+              .forEach((element) {
+            element.docs.forEach((element) async {
+              int set = await element.get('set');
+              int reps = await element.get('reps');
+              int rest = await element.get('rest');
+              bool isSetInMin = await element.get('isSetInMin');
+              bool isRestInMin = await element.get('isRestInMin');
+
+              _bloc.addNewSet(
+                  widget.workoutPlanUid,
+                  widget.weekUid,
+                  widget.workoutUid,
+                  value.id,
+                  set,
+                  reps,
+                  rest,
+                  isTimed,
+                  isFailure,
+                  isSetInMin,
+                  isRestInMin);
+            });
+          });
+        })
+        .whenComplete(() => _bloc.updateNumberOfExercises(widget.workoutPlanUid,
+            widget.weekUid, widget.workoutUid, widget.exercise))
+        .whenComplete(() => EasyLoading.dismiss())
+        .whenComplete(() => Navigator.pop(context));
   }
 
   List<Exercise> buildExerciseList(

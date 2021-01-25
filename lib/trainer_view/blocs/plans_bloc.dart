@@ -7,6 +7,8 @@ class PlansBloc {
       _firestoreProvider.getOthersTrainerPlans();
   Stream<QuerySnapshot> getTrainerPlans() =>
       _firestoreProvider.getTrainerPlans();
+  Stream<QuerySnapshot> getWeeks(String workoutPlanUid) =>
+      _firestoreProvider.getWeeks(workoutPlanUid);
 
   Future<void> deletePlan(String workoutPlanUid) =>
       _firestoreProvider.deletePlan(
@@ -17,4 +19,15 @@ class PlansBloc {
 
   Future<void> updatePublishedStatus(String workoutPlanUid, bool isPublished) =>
       _firestoreProvider.updatePublishedStatus(workoutPlanUid, isPublished);
+
+  Stream<QuerySnapshot> getWeekIsDone(
+    String workoutPlanUid,
+    String weekUid,
+  ) =>
+      _firestoreProvider.getWeekIsDone(workoutPlanUid, weekUid);
+  Future<QuerySnapshot> getWeekIsDoneFuture(
+    String workoutPlanUid,
+    String weekUid,
+  ) =>
+      _firestoreProvider.getWeekIsDoneFuture(workoutPlanUid, weekUid);
 }

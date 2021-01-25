@@ -61,7 +61,9 @@ class _WorkoutSessionSetCardState extends State<WorkoutSessionSetCard> {
                         width: 48,
                         height: 48,
                         child: Checkbox(
-                            value: widget.isDone, onChanged: widget.onChanged),
+                            value:
+                                widget.isDone == null ? false : widget.isDone,
+                            onChanged: widget.onChanged),
                       ),
                       Column(
                         children: [

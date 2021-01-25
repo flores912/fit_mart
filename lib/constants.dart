@@ -137,14 +137,10 @@ const List<PopupMenuEntry> kExerciseCardPopUpMenuList = [
 const List<PopupMenuEntry> kExerciseCardCollectionPopUpMenuList = [
   const PopupMenuItem(
     value: 1,
-    child: Text(kEditName),
+    child: Text(kAddExercise),
   ),
   const PopupMenuItem(
     value: 2,
-    child: Text(kDuplicate),
-  ),
-  const PopupMenuItem(
-    value: 3,
     child: Text(kDelete),
   ),
 ];

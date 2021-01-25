@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../constants.dart';
 
@@ -9,16 +10,18 @@ class MyCreatedWorkoutPlanCard extends StatefulWidget {
   final int weeks;
   final Function onTap;
   final String url;
+  final String trainerName;
 
-  const MyCreatedWorkoutPlanCard(
-      {Key key,
-      this.title,
-      this.isLive,
-      this.more,
-      this.weeks,
-      this.onTap,
-      this.url})
-      : super(key: key);
+  const MyCreatedWorkoutPlanCard({
+    Key key,
+    this.title,
+    this.isLive,
+    this.more,
+    this.weeks,
+    this.onTap,
+    this.url,
+    this.trainerName,
+  }) : super(key: key);
 
   @override
   _MyCreatedWorkoutPlanCardState createState() =>
@@ -38,18 +41,24 @@ class _MyCreatedWorkoutPlanCardState extends State<MyCreatedWorkoutPlanCard> {
               child: Image.network(widget.url),
             )
           : null,
-      subtitle: Row(
+      subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.weeks.toString() + ' Week(s)   '),
-          widget.isLive == true
-              ? Text(
-                  'PUBLIC',
-                  style: TextStyle(color: kPrimaryColor),
-                )
-              : Text(
-                  '(PRIVATE)',
-                ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.weeks.toString() + ' Week(s)   '),
+              widget.isLive == true
+                  ? Text(
+                      'PUBLIC',
+                      style: TextStyle(color: kPrimaryColor),
+                    )
+                  : Text(
+                      '(PRIVATE)',
+                    ),
+            ],
+          ),
+          Text(widget.trainerName),
         ],
       ),
       title: Column(

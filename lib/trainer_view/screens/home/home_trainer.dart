@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/login_signup/screens/login.dart';
-import 'package:fit_mart/trainer_view/screens/home/exercise_collection.dart';
 import 'package:fit_mart/trainer_view/screens/home/my_plans.dart';
 import 'package:fit_mart/trainer_view/screens/home/plans.dart';
-import 'package:fit_mart/trainer_view/screens/home/sales.dart';
 import 'package:fit_mart/trainer_view/screens/home/trainer_account.dart';
 import 'package:fit_mart/trainer_view/screens/home/user_settings.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,8 +21,6 @@ class HomeTrainer extends StatefulWidget {
 
 class _HomeTrainerState extends State<HomeTrainer> {
   final _tabs = [
-    //ADD SCREENS FOR TABS HERE
-    ExerciseCollection(),
     Plans(),
     //Sales(),
     TrainerAccount(
@@ -65,10 +61,6 @@ class _HomeTrainerState extends State<HomeTrainer> {
         currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
-            label: 'Exercise Collection',
-            icon: Icon(Icons.collections_bookmark),
-          ),
-          BottomNavigationBarItem(
             label: 'Workout Plans',
             icon: Icon(Icons.fitness_center),
           ),
@@ -94,22 +86,11 @@ class _HomeTrainerState extends State<HomeTrainer> {
       switch (index) {
         case 0:
           {
-            _title = 'Exercise Collection';
-          }
-          break;
-        case 1:
-          {
             _title = 'Workout Plans';
           }
           break;
 
-        // case 2:
-        //   {
-        //     _title = Sales.title;
-        //   }
-        //   break;
-
-        case 2:
+        case 1:
           {
             _title = TrainerAccount.title;
           }

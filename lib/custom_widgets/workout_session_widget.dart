@@ -14,6 +14,20 @@ class WorkoutSessionWidget extends StatefulWidget {
 }
 
 class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
+  VideoPlayerController videoPlayerController;
+  @override
+  void initState() {
+    videoPlayerController = VideoPlayerController.network(widget.videoUrl,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    videoPlayerController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -32,10 +46,7 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
                         autoPlay: false,
                         looping: false,
                         showControls: true,
-                        videoPlayerController: VideoPlayerController.network(
-                            widget.videoUrl,
-                            videoPlayerOptions:
-                                VideoPlayerOptions(mixWithOthers: true)),
+                        videoPlayerController: videoPlayerController,
                       ),
                     )
                   : Container(),

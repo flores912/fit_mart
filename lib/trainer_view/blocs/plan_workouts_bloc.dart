@@ -36,4 +36,32 @@ class PlanWorkoutsBloc {
           String workoutPlanUid, String weekUid, String workoutId, int day) =>
       _firestoreProvider.updateWorkoutIndex(
           workoutPlanUid, weekUid, workoutId, day);
+
+  Stream<QuerySnapshot> getWorkoutIsDone(
+    String workoutPlanUid,
+    String weekUid,
+    String workoutUid,
+  ) =>
+      _firestoreProvider.getWorkoutIsDone(workoutPlanUid, weekUid, workoutUid);
+
+  Future<void> updateIsDoneWorkout(
+    bool isDone,
+    String workoutPlanUid,
+    String weekUid,
+    String workoutUid,
+  ) =>
+      _firestoreProvider.updateIsDoneWorkout(
+          isDone, workoutPlanUid, weekUid, workoutUid);
+  Future<void> updateIsDoneWeek(
+    bool isDone,
+    String workoutPlanUid,
+    String weekUid,
+  ) =>
+      _firestoreProvider.updateIsDoneWeek(isDone, workoutPlanUid, weekUid);
+
+  Stream<QuerySnapshot> getWeekIsDone(
+    String workoutPlanUid,
+    String weekUid,
+  ) =>
+      _firestoreProvider.getWeekIsDone(workoutPlanUid, weekUid);
 }

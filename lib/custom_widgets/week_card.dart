@@ -14,6 +14,8 @@ class WeekCard extends StatefulWidget {
   final Widget more;
   final bool swapMode;
   final double elevation;
+  final Widget isWeekDoneCheckBox;
+  final bool isInWorkoutsPreview;
 
   const WeekCard(
       {Key key,
@@ -26,7 +28,9 @@ class WeekCard extends StatefulWidget {
       this.isParentCheckbox,
       this.more,
       this.swapMode,
-      this.elevation})
+      this.elevation,
+      this.isWeekDoneCheckBox,
+      this.isInWorkoutsPreview})
       : super(key: key);
   @override
   _WeekCardState createState() => _WeekCardState();
@@ -41,7 +45,14 @@ class _WeekCardState extends State<WeekCard> {
           color: widget.swapMode == true ? kPrimaryColor : null,
           elevation: widget.elevation,
           child: ListTile(
-            title: Text('Week ' + widget.week.toString()),
+            title: Row(
+              children: [
+                widget.isInWorkoutsPreview == true
+                    ? widget.isWeekDoneCheckBox
+                    : Container(),
+                Text('Week ' + widget.week.toString()),
+              ],
+            ),
             trailing: widget.more,
             leading: widget.isOnCopyMode == true
                 ? checkBox(widget.isParentCheckbox)

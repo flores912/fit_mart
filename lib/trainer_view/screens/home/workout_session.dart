@@ -75,47 +75,101 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       exerciseName = exercisesList[index].exerciseName;
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
+
+                      return StreamBuilder(
+                          stream: _blocWorkoutSession.getExerciseIsDone(
+                              widget.workoutPlanUid,
+                              widget.weekUid,
+                              widget.workoutUid,
+                              exercisesList[index].exerciseUid),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            bool isExerciseDone;
+                            if (snapshot.hasData) {
+                              snapshot.data.docs.forEach((element) async {
+                                isExerciseDone = element.get('isDone');
+                              });
+                            } else {
+                              isExerciseDone = false;
+                            }
+                            return Column(
                               children: [
-                                Text(
-                                  exerciseName,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 22),
-                                ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text('(Exercise ' +
-                                      exercisesList[index]
-                                          .exerciseIndex
-                                          .toString() +
-                                      ' of ' +
-                                      exercisesList.length.toString() +
-                                      ')'),
-                                )
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                                child: WorkoutSessionWidget(
-                                  videoUrl: exercisesList[index].videoUrl,
-                                  setsList: setsListView(
-                                      exercisesList[index].exerciseUid),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Checkbox(
+                                              value: isExerciseDone == null
+                                                  ? false
+                                                  : isExerciseDone,
+                                              onChanged: (isDone) {
+                                                _blocWorkoutSession
+                                                    .updateIsDoneExercise(
+                                                        isDone,
+                                                        widget.workoutPlanUid,
+                                                        widget.weekUid,
+                                                        widget.workoutUid,
+                                                        exercisesList[index]
+                                                            .exerciseUid)
+                                                    .whenComplete(() {
+                                                  if (exercisesList[index]
+                                                              .exerciseUid ==
+                                                          exercisesList.last
+                                                              .exerciseUid &&
+                                                      isDone == true) {
+                                                    _blocWorkoutSession
+                                                        .updateIsDoneWorkout(
+                                                      isDone,
+                                                      widget.workoutPlanUid,
+                                                      widget.weekUid,
+                                                      widget.workoutUid,
+                                                    );
+                                                  }
+                                                });
+                                              }),
+                                          Text(
+                                            exerciseName,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 22),
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('(Exercise ' +
+                                            exercisesList[index]
+                                                .exerciseIndex
+                                                .toString() +
+                                            ' of ' +
+                                            exercisesList.length.toString() +
+                                            ')'),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: WorkoutSessionWidget(
+                                        videoUrl: exercisesList[index].videoUrl,
+                                        setsList: setsListView(
+                                            exercisesList[index].exerciseUid),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
                     });
               }
               return Text('No Data');
@@ -192,7 +246,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                         setsList[index].setUid),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
-                      bool isDone = false;
+                      bool isDone;
                       if (snapshot.hasData) {
                         snapshot.data.docs.forEach((element) {
                           isDone = element.get('isDone');
@@ -203,6 +257,11 @@ class _WorkoutSessionState extends State<WorkoutSession> {
 
                       return WorkoutSessionSetCard(
                         onChanged: (isDone) {
+                          if (isDone == true) {
+                            showRestTimer = true;
+                          } else {
+                            showRestTimer = false;
+                          }
                           _blocWorkoutSession.updateIsDoneSet(
                               isDone,
                               widget.workoutPlanUid,
@@ -210,11 +269,6 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                               widget.workoutUid,
                               exerciseUid,
                               setsList[index].setUid);
-                          if (isDone == true) {
-                            showRestTimer = true;
-                          } else {
-                            showRestTimer = false;
-                          }
                         },
                         setCountDownController: _setCountDownController,
                         restCountDownController: _restCountDownController,
@@ -244,14 +298,6 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                           isDone = true;
 
                           showRestTimer = true;
-
-                          _blocWorkoutSession.updateIsDoneSet(
-                              isDone,
-                              widget.workoutPlanUid,
-                              widget.weekUid,
-                              widget.workoutUid,
-                              exerciseUid,
-                              setsList[index].setUid);
                           showRepsCompleteSnackBar();
                           if (await Vibration.hasCustomVibrationsSupport()) {
                             Vibration.vibrate(duration: 5000);
@@ -262,6 +308,14 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                           }
                         },
                         onRestTimerComplete: () async {
+                          if (setsList[index].setUid == setsList.last.setUid) {
+                            _blocWorkoutSession.updateIsDoneExercise(
+                                true,
+                                widget.workoutPlanUid,
+                                widget.weekUid,
+                                widget.workoutUid,
+                                exerciseUid);
+                          }
                           showRestCompleteSnackBar();
                           if (await Vibration.hasCustomVibrationsSupport()) {
                             Vibration.vibrate(duration: 5000);

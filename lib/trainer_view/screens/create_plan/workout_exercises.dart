@@ -5,6 +5,7 @@ import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 
 import '../../../constants.dart';
 import 'exercise_collection_list.dart';
@@ -30,7 +31,6 @@ class WorkoutExercises extends StatefulWidget {
 
 class _WorkoutExercisesState extends State<WorkoutExercises> {
   WorkoutExercisesBloc _bloc = WorkoutExercisesBloc();
-
 
   List<Exercise> exercisesList = [];
 
@@ -379,6 +379,22 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
       );
     } else {
       return AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+                onTap: () {
+                  Get.to(ExerciseCollectionList(
+                    isEdit: true,
+                    workoutUid: workoutUid,
+                    weekUid: weekUid,
+                    workoutPlanUid: workoutPlanUid,
+                    exercise: exercisesList.length,
+                  ));
+                },
+                child: Icon(Icons.collections_bookmark)),
+          )
+        ],
         title: Text(widget.workoutName),
       );
     }

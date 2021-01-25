@@ -80,6 +80,7 @@ class _OthersPlansState extends State<OthersPlans> {
                               child: Icon(Icons.delete)),
                           title: workoutPlansList[index].title,
                           weeks: workoutPlansList[index].weeks,
+                          trainerName: workoutPlansList[index].trainerName,
                           isLive: workoutPlansList[index].isPublished,
                           url: workoutPlansList[index].coverPhotoUrl,
                         ),

@@ -686,6 +686,69 @@ class FirestoreProvider {
     });
   }
 
+  Future<void> updateIsDoneExercise(
+    bool isDone,
+    String workoutPlanUid,
+    String weekUid,
+    String workoutUid,
+    String exerciseUid,
+  ) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('isDone')
+        .doc(_firebaseAuth.currentUser.uid)
+        .set({
+      'userUid': _firebaseAuth.currentUser.uid,
+      'isDone': isDone,
+    });
+  }
+
+  Future<void> updateIsDoneWeek(
+    bool isDone,
+    String workoutPlanUid,
+    String weekUid,
+  ) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('isDone')
+        .doc(_firebaseAuth.currentUser.uid)
+        .set({
+      'userUid': _firebaseAuth.currentUser.uid,
+      'isDone': isDone,
+    });
+  }
+
+  Future<void> updateIsDoneWorkout(
+    bool isDone,
+    String workoutPlanUid,
+    String weekUid,
+    String workoutUid,
+  ) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('isDone')
+        .doc(_firebaseAuth.currentUser.uid)
+        .set({
+      'userUid': _firebaseAuth.currentUser.uid,
+      'isDone': isDone,
+    });
+  }
+
   Stream<QuerySnapshot> getSetIsDone(String workoutPlanUid, String weekUid,
       String workoutUid, String exerciseUid, String setUid) {
     return _firestore
@@ -699,6 +762,71 @@ class FirestoreProvider {
         .doc(exerciseUid)
         .collection('sets')
         .doc(setUid)
+        .collection('isDone')
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getExerciseIsDone(
+    String workoutPlanUid,
+    String weekUid,
+    String workoutUid,
+    String exerciseUid,
+  ) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
+        .collection('exercises')
+        .doc(exerciseUid)
+        .collection('isDone')
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getWeekIsDone(
+    String workoutPlanUid,
+    String weekUid,
+  ) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('isDone')
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .snapshots();
+  }
+
+  Future<QuerySnapshot> getWeekIsDoneFuture(
+    String workoutPlanUid,
+    String weekUid,
+  ) async {
+    return await _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('isDone')
+        .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
+        .get();
+  }
+
+  Stream<QuerySnapshot> getWorkoutIsDone(
+    String workoutPlanUid,
+    String weekUid,
+    String workoutUid,
+  ) {
+    return _firestore
+        .collection('workoutPlans')
+        .doc(workoutPlanUid)
+        .collection('weeks')
+        .doc(weekUid)
+        .collection('workouts')
+        .doc(workoutUid)
         .collection('isDone')
         .where('userUid', isEqualTo: _firebaseAuth.currentUser.uid)
         .snapshots();
