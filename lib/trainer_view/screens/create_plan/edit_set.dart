@@ -71,7 +71,7 @@ class _EditSetState extends State<EditSet> {
         reps = reps ~/ 60;
       } else if (widget.set.isSetInMin == false && widget.set.isTimed == true) {
         typeOfReps = 'secs';
-      } else if (widget.set.isFailure) {
+      } else if (widget.set.isFailure == true) {
         typeOfReps = 'failure';
       } else {
         typeOfReps = 'reps';

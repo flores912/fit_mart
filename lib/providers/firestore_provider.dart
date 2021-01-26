@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_mart/models/exercise.dart';
+import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/models/workout.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -974,8 +975,9 @@ class FirestoreProvider {
             .doc(originalWorkout.uid)
             .collection('exercises')
             .get()
-            .then((value) {
-          value.docs.forEach((element) async {
+            .then((originalWorkoutExercises) {
+          originalWorkoutExercises.docs
+              .forEach((originalWorkoutExercise) async {
             await _firestore
                 .collection('workoutPlans')
                 .doc(workoutPlanUid)
@@ -985,25 +987,38 @@ class FirestoreProvider {
                 .doc(copyWorkout.uid)
                 .collection('exercises')
                 .add({
-              'exerciseName': await element.get('exerciseName'),
-              'videoUrl': await element.get('videoUrl'),
-              'exercise': await element.get('exercise'),
-              'sets': await element.get('sets'),
-            }).then((value) async {
-              await _firestore
-                  .collection('workoutPlans')
-                  .doc(workoutPlanUid)
-                  .collection('weeks')
-                  .doc(copyWorkout.weekUid)
-                  .collection('workouts')
-                  .doc(copyWorkout.uid)
-                  .collection('exercises')
-                  .doc(value.id)
-                  .collection('sets')
-                  .add({
-                'set': await element.get('set'),
-                'reps': await element.get('reps'),
-                'rest': await element.get('rest'),
+              'exerciseName': await originalWorkoutExercise.get('exerciseName'),
+              'videoUrl': await originalWorkoutExercise.get('videoUrl'),
+              'exercise': await originalWorkoutExercise.get('exercise'),
+              'sets': await originalWorkoutExercise.get('sets'),
+            }).then((copyWorkoutExercise) async {
+              await getSetsFuture(workoutPlanUid, originalWorkout.weekUid,
+                      originalWorkout.uid, originalWorkoutExercise.id)
+                  .then((originalWorkoutExerciseSets) {
+                originalWorkoutExerciseSets.docs.forEach((originalSet) async {
+                  Set set = Set(
+                      isSetInMin: await originalSet.get('isSetInMin'),
+                      isRestInMin: await originalSet.get('isRestInMin'),
+                      isTimed: await originalSet.get('isTimed'),
+                      isFailure: await originalSet.get('isFailure'),
+                      reps: await originalSet.get('reps'),
+                      rest: await originalSet.get('rest'),
+                      set: await originalSet.get('set'),
+                      setUid: originalSet.id);
+
+                  await addNewSet(
+                      workoutPlanUid,
+                      copyWorkout.weekUid,
+                      copyWorkout.uid,
+                      copyWorkoutExercise.id,
+                      set.set,
+                      set.reps,
+                      set.rest,
+                      set.isTimed,
+                      set.isFailure,
+                      set.isSetInMin,
+                      set.isRestInMin);
+                });
               });
             });
           });
