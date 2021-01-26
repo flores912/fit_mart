@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_mart/custom_widgets/exercise_card.dart';
 import 'package:fit_mart/models/exercise.dart';
+import 'package:fit_mart/models/set.dart';
 import 'package:fit_mart/trainer_view/blocs/workout_exercises_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -153,7 +154,46 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                                               exercisesList[index].exerciseName,
                                               exercisesList[index].sets,
                                               exercisesList[index].videoUrl)
-                                          .whenComplete(() {
+                                          .then((newExercise) async {
+                                        await _bloc
+                                            .getSetsFuture(
+                                                workoutPlanUid,
+                                                weekUid,
+                                                workoutUid,
+                                                exercisesList[index]
+                                                    .exerciseUid)
+                                            .then((originalSets) {
+                                          originalSets.docs
+                                              .forEach((originalSet) async {
+                                            Set set = Set(
+                                                isSetInMin: await originalSet
+                                                    .get('isSetInMin'),
+                                                isRestInMin: await originalSet
+                                                    .get('isRestInMin'),
+                                                isTimed: await originalSet
+                                                    .get('isTimed'),
+                                                isFailure: await originalSet
+                                                    .get('isFailure'),
+                                                reps: await originalSet
+                                                    .get('reps'),
+                                                rest: await originalSet
+                                                    .get('rest'),
+                                                set: await originalSet
+                                                    .get('set'),
+                                                setUid: await originalSet.id);
+
+                                            await _bloc.addNewSetCollection(
+                                                newExercise.id,
+                                                set.set,
+                                                set.reps,
+                                                set.rest,
+                                                set.isTimed,
+                                                set.isFailure,
+                                                set.isSetInMin,
+                                                set.isRestInMin);
+                                          });
+                                        });
+                                      }).whenComplete(() {
                                         Scaffold.of(context)
                                             .showSnackBar(SnackBar(
                                           content: Text(
@@ -281,7 +321,8 @@ class _WorkoutExercisesState extends State<WorkoutExercises> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ExerciseCollectionList(
-                      exercise: exercisesList.length + 1,
+                      exercise: exercisesList.length,
+                      isEdit: false,
                       workoutPlanUid: widget.workoutPlanUid,
                       weekUid: widget.weekUid,
                       workoutUid: widget.workoutUid,

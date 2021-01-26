@@ -13,22 +13,37 @@ class ExerciseCard extends StatefulWidget {
   final Color color;
   final String url;
 
-  const ExerciseCard(
-      {Key key,
-      this.exerciseName,
-      this.sets,
-      this.more,
-      this.onTap,
-      this.elevation,
-      this.color,
-      this.url,
-      })
-      : super(key: key);
+  const ExerciseCard({
+    Key key,
+    this.exerciseName,
+    this.sets,
+    this.more,
+    this.onTap,
+    this.elevation,
+    this.color,
+    this.url,
+  }) : super(key: key);
   @override
   _ExerciseCardState createState() => _ExerciseCardState();
 }
 
 class _ExerciseCardState extends State<ExerciseCard> {
+  VideoPlayerController videoPlayerController;
+
+  @override
+  void initState() {
+    videoPlayerController = VideoPlayerController.network(widget.url,
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    videoPlayerController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -39,21 +54,19 @@ class _ExerciseCardState extends State<ExerciseCard> {
           child: ListTile(
             onTap: widget.onTap,
             trailing: widget.more,
-            leading: widget.url != null
-                ? Container(
-                    height: 100,
-                    width: 56,
-                    child: ChewiePlayerWidget(
-                      autoPlay: false,
-                      looping: false,
-                      showControls: false,
-                      videoPlayerController: VideoPlayerController.network(
-                          widget.url,
-                          videoPlayerOptions:
-                          VideoPlayerOptions(mixWithOthers: true)),
-                    ),
-                  )
-                : null,
+
+            //todo getting rid of this until I fix out of memry leak on lists might need to migrate to betterplayer package
+            // leading: widget.url != null
+            //     ? Container(
+            //         width: 56,
+            //         height: 56 * 16 / 9 / 2,
+            //         child: ChewiePlayerWidget(
+            //             autoPlay: false,
+            //             looping: false,
+            //             showControls: false,
+            //             videoPlayerController: videoPlayerController),
+            //       )
+            //     : null,
             title: Text(widget.exerciseName),
             subtitle: Text(widget.sets.toString() + ' ' + kSets),
           ),

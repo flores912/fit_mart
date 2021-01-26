@@ -60,9 +60,11 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
               return Container(
                   width: MediaQuery.of(context).size.width - 24,
                   child: ExerciseCard(
-                    onTap: () async {
-                      await addExerciseToWorkout(index);
-                    },
+                    onTap: widget.isEdit == false
+                        ? () {
+                            addExerciseToWorkout(index);
+                          }
+                        : null,
                     exerciseName: exercisesList[index].exerciseName,
                     sets: exercisesList[index].sets,
                     url: exercisesList[index].videoUrl,
@@ -107,7 +109,7 @@ class _ExerciseCollectionListState extends State<ExerciseCollectionList> {
     _bloc
         .addNewExercise(
             exercisesList[index].exerciseName,
-            widget.exercise,
+            widget.exercise + 1,
             exercisesList[index].sets,
             exercisesList[index].videoUrl,
             widget.workoutPlanUid,

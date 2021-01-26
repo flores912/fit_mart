@@ -54,6 +54,12 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -128,24 +134,16 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
             child: Column(
               children: [
                 _controller != null
-                    ? Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Recommended Aspect Ratio : 16:9'),
-                          ),
-                          Container(
-                            color: Colors.black,
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.width * 9 / 16,
-                            child: ChewiePlayerWidget(
-                              autoPlay: false,
-                              looping: false,
-                              showControls: true,
-                              videoPlayerController: _controller,
-                            ),
-                          ),
-                        ],
+                    ? Container(
+                        color: Colors.black,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width * 16 / 9 / 2,
+                        child: ChewiePlayerWidget(
+                          autoPlay: false,
+                          looping: false,
+                          showControls: true,
+                          videoPlayerController: _controller,
+                        ),
                       )
                     : Container(),
                 OutlineButton(

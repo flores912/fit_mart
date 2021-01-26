@@ -39,8 +39,6 @@ class _WorkoutSessionState extends State<WorkoutSession> {
 
   ExerciseDetailsBloc _blocSets = ExerciseDetailsBloc();
 
-  String exerciseName = '';
-
   @override
   void initState() {
     // TODO: implement initState
@@ -74,8 +72,6 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                     itemCount: exercisesList.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      exerciseName = exercisesList[index].exerciseName;
-
                       return StreamBuilder(
                           stream: _blocWorkoutSession.getExerciseIsDone(
                               widget.workoutPlanUid,
@@ -132,7 +128,7 @@ class _WorkoutSessionState extends State<WorkoutSession> {
                                                 });
                                               }),
                                           Text(
-                                            exerciseName,
+                                            exercisesList[index].exerciseName,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 22),

@@ -73,7 +73,7 @@ class _PlanOverviewState extends State<PlanOverview> {
                     ? Container(
                         color: Colors.black,
                         width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.width / 1.78,
+                        height: MediaQuery.of(context).size.width * 16 / 9 / 2,
                         child: ChewiePlayerWidget(
                           autoPlay: false,
                           looping: false,

@@ -41,7 +41,7 @@ class _WorkoutSessionWidgetState extends State<WorkoutSessionWidget> {
                   ? Container(
                       color: Colors.black,
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width * 9 / 16,
+                      height: MediaQuery.of(context).size.width * 16 / 9 / 2,
                       child: ChewiePlayerWidget(
                         autoPlay: false,
                         looping: false,

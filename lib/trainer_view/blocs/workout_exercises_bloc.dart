@@ -77,8 +77,27 @@ class WorkoutExercisesBloc {
           isSetInMin,
           isRestInMin);
 
+  Future<QuerySnapshot> getSetsFuture(String workoutPlanUid, String weekUid,
+          String workoutUid, String exerciseUid) =>
+      _firestoreProvider.getSetsFuture(
+          workoutPlanUid, weekUid, workoutUid, exerciseUid);
+
+  Future<QuerySnapshot> getSetsCollectionFuture(String exerciseUid) =>
+      _firestoreProvider.getSetsCollectionFuture(exerciseUid);
   Future<void> updateExerciseIndex(String workoutPlanUid, String weekUid,
           String workoutUid, String exerciseUid, int exercise) =>
       _firestoreProvider.updateExerciseIndex(
           workoutPlanUid, weekUid, workoutUid, exerciseUid, exercise);
+
+  Future<DocumentReference> addNewSetCollection(
+          String exerciseUid,
+          int set,
+          int reps,
+          int rest,
+          bool isTimed,
+          bool isFailure,
+          bool isSetInMin,
+          bool isRestInMin) =>
+      _firestoreProvider.addNewSetCollection(exerciseUid, set, reps, rest,
+          isTimed, isFailure, isSetInMin, isRestInMin);
 }

@@ -9,6 +9,7 @@ class ChewiePlayerWidget extends StatefulWidget {
   final bool looping;
   final bool showControls;
   final bool autoPlay;
+  final bool autoInitialize;
 
   const ChewiePlayerWidget({
     Key key,
@@ -16,6 +17,7 @@ class ChewiePlayerWidget extends StatefulWidget {
     this.looping,
     this.showControls,
     this.autoPlay,
+    this.autoInitialize,
   }) : super(key: key);
   @override
   _ChewiePlayerWidgetState createState() => _ChewiePlayerWidgetState();

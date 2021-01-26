@@ -9,6 +9,8 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Fitpo"
         android:icon="@mipmap/launcher_icon"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
 
         android:requestLegacyExternalStorage="true"
         >

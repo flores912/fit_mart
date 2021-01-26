@@ -97,10 +97,6 @@ class _PromoVideoState extends State<PromoVideo> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Recommended Aspect Ratio : 16:9'),
-              ),
               _controller != null
                   ? Container(
                       color: Colors.black,
