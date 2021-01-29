@@ -13,12 +13,7 @@ import 'login_signup/screens/login.dart';
 void main() async {
   configLoading();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp().whenComplete(() async {
-    DynamicLinkProvider dynamicLinkProvider = DynamicLinkProvider();
-    await dynamicLinkProvider.handleDynamicLinks();
-  });
-
-  runApp(Fitpo());
+  await Firebase.initializeApp().whenComplete(() => runApp(Fitpo()));
 }
 
 void configLoading() {

@@ -375,6 +375,10 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
 
                             break;
                           case 2:
+                            //duplicate set
+                            duplicateSet(index);
+                            break;
+                          case 3:
                             deleteSet(index);
 
                             break;
@@ -403,6 +407,29 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
             widget.weekUid,
             widget.workoutUid,
             widget.exerciseUid))
+        .whenComplete(() async {
+      for (int i = 0; i < setsList.length; i++) {
+        await _bloc.updateSetIndex(widget.workoutPlanUid, widget.weekUid,
+            widget.workoutUid, widget.exerciseUid, setsList[i].setUid, i + 1);
+      }
+    }).whenComplete(() => EasyLoading.dismiss());
+  }
+
+  Future<void> duplicateSet(int index) async {
+    EasyLoading.show();
+    return await _bloc
+        .addNewSet(
+            widget.workoutPlanUid,
+            widget.weekUid,
+            widget.workoutUid,
+            widget.exerciseUid,
+            setsList.length + 1,
+            setsList[index].reps,
+            setsList[index].rest,
+            setsList[index].isTimed,
+            setsList[index].isFailure,
+            setsList[index].isSetInMin,
+            setsList[index].isRestInMin)
         .whenComplete(() async {
       for (int i = 0; i < setsList.length; i++) {
         await _bloc.updateSetIndex(widget.workoutPlanUid, widget.weekUid,

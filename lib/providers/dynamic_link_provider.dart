@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:fit_mart/models/workout_plan.dart';
 import 'package:fit_mart/trainer_view/blocs/plan_overview_bloc.dart';
@@ -61,9 +62,15 @@ class DynamicLinkProvider {
             //then send user to the workout plan preview screen
           }).whenComplete(() async {
             if (workoutPlan.uid != null) {
-              await Get.to(WorkoutPlanPreview(
-                workoutPlan: workoutPlan,
-              ));
+              if (FirebaseAuth.instance.currentUser != null) {
+                await Get.to(WorkoutPlanPreview(
+                  workoutPlan: workoutPlan,
+                ));
+              } else {
+                await Get.off(WorkoutPlanPreview(
+                  workoutPlan: workoutPlan,
+                ));
+              }
             } else {
               //todo: do nothing or go to another screen?
             }

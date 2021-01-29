@@ -151,6 +151,10 @@ const List<PopupMenuEntry> kMyCreatedWorkoutPlanCardPopUpMenuList = [
   ),
   const PopupMenuItem(
     value: 2,
+    child: Text(kDuplicate),
+  ),
+  const PopupMenuItem(
+    value: 3,
     child: Text(kDelete),
   ),
 ];

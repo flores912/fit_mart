@@ -77,7 +77,7 @@ class _SetCardState extends State<SetCard> {
             ),
             widget.isTimed == true
                 ? Text(
-                    'Time',
+                    _printDuration(Duration(seconds: widget.reps)),
                     style: TextStyle(fontWeight: FontWeight.w300),
                   )
                 : Text(

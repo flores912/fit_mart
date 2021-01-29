@@ -35,6 +35,9 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
       key: _scaffoldKey,
       body: Form(
         key: _formKey,
