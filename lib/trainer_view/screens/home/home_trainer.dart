@@ -42,7 +42,7 @@ class _HomeTrainerState extends State<HomeTrainer> {
         automaticallyImplyLeading: false, //prevent users to go back
         title: Text(_title),
         actions: [
-          _currentIndex == 2
+          _currentIndex == 1
               ? GestureDetector(
                   onTap: () async {
                     Get.to(UserSettings());
